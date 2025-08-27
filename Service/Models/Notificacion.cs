@@ -18,7 +18,7 @@ namespace Service.Models
         public CompraServicio? CompraServicio { get; set; }
         public DateTime FechaGenerada { get; set; } = DateTime.Now;
         public int DiasParaRecordatorio { get; set; } = 0;
-        public DateTime FechaRecordatorio { get; set; } = DateTime.MinValue;
+        public DateTime? FechaRecordatorio { get; set; } //Fecha Ya calculada
         public EstadoNotificacion Estado { get; set; } = EstadoNotificacion.Pendiente;
         public string? ComentarioEmpleado { get; set; } // Opcional
         public bool IsDeleted { get; set; } = false; // Soft delete
