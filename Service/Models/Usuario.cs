@@ -8,7 +8,7 @@ namespace Service.Models
 {
     public class Usuario
     {
-        public int UsuarioID { get; set; }
+        public int ID { get; set; }
         public string Nombre { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty; // Único → login
         public string PasswordHash { get; set; } = string.Empty; // Guardado encriptado
