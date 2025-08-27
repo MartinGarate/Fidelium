@@ -116,6 +116,8 @@ namespace Backend.DataContext
             modelBuilder.Entity<Usuario>().HasQueryFilter(u => !u.IsDeleted);
             modelBuilder.Entity<CompraServicio>().HasQueryFilter(cs => !cs.IsDeleted);
             modelBuilder.Entity<Notificacion>().HasQueryFilter(n => !n.IsDeleted);
+
+
         }
     }
 }

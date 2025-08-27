@@ -15,6 +15,7 @@ namespace Service.Models
     {
         public int ID { get; set; }
         public int CompraServicioID { get; set; } // FK
+        public CompraServicio? CompraServicio { get; set; }
         public DateTime FechaGenerada { get; set; } = DateTime.Now;
         public int DiasParaRecordatorio { get; set; } = 0;
         public DateTime FechaRecordatorio { get; set; } = DateTime.MinValue;

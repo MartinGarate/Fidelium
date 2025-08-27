@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend", "Backend\Backend.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{458A5267-449C-4CBB-B1D0-71EA2BA20913}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestFidelium", "TestFidelium\TestFidelium.csproj", "{801B8405-4B2D-4727-B328-91444FA498AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webBlazor", "webBlazor\webBlazor.csproj", "{658415A1-B1C8-4F11-95C7-296E4A2C5555}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{458A5267-449C-4CBB-B1D0-71EA2BA20913}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{458A5267-449C-4CBB-B1D0-71EA2BA20913}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{458A5267-449C-4CBB-B1D0-71EA2BA20913}.Release|Any CPU.Build.0 = Release|Any CPU
+		{801B8405-4B2D-4727-B328-91444FA498AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{801B8405-4B2D-4727-B328-91444FA498AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{801B8405-4B2D-4727-B328-91444FA498AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{801B8405-4B2D-4727-B328-91444FA498AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{658415A1-B1C8-4F11-95C7-296E4A2C5555}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{658415A1-B1C8-4F11-95C7-296E4A2C5555}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{658415A1-B1C8-4F11-95C7-296E4A2C5555}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{658415A1-B1C8-4F11-95C7-296E4A2C5555}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
