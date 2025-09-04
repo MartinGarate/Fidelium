@@ -21,7 +21,10 @@ namespace Service.Models
         public DateTime? FechaRecordatorio { get; set; } //Fecha Ya calculada
         public EstadoNotificacion Estado { get; set; } = EstadoNotificacion.Pendiente;
         public string? ComentarioEmpleado { get; set; } // Opcional
+        public int UsuarioID { get; set; } // FK
+        public Usuario? Usuario { get; set; }
         public bool IsDeleted { get; set; } = false; // Soft delete
+
 
     }
 

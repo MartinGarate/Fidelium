@@ -28,6 +28,7 @@ namespace Backend.Controllers
             return await _context.Notificaciones
                 .Include(n => n.CompraServicio)       // Trae la compra/servicio
                 .ThenInclude(c => c.Cliente)      // Trae el cliente dentro de la compra
+                .Include(u => u.Usuario) // Trae el usuario que hizo la venta/servicio
                 .ToListAsync();
         }
 
@@ -81,6 +82,13 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<Notificacion>> PostNotificacion(Notificacion notificacion)
         {
+            // Antes de agregar la notificación
+            var usuarioExiste = await _context.Usuarios.AnyAsync(u => u.ID == notificacion.UsuarioID);
+            if (!usuarioExiste)
+            {
+                return BadRequest("El UsuarioID no existe.");
+            }
+
             _context.Notificaciones.Add(notificacion);
             await _context.SaveChangesAsync();
 

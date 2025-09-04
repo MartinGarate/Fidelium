@@ -16,6 +16,8 @@ namespace Service.Models
         public string ComentarioFeedback { get; set; } = string.Empty; // Campo libre para feedback
         public bool IsDeleted { get; set; } = false; // Soft delete
         public DateTime DeleteDate { get; set; } = DateTime.MinValue;
+        public int UsuarioID { get; set; } // FK
+        public Usuario? Usuario { get; set; }
 
     }
 }

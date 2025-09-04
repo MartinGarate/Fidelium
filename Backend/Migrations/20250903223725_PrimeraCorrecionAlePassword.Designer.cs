@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(FideliumContext))]
-    [Migration("20250827084807_InicioProyecto")]
-    partial class InicioProyecto
+    [Migration("20250903223725_PrimeraCorrecionAlePassword")]
+    partial class PrimeraCorrecionAlePassword
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,7 +119,14 @@ namespace Backend.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("UsuarioID")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("ClienteID");
+
+                    b.HasIndex("UsuarioID");
 
                     b.ToTable("ComprasServicios");
 
@@ -132,7 +139,8 @@ namespace Backend.Migrations
                             DeleteDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Descripcion = "Compra de PC Gamer",
                             FechaCompra = new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false
+                            IsDeleted = false,
+                            UsuarioID = 1
                         },
                         new
                         {
@@ -142,7 +150,8 @@ namespace Backend.Migrations
                             DeleteDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Descripcion = "Servicio Tecnico de PC",
                             FechaCompra = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false
+                            IsDeleted = false,
+                            UsuarioID = 1
                         });
                 });
 
@@ -169,13 +178,20 @@ namespace Backend.Migrations
                     b.Property<DateTime>("FechaGenerada")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("FechaRecordatorio")
+                    b.Property<DateTime?>("FechaRecordatorio")
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("UsuarioID")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("CompraServicioID");
+
+                    b.HasIndex("UsuarioID");
 
                     b.ToTable("Notificaciones");
 
@@ -189,7 +205,8 @@ namespace Backend.Migrations
                             Estado = 0,
                             FechaGenerada = new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FechaRecordatorio = new DateTime(2025, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false
+                            IsDeleted = false,
+                            UsuarioID = 1
                         },
                         new
                         {
@@ -199,7 +216,8 @@ namespace Backend.Migrations
                             Estado = 1,
                             FechaGenerada = new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FechaRecordatorio = new DateTime(2025, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false
+                            IsDeleted = false,
+                            UsuarioID = 1
                         });
                 });
 
@@ -210,6 +228,9 @@ namespace Backend.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int?>("DNI")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DeleteDate")
                         .HasColumnType("datetime(6)");
@@ -225,7 +246,7 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -240,23 +261,74 @@ namespace Backend.Migrations
                         new
                         {
                             ID = 1,
+                            DNI = 12345678,
                             DeleteDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "alejandro@gmail.com",
                             IsDeleted = false,
                             Nombre = "Alejandro",
-                            PasswordHash = "qwerty12345",
+                            Password = "qwerty12345",
                             TipoUsuario = 0
                         },
                         new
                         {
                             ID = 2,
+                            DNI = 123456789,
                             DeleteDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "empleado1@gmail.com",
                             IsDeleted = false,
                             Nombre = "Empleado1",
-                            PasswordHash = "qwerty12345",
+                            Password = "qwerty12345",
                             TipoUsuario = 1
+                        },
+                        new
+                        {
+                            ID = 3,
+                            DNI = 123456790,
+                            DeleteDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "Usuario1@gmail.com",
+                            IsDeleted = false,
+                            Nombre = "UsuarioTest",
+                            Password = "qwerty12345",
+                            TipoUsuario = 2
                         });
+                });
+
+            modelBuilder.Entity("Service.Models.CompraServicio", b =>
+                {
+                    b.HasOne("Service.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Service.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Service.Models.Notificacion", b =>
+                {
+                    b.HasOne("Service.Models.CompraServicio", "CompraServicio")
+                        .WithMany()
+                        .HasForeignKey("CompraServicioID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Service.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CompraServicio");
+
+                    b.Navigation("Usuario");
                 });
 #pragma warning restore 612, 618
         }

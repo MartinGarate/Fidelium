@@ -53,17 +53,29 @@ namespace Backend.DataContext
                     ID = 1,
                     Nombre = "Alejandro",
                     Email = "alejandro@gmail.com",
-                    PasswordHash = "qwerty12345", //  solo para desarrollo
-                    TipoUsuario = Usuario.TipoUsuarioEnum.Administrador
+                    Password = "qwerty12345", //  solo para desarrollo
+                    TipoUsuario = Usuario.TipoUsuarioEnum.Administrador,
+                    DNI = 12345678
                 },
                 new Usuario
                 {
                     ID = 2,
                     Nombre = "Empleado1",
                     Email = "empleado1@gmail.com",
-                    PasswordHash = "qwerty12345",
-                    TipoUsuario = Usuario.TipoUsuarioEnum.Empleado
-                }
+                    Password = "qwerty12345",
+                    TipoUsuario = Usuario.TipoUsuarioEnum.Empleado,
+                    DNI = 123456789
+                },
+                 new Usuario
+                 {
+                     ID = 3,
+                     Nombre = "UsuarioTest",
+                     Email = "Usuario1@gmail.com",
+                     Password = "qwerty12345",
+                     TipoUsuario = Usuario.TipoUsuarioEnum.Usuario,
+                     DNI = 123456790
+                 }
+
             );
 
             // CompraServicio
@@ -75,7 +87,8 @@ namespace Backend.DataContext
                     Descripcion = "Compra de PC Gamer",
                     FechaCompra = new DateTime(2025, 8, 1),
                     ComentarioFeedback = "Muy conforme con el servicio",
-                    DeleteDate = DateTime.MinValue
+                    DeleteDate = DateTime.MinValue,
+                    UsuarioID = 1
                 },
                 new CompraServicio
                 {
@@ -84,7 +97,8 @@ namespace Backend.DataContext
                     Descripcion = "Servicio Tecnico de PC",
                     FechaCompra = new DateTime(2025, 8, 10),
                     ComentarioFeedback = "Buen servicio, pero podría mejorar la atención",
-                    DeleteDate = DateTime.MinValue
+                    DeleteDate = DateTime.MinValue,
+                    UsuarioID = 1
                 }
             );
 
@@ -98,7 +112,8 @@ namespace Backend.DataContext
                     DiasParaRecordatorio = 7,
                     FechaRecordatorio = new DateTime(2025, 8, 8),
                     Estado = EstadoNotificacion.Pendiente,
-                    ComentarioEmpleado = "Recordatorio programado para seguimiento."
+                    ComentarioEmpleado = "Recordatorio programado para seguimiento.",
+                    UsuarioID = 1
                 },
                 new Notificacion
                 {
@@ -108,7 +123,8 @@ namespace Backend.DataContext
                     DiasParaRecordatorio = 3,
                     FechaRecordatorio = new DateTime(2025, 8, 18),
                     Estado = EstadoNotificacion.Atendida,
-                    ComentarioEmpleado = null
+                    ComentarioEmpleado = null,
+                    UsuarioID = 1
                 }
             );
             // Configuramos las querys para que no devuelvan los elementos eliminados

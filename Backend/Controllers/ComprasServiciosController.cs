@@ -25,7 +25,10 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CompraServicio>>> GetComprasServicios()
         {
-            return await _context.ComprasServicios.Include(c => c.Cliente).ToListAsync();
+            return await _context.ComprasServicios
+                .Include(u => u.Usuario)       //trae el usuario que hizo la venta/servicio
+                .Include(c => c.Cliente)      //trae el cliente dentro de la compra
+                .ToListAsync();
         }
 
         // GET: api/ComprasServicios/5

@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Service.Interfaces
+namespace Service.Service
 {
     public class GenericService<T> : IGenericService<T> where T : class
     {

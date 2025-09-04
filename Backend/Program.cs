@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
     .Build();
-string? cadenaConexion = configuration.GetConnectionString("mysqlLocal");
+string? cadenaConexion = configuration.GetConnectionString("mysqlRemote");
 
 //configuración de inyección de dependencias del DBContext
 builder.Services.AddDbContext<FideliumContext>(
