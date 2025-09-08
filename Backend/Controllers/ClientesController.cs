@@ -25,7 +25,10 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes()
         {
-            return await _context.Clientes.ToListAsync();
+            return await _context.Clientes
+                .Include(c => c.Usuario) // Incluye los datos del usuario asociado
+                .ToListAsync();
+
         }
 
         // GET: api/Clientes/5
@@ -135,7 +138,9 @@ namespace Backend.Controllers
         public async Task<ActionResult<IEnumerable<Cliente>>> GetClientesDeleteds()
         {
 
-            return await _context.Clientes.IgnoreQueryFilters().Where(c => c.IsDeleted).ToListAsync();
+            return await _context.Clientes.IgnoreQueryFilters().Where(c => c.IsDeleted)
+                .Include (c => c.Usuario) // Incluye los datos del usuario asociado
+                .ToListAsync();
         }
 
         private bool ClienteExists(int id)

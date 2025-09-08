@@ -26,8 +26,8 @@ namespace Backend.Controllers
         public async Task<ActionResult<IEnumerable<CompraServicio>>> GetComprasServicios()
         {
             return await _context.ComprasServicios
-                .Include(u => u.Usuario)       //trae el usuario que hizo la venta/servicio
-                .Include(c => c.Cliente)      //trae el cliente dentro de la compra
+                .Include(u => u.Cliente)      // Incluimos el cliente asociado
+                .Include(u => u.Empleado)     // Incluimos el empleado (usuario) asociado
                 .ToListAsync();
         }
 
@@ -138,7 +138,10 @@ namespace Backend.Controllers
         public async Task<ActionResult<IEnumerable<CompraServicio>>> GetCompraServicioDeleteds()
         {
 
-            return await _context.ComprasServicios.IgnoreQueryFilters().Where(cs => cs.IsDeleted).ToListAsync();
+            return await _context.ComprasServicios.IgnoreQueryFilters().Where(cs => cs.IsDeleted)
+                .Include(u => u.Cliente)      // Incluimos el cliente asociado
+                .Include(u => u.Empleado)     // Incluimos el empleado (usuario) asociado
+                .ToListAsync();
         }
 
         private bool CompraServicioExists(int id)

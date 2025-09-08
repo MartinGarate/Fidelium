@@ -28,7 +28,7 @@ namespace Backend.Controllers
             return await _context.Notificaciones
                 .Include(n => n.CompraServicio)       // Trae la compra/servicio
                 .ThenInclude(c => c.Cliente)      // Trae el cliente dentro de la compra
-                .Include(u => u.Usuario) // Trae el usuario que hizo la venta/servicio
+                .Include(u => u.Empleado) // Trae el usuario que hizo la venta/servicio
                 .ToListAsync();
         }
 
@@ -83,10 +83,11 @@ namespace Backend.Controllers
         public async Task<ActionResult<Notificacion>> PostNotificacion(Notificacion notificacion)
         {
             // Antes de agregar la notificación
-            var usuarioExiste = await _context.Usuarios.AnyAsync(u => u.ID == notificacion.UsuarioID);
-            if (!usuarioExiste)
+            var clienteExiste = await _context.Clientes.AnyAsync(c => c.UsuarioID == notificacion.ClienteID && !c.IsDeleted);
+            
+            if (!clienteExiste)
             {
-                return BadRequest("El UsuarioID no existe.");
+                return BadRequest("El Cliente no existe.");
             }
 
             _context.Notificaciones.Add(notificacion);
@@ -147,7 +148,11 @@ namespace Backend.Controllers
         public async Task<ActionResult<IEnumerable<Notificacion>>> GetNotificacionesDeleteds()
         {
 
-            return await _context.Notificaciones.IgnoreQueryFilters().Where(n => n.IsDeleted).ToListAsync();
+            return await _context.Notificaciones.IgnoreQueryFilters().Where(n => n.IsDeleted)
+                .Include(n => n.CompraServicio)       // Trae la compra/servicio
+                .ThenInclude(c => c.Cliente)      // Trae el cliente dentro de la compra
+                .Include(u => u.Empleado) // Trae el usuario que hizo la venta/servicio
+                .ToListAsync();
         }
 
 

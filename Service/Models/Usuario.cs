@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Service.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,8 +14,7 @@ namespace Service.Models
         public string Nombre { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty; // Único → login
         public string Password{ get; set; } = string.Empty; // Guardado encriptado
-        public TipoUsuarioEnum TipoUsuario { get; set; } = TipoUsuarioEnum.Empleado;
-        public DateTime DeleteDate { get; set; } = DateTime.MinValue; // Soft delete
+        public TipoUsuarioEnum TipoUsuario { get; set; } = TipoUsuarioEnum.Usuario;
         public bool IsDeleted { get; set; } = false;
 
         public override string ToString()
@@ -22,12 +22,7 @@ namespace Service.Models
             return Nombre;
         }
 
-        public enum TipoUsuarioEnum
-        {
-            Administrador,
-            Empleado,
-            Usuario
-        }
+        
         
     }
 }

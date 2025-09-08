@@ -14,10 +14,12 @@ namespace Service.Models
         public string Descripcion { get; set; } = string.Empty;
         public DateTime FechaCompra { get; set; } = DateTime.Now;
         public string ComentarioFeedback { get; set; } = string.Empty; // Campo libre para feedback
+        public int EmpleadoID { get; set; } // FK
+        public Usuario? Empleado { get; set; } // Usuario que realizó la venta/servicio
         public bool IsDeleted { get; set; } = false; // Soft delete
-        public DateTime DeleteDate { get; set; } = DateTime.MinValue;
-        public int UsuarioID { get; set; } // FK
-        public Usuario? Usuario { get; set; }
+        public DateTime DeleteDate { get; set; } = DateTime.MinValue; // Fecha de eliminación (soft delete)
+        public DateTime UpdateAt { get; set; } = DateTime.MinValue; // Fecha de última actualización
+        public DateTime CreatedAt { get; set; } = DateTime.Now; // Fecha de creación del registro
 
     }
 }

@@ -4,6 +4,7 @@ using Backend.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(FideliumContext))]
-    partial class FideliumContextModelSnapshot : ModelSnapshot
+    [Migration("20250908221541_CorrecionAleFinalizadaDatosSemillas")]
+    partial class CorrecionAleFinalizadaDatosSemillas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,8 +46,6 @@ namespace Backend.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("UsuarioID");
 
                     b.ToTable("Clientes");
 
@@ -288,17 +289,6 @@ namespace Backend.Migrations
                             Password = "",
                             TipoUsuario = 0
                         });
-                });
-
-            modelBuilder.Entity("Service.Models.Cliente", b =>
-                {
-                    b.HasOne("Service.Models.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UsuarioID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Service.Models.CompraServicio", b =>
