@@ -123,6 +123,9 @@
   <data name="AuthDomainFirebase" xml:space="preserve">
     <value>fidelium-1e400.firebaseapp.com</value>
   </data>
+  <data name="UrlApi" xml:space="preserve">
+    <value>https://apifidelium.azurewebsites.net/api/</value>
+  </data>
   <data name="UrlApiLocal" xml:space="preserve">
     <value>https://localhost:7000/api/</value>
   </data>

@@ -79,6 +79,15 @@ namespace Service.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a https://apifidelium.azurewebsites.net/api/.
+        /// </summary>
+        public static string UrlApi {
+            get {
+                return ResourceManager.GetString("UrlApi", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a https://localhost:7000/api/.
         /// </summary>
         public static string UrlApiLocal {
