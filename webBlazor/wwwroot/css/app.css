@@ -101,3 +101,9 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+/* app.css */
+.input-error {
+    border-color: #e74c3c !important;
+    box-shadow: 0 0 0 0.2rem rgba(231,76,60,.25) !important;
+}
