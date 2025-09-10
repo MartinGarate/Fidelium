@@ -1,0 +1,187 @@
+﻿@page "/signin"
+@inject Radzen.NotificationService NotificationService
+@inject FirebaseAuthService firebaseAuthService
+@inject NavigationManager navigationManager
+
+<RadzenStack class="rz-p-0 rz-p-md-12">
+    <RadzenCard Variant="Variant.Outlined" Style="width: 100%">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+            <RadzenCheckBox @bind-Value=@popup Name="popup"></RadzenCheckBox>
+            <RadzenLabel Text="Mostrar validadores como popup" Component="popup" />
+        </RadzenStack>
+    </RadzenCard>
+
+    <RadzenTemplateForm TItem="SignInModel" Data=@model Submit=@OnSubmit InvalidSubmit=@OnInvalidSubmit>
+        <RadzenFieldset Text="Registro">
+            <RadzenStack Gap="2rem" class="rz-p-4 rz-p-md-12">
+                <RadzenRow AlignItems="AlignItems.Center" RowGap="0.25rem">
+                    <RadzenColumn Size="12" SizeMD="4" class="rz-text-align-start rz-text-align-md-end">
+                        <RadzenLabel Text="Nombre" Component="Nombre" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="12" SizeMD="8">
+                        <RadzenTextBox Name="Nombre" @bind-Value=@model.Nombre Style="display: block; width: 100%;" />
+                        <RadzenRequiredValidator Component="Nombre" Text="El nombre es obligatorio" Popup=@popup Style="position: absolute" />
+                    </RadzenColumn>
+                </RadzenRow>
+                <RadzenRow AlignItems="AlignItems.Center" RowGap="0.25rem">
+                    <RadzenColumn Size="12" SizeMD="4" class="rz-text-align-start rz-text-align-md-end">
+                        <RadzenLabel Text="Email" Component="Email" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="12" SizeMD="8">
+                        <RadzenTextBox Name="Email" @bind-Value=@model.Email Style="display: block; width: 100%;" />
+                        <RadzenRequiredValidator Component="Email" Text="El email es obligatorio" Popup=@popup Style="position: absolute" />
+                        <RadzenEmailValidator Component="Email" Text="Proporcione un email válido" Popup=@popup Style="position: absolute" />
+                    </RadzenColumn>
+                </RadzenRow>
+                <RadzenRow AlignItems="AlignItems.Center" RowGap="0.25rem">
+                    <RadzenColumn Size="12" SizeMD="4" class="rz-text-align-start rz-text-align-md-end">
+                        <RadzenLabel Text="Password" Component="Password" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="12" SizeMD="8">
+                        <RadzenTextBox Name="Password" @bind-Value=@model.Password Type="password" Style="display: block; width: 100%;" />
+                        <RadzenRequiredValidator Component="Password" Text="La contraseña es obligatoria" Popup=@popup Style="position: absolute" />
+                    </RadzenColumn>
+                </RadzenRow>
+                <RadzenRow AlignItems="AlignItems.Center" RowGap="0.25rem">
+                    <RadzenColumn Size="12" SizeMD="4" class="rz-text-align-start rz-text-align-md-end">
+                        <RadzenLabel Text="Verificar password" Component="PasswordVerify" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="12" SizeMD="8">
+                        <RadzenTextBox Name="PasswordVerify" @bind-Value=@model.PasswordVerify Type="password" Style="display: block; width: 100%;" />
+                        <RadzenRequiredValidator Component="PasswordVerify" Text="La verificación es obligatoria" Popup=@popup Style="position: absolute" />
+                        <RadzenCompareValidator Component="PasswordVerify" Text="Las contraseñas no coinciden" CompareTo="Password" Popup=@popup Style="position: absolute" />
+
+                    </RadzenColumn>
+                </RadzenRow>
+                <RadzenRow AlignItems="AlignItems.Center" class="rz-mt-4">
+                    <RadzenColumn Size="12" Offset="0" SizeMD="8" OffsetMD="4">
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="Enviar"></RadzenButton>
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenStack>
+        </RadzenFieldset>
+    </RadzenTemplateForm>
+</RadzenStack>
+
+@code {
+    bool popup;
+
+    SignInModel model = new();
+
+    public class SignInModel
+    {
+        public string Nombre { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string PasswordVerify { get; set; } = string.Empty;
+    }
+
+    async Task OnSubmit(SignInModel model)
+    {
+        try
+        {
+
+            var result = await firebaseAuthService.createUserWithEmailAndPassword(model.Email, model.Password, model.Nombre);
+            if (result != null)
+            {
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Éxito",
+                    Detail = "Usuario registrado correctamente.",
+                    Duration = 4000
+                });
+                model.Nombre = string.Empty;
+                model.Email = string.Empty;
+                model.Password = string.Empty;
+                model.PasswordVerify = string.Empty;
+                navigationManager.NavigateTo("/login");
+            }
+
+            else
+            {
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Error al registrar el usuario.",
+                    Duration = 4000
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = $"Excepción: {ex.Message}",
+                Duration = 4000
+            });
+        }
+    }
+
+    void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
+    {
+            if (string.IsNullOrWhiteSpace(model.Nombre) || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password) || string.IsNullOrWhiteSpace(model.PasswordVerify))
+            {
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Todos los campos son obligatorios.",
+                    Duration = 4000
+                });
+                return;
+            }
+
+            if (model.Nombre.Length < 3)
+            {
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "El nombre debe tener al menos 3 caracteres.",
+                    Duration = 4000
+                });
+                return;
+            }
+
+            if (model.Email == null || !model.Email.Contains("@"))
+            {
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Proporcione un email válido.",
+                    Duration = 4000
+                });
+                return;
+            }
+
+            if (model.Password.Length < 6)
+            {
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "La contraseña debe tener al menos 6 caracteres.",
+                    Duration = 4000
+                });
+                return;
+            }
+
+            if (model.Password != model.PasswordVerify)
+            {
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Las contraseñas no coinciden.",
+                    Duration = 4000
+                });
+                return;
+            }
+    }
+}
+    

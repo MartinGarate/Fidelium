@@ -61,11 +61,29 @@ namespace Service.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a https.
+        ///   Busca una cadena traducida similar a AIzaSyBCPRTKbCRp-OpZIym7mMADGDr705lnMck.
         /// </summary>
-        public static string UrlApi {
+        public static string ApiKeyFirebase {
             get {
-                return ResourceManager.GetString("UrlApi", resourceCulture);
+                return ResourceManager.GetString("ApiKeyFirebase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a fidelium-1e400.firebaseapp.com.
+        /// </summary>
+        public static string AuthDomainFirebase {
+            get {
+                return ResourceManager.GetString("AuthDomainFirebase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a https://localhost:7000/api/.
+        /// </summary>
+        public static string UrlApiLocal {
+            get {
+                return ResourceManager.GetString("UrlApiLocal", resourceCulture);
             }
         }
     }

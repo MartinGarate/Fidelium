@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html lang="es-ar">
+<html lang="es">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fidelium</title>
+    <title>WebBlazor</title>
     <base href="/" />
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
-    <link href="webBlazor.styles.css" rel="stylesheet" />
+    <link href="WebBlazor.styles.css" rel="stylesheet" />
+    <link href="_content/Radzen.Blazor/css/default-base.css" rel="stylesheet" />
+    <link href="_content/Radzen.Blazor/css/default.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -26,6 +28,81 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <!-- Configuración de Firebase -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCPRTKbCRp-OpZIym7mMADGDr705lnMck",
+            authDomain: "fidelium-1e400.firebaseapp.com",
+            projectId: "fidelium-1e400",
+            storageBucket: "fidelium-1e400.firebasestorage.app",
+            messagingSenderId: "300056033532",
+            appId: "1:300056033532:web:322c3e9089a6cbed2c3f79"
+        };
+        firebase.initializeApp(firebaseConfig);
+        console.log(firebase);
+        window.firebaseAuth = {
+            signInWithEmailPassword: async function (email, password) {
+                try {
+                    const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+                    console.log(userCredential);
+                    return userCredential.user.uid;
+                } catch (error) {
+                    console.error("Error en autenticación:", error.message);
+                    return null;
+                }
+            },
+            createUserWithEmailAndPassword: async function (email, password, displayName) {
+                try {
+                    //imprimo por consola los parámetros que llegan
+                    console.log(`email=${email} password=${password} displayName=${displayName}`)
+                    const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+                    // El usuario se ha creado correctamente
+                    const user = userCredential.user;
+
+                    // Actualizar el perfil del usuario
+                    user.updateProfile({
+                        displayName: displayName
+                    });
+                    return userCredential.user.uid;
+                    // Enviar correo de verificación
+                    //user.sendEmailVerification()
+                    //    .then(() => {
+                    //        console.log('Correo de verificación enviado.');
+                    //    })
+                    //    .catch((error) => {
+                    //        console.error('Error al enviar el correo de verificación:', error);
+                    //    });
+
+
+
+                } catch (error) {
+                    console.error("Error en autenticación:", error.message);
+                    return null;
+                }
+
+            },
+
+            signOut: async function () {
+                await firebase.auth().signOut();
+            }
+        };
+        window.localStorageHelper = {
+            setItem: function (key, value) {
+                localStorage.setItem(key, value);
+            },
+            getItem: function (key) {
+                return localStorage.getItem(key);
+            },
+            removeItem: function (key) {
+                localStorage.removeItem(key);
+            }
+        };
+    </script>
+
     <script src="_framework/blazor.webassembly.js"></script>
 </body>
 

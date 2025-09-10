@@ -1,0 +1,98 @@
+﻿@page "/login"
+@inject FirebaseAuthService firebaseAuthService
+@inject NavigationManager navigationManager
+
+
+@if (!isAuthenticated)
+{
+    <div class="card text-center">
+        <div class="card-header">
+            Iniciar sesión
+        </div>
+        <div class="card-body">
+            <h3 class="card-title">Bienvenido a Ágora</h3>
+            <div class="container">
+                <div class="row mb-3">
+                    <div class="col-md-12 d-flex justify-content-center align-items-center">
+                        <label class="form-label me-2">Correo electrónico:</label>
+                        <InputText class="form-control w-50" @bind-Value="email" placeholder="usuario@gmail.com" />
+                        
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12 d-flex justify-content-center align-items-center">
+                        <label class="form-label me-2">Contraseña:</label>
+                        <InputText class="form-control w-50" @bind-Value="password" placeholder="Contraseña" type="password" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <button class="btn btn-primary mb-3" @onclick="Loguear">Acceder</button>
+                    </div>
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <button class="btn btn-secondary" @onclick="RegisterMe">Registrarme</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-body-secondary">
+            Desarrollo 2do año - TSDS - 2025
+        </div>
+    </div>
+}
+else
+{
+    <div class="card text-center">
+        <div class="card-header">
+            Cerrar sesión
+        </div>
+        <div class="card-body">
+            <p class="card-header">Cerrar sesión de Ágora</p>
+
+            <button class="btn btn-primary" @onclick="Desloguear">Cerrar sesión</button>
+        </div>
+        <div class="card-footer text-body-secondary">
+            Desarrollo 2do año - TSDS - 2025
+        </div>
+    </div>
+}
+
+@code {
+    bool isAuthenticated = false;
+    string email = string.Empty;
+    string password = string.Empty;
+
+    private async Task Loguear()
+    {
+        var user = await firebaseAuthService.SignInWithEmailPassword(email, password);
+        if (user != null)
+        {
+            isAuthenticated = true;
+            StateHasChanged();
+            // Aquí podrías redirigir al usuario a otra página si es necesario
+        }
+        else
+        {
+            // Manejar error de autenticación (mostrar mensaje, etc.)
+
+        }
+        
+    }
+
+    private async Task Desloguear()
+    {
+        isAuthenticated = false;
+        email = string.Empty;
+        password = string.Empty;
+        await firebaseAuthService.SignOut();
+        StateHasChanged();
+    }
+
+    private async Task RegisterMe()
+    {
+        navigationManager.NavigateTo("/signin");
+        
+    }
+
+
+}
