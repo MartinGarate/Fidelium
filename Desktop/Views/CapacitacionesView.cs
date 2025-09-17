@@ -18,84 +18,92 @@ namespace Desktop.Views
     {
         GenericService<Cliente> _clienteService = new GenericService<Cliente>();
         GenericService<Usuario> _usuarioService = new GenericService<Usuario>();
-        Cliente _currentCliente; // Capacitacion que esta seleccionada (con la que vamos a operar)
-        Usuario _currentUsuario; // Capacitacion que esta seleccionada (con la que vamos a operar)
-        List<Cliente> _clientes; // Lista de capacitaciones obtenidas de la API
-        List<Usuario> _usuarios; // Lista de capacitaciones obtenidas de la API
+        Cliente _currentCliente; // Cliente seleccionado
+        List<Cliente> _clientes; // Lista de clientes obtenida de la API
+        List<Usuario> _usuarios; // Lista de usuarios obtenida de la API
 
         public CapacitacionesView()
         {
             InitializeComponent();
             _ = GetAllData();
-            textBoxFiltrarAuto.ContextMenuStrip = contextMenuStripLimpiar; // Asignar el menú contextual al TextBox
+            textBoxFiltrarAuto.ContextMenuStrip = contextMenuStripLimpiar;
             buttonRestaurar.Visible = false;
         }
 
         private void ConfigurarDataGridView()
         {
+            // Oculta las columnas que no quieres mostrar
+            if (dataGridView.Columns.Contains("ID"))
+                dataGridView.Columns["ID"].Visible = false;
+            if (dataGridView.Columns.Contains("UsuarioID"))
+                dataGridView.Columns["UsuarioID"].Visible = false;
+            if (dataGridView.Columns.Contains("IsDeleted"))
+                dataGridView.Columns["IsDeleted"].Visible = false;
 
-
-            // Crear columnas manualmente
-            dataGridView.Columns.Add("Nombre", "Nombre");
-            dataGridView.Columns.Add("Email", "Email");
-            dataGridView.Columns.Add("DNI", "DNI");
-            dataGridView.Columns.Add("TipoUsuario", "Tipo Usuario");
-            dataGridView.Columns.Add("Instagram", "Instagram");
-            dataGridView.Columns.Add("Telefono", "Teléfono");
-
-
-            if (_clientes != null)
-            {
-                foreach (var cli in _clientes)
-                {
-                    var nombre = cli?.Usuario?.Nombre ?? "";
-                    var email = cli?.Usuario?.Email ?? "";
-                    var dni = cli?.Usuario?.DNI?.ToString() ?? "";
-                    var tipoUsuario = cli?.Usuario?.TipoUsuario.ToString() ?? "";
-                    var instagram = string.IsNullOrEmpty(cli?.Instagram) ? "" : cli.Instagram;
-                    var telefono = string.IsNullOrEmpty(cli?.Telefono) ? "" : cli.Telefono;
-
-                    dataGridView.Rows.Add(nombre, email, dni, tipoUsuario, instagram, telefono);
-                }
-            }
-
-            // Opcional: ajustar el tamaño de las columnas
+            // Puedes ocultar más columnas si lo necesitas
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
         }
 
         private async Task GetAllData()
         {
             if (checkBox_VerEliminados.Checked)
-            {
-                _clientes = await _clienteService.GetAllDeletedsAsync();
-            }
+                _clientes = await _clienteService.GetAllDeletedsAsync() ?? new List<Cliente>();
             else
-                _clientes = await _clienteService.GetAllAsync();
-            dataGridView.DataSource = _clientes;
+                _clientes = await _clienteService.GetAllAsync() ?? new List<Cliente>();
+
+            _usuarios = await _usuarioService.GetAllAsync() ?? new List<Usuario>();
+
+            // Asocia el usuario correspondiente a cada cliente
+            foreach (var cliente in _clientes)
+                cliente.Usuario = _usuarios.FirstOrDefault(u => u.ID == cliente.UsuarioID);
+
+            // Proyecta los datos para mostrar en el DataGridView
+            var datosParaGrid = _clientes.Select(c => new
+            {
+                c.ID,
+                Nombre = c.Usuario?.Nombre,
+                Email = c.Usuario?.Email,
+                Instagram = c.Instagram,
+                ClienteTelefono = c.Telefono,
+                Eliminado = c.IsDeleted
+            }).ToList();
+            // Proyecta los datos para mostrar en el DataGridView desde la lista de usuarios
+            var datosUsuariosParaGrid = _usuarios.Select(u => new
+            {
+                u.ID,
+                Nombre = u.Nombre,
+                Email = u.Email,
+                TipoUsuario = u.TipoUsuario,
+                Eliminado = u.IsDeleted,
+                // Busca el cliente relacionado (puede ser null si no existe)
+                ClienteTelefono = _clientes.FirstOrDefault(c => c.UsuarioID == u.ID)?.Telefono,
+                ClienteInstagram = _clientes.FirstOrDefault(c => c.UsuarioID == u.ID)?.Instagram
+            }).ToList();
+
+
+            dataGridView.DataSource = null;
+            dataGridView.DataSource = datosParaGrid;
             ConfigurarDataGridView();
         }
 
         private async void ButtonEliminarAuto_Click(object sender, EventArgs e)
         {
-            // Verificamos que haya clientes seleccionados
             if (dataGridView.RowCount > 0 && dataGridView.SelectedRows.Count > 0)
             {
-                int rowIndex = dataGridView.SelectedRows[0].Index;
-                if (rowIndex >= 0 && rowIndex < _clientes.Count)
+                int idCliente = (int)dataGridView.SelectedRows[0].Cells["ID"].Value;
+                Cliente clienteSeleccionado = _clientes.First(c => c.ID == idCliente);
+                var respuesta = MessageBox.Show($"¿Seguro que quieres borrar a {clienteSeleccionado.Usuario?.Nombre}?", "Borrar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (respuesta == DialogResult.Yes)
                 {
-                    Cliente clienteSeleccionado = _clientes[rowIndex];
-                    var respuesta = MessageBox.Show($"¿Seguro que quieres borrar a {clienteSeleccionado.Usuario?.Nombre}?", "Borrar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (respuesta == DialogResult.Yes)
+                    if (await _clienteService.DeleteAsync(clienteSeleccionado.ID))
                     {
-                        if (await _clienteService.DeleteAsync(clienteSeleccionado.ID))
-                        {
-                            MessageBox.Show($"{clienteSeleccionado.Usuario?.Nombre} ha sido borrado correctamente", "Borrado correctamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            await GetAllData();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Error al borrar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                        MessageBox.Show($"{clienteSeleccionado.Usuario?.Nombre} ha sido borrado correctamente", "Borrado correctamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        await GetAllData();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error al borrar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -107,32 +115,12 @@ namespace Desktop.Views
 
         private void dataGridViewAutos_SelectionChanged(object sender, EventArgs e)
         {
-            if (dataGridView.RowCount > 0 && dataGridView.SelectedRows.Count > 0)
-            {
-                //Capacitacion autoSeleccionado = (Autos)dataGridViewAutos.SelectedRows[0].DataBoundItem;
-                //pictureBoxAuto.ImageLocation = autoSeleccionado.imagen;
-            }
+            // Puedes implementar lógica de selección si lo necesitas
         }
 
         private void ButtonBuscarAuto_Click(object sender, EventArgs e)
         {
-            //string filtro = textBoxFiltrarAuto.Text?.Trim().ToLower() ?? string.Empty;
-
-            //if (string.IsNullOrWhiteSpace(filtro))
-            //{
-            //    dataGridView.DataSource = null;
-            //    dataGridView.DataSource = _capacitaciones;
-            //    ConfigurarDataGridView();
-            //    return;
-            //}
-
-            //var capacitacionesFiltrados = _capacitaciones
-            //    .Where(c =>
-            //        (!string.IsNullOrEmpty(c.Nombre) && c.Ponente.ToLower().ToString().Contains(filtro)).ToList());
-
-            //dataGridViewAutos.DataSource = null;
-            //dataGridViewAutos.DataSource = autosFiltrados;
-            //ConfigurarDataGridView();
+            // Implementa lógica de búsqueda si lo necesitas
         }
 
         private void LimpiarCampos()
@@ -154,10 +142,7 @@ namespace Desktop.Views
 
         private void textBoxFiltrarAuto_TextChanged(object sender, EventArgs e)
         {
-            //if (string.IsNullOrWhiteSpace(textBoxFiltrarAuto.Text))
-            //{
-            //    ButtonBuscarAuto.PerformClick();
-            //}
+            // Implementa lógica si lo necesitas
         }
 
         private void ButtonCancelar_Click(object sender, EventArgs e)
@@ -168,64 +153,17 @@ namespace Desktop.Views
 
         private void ButtonEditarAuto_Click(object sender, EventArgs e)
         {
-
-            //if (dataGridViewAutos.RowCount > 0 && dataGridViewAutos.SelectedRows.Count > 0)
-            //{
-            //    autoModificado = (Autos)dataGridViewAutos.SelectedRows[0].DataBoundItem;
-            //    textBoxImagenAuto.Text = autoModificado.imagen;
-            //    textBoxMarcaAuto.Text = autoModificado.marca;
-            //    numericAnioAuto.Value = autoModificado.anio;
-            //    textBoxModeloAuto.Text = autoModificado.modelo;
-            //    numericPrecioAuto.Value = (decimal)autoModificado.precio;
-            //    checkBoxUsado.Checked = autoModificado.usado;
-            //    tabControl.SelectTab("tabPageAgregar_Editar");
-            //}
-            //else
-            //{
-            //    MessageBox.Show("No hay auto seleccionado para editar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
+            // Implementa lógica de edición si lo necesitas
         }
+
         private async void ButtonGuardar_Click(object sender, EventArgs e)
         {
-            //Autos autoAGuardar = new Autos
-            //{
-            //    imagen = textBoxImagenAuto.Text,
-            //    marca = textBoxMarcaAuto.Text,
-            //    anio = (int)numericAnioAuto.Value,
-            //    modelo = textBoxModeloAuto.Text,
-            //    precio = (double)numericPrecioAuto.Value,
-            //    usado = checkBoxUsado.Checked
-            //};
-            //HttpResponseMessage response;
-            //if (autoModificado != null)
-            //{
-            //    var urlEditar = $"https://autostock-c2a0.restdb.io/rest/autostock/{autoModificado._id}?apikey=d600303563746b80ed362976592e68879b394";
-            //    response = await clientHttp.PutAsJsonAsync(urlEditar, autoAGuardar);
-            //}
-            //else
-            //{
-            //    response = await clientHttp.PostAsJsonAsync(url, autoAGuardar);
-            //}
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    autoModificado = null;
-            //    MessageBox.Show("El auto se guardó correctamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //    ObtenemosAutos();
-            //    tabControl.SelectTab("tabPageLista");
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Error al guardar el auto", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-            //LimpiarCampos();
+            // Implementa lógica de guardado si lo necesitas
         }
 
         private void textBoxImagenAuto_TextChanged(object sender, EventArgs e)
         {
-            //if (!string.IsNullOrWhiteSpace(textBoxImagenAuto.Text))
-            //{
-            //    pictureBoxImagenAuto.ImageLocation = textBoxImagenAuto.Text;
-            //}
+            // Implementa lógica si lo necesitas
         }
 
         private void ButtonAgregarAuto_Click(object sender, EventArgs e)
@@ -241,16 +179,8 @@ namespace Desktop.Views
 
         private async void checkBox_VerEliminados_CheckedChanged(object sender, EventArgs e)
         {
-                await GetAllData(); 
-                if (checkBox_VerEliminados.Checked)
-                {
-                    buttonRestaurar.Visible = true;
-                }
-                else
-                {
-                    buttonRestaurar.Visible = false;
-            }
-
+            await GetAllData();
+            buttonRestaurar.Visible = checkBox_VerEliminados.Checked;
         }
 
         private async void buttonRestaurar_Click(object sender, EventArgs e)
@@ -262,22 +192,19 @@ namespace Desktop.Views
             }
             if (dataGridView.RowCount > 0 && dataGridView.SelectedRows.Count > 0)
             {
-                int rowIndex = dataGridView.SelectedRows[0].Index;
-                if (rowIndex >= 0 && rowIndex < _clientes.Count)
+                int idCliente = (int)dataGridView.SelectedRows[0].Cells["ID"].Value;
+                Cliente clienteSeleccionado = _clientes.First(c => c.ID == idCliente);
+                var respuesta = MessageBox.Show($"¿Seguro que quieres restaurar a {clienteSeleccionado.Usuario?.Nombre}?", "Restaurar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (respuesta == DialogResult.Yes)
                 {
-                    Cliente clienteSeleccionado = _clientes[rowIndex];
-                    var respuesta = MessageBox.Show($"¿Seguro que quieres restaurar a {clienteSeleccionado.Usuario?.Nombre}?", "Restaurar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (respuesta == DialogResult.Yes)
+                    if (await _clienteService.RestoreAsync(clienteSeleccionado.ID))
                     {
-                        if (await _clienteService.RestoreAsync(clienteSeleccionado.ID))
-                        {
-                            MessageBox.Show($"{clienteSeleccionado.Usuario?.Nombre} ha sido restaurado correctamente", "Restaurado correctamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            await GetAllData();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Error al restaurar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                        MessageBox.Show($"{clienteSeleccionado.Usuario?.Nombre} ha sido restaurado correctamente", "Restaurado correctamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        await GetAllData();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error al restaurar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -288,4 +215,3 @@ namespace Desktop.Views
         }
     }
 }
-
