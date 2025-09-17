@@ -31,37 +31,37 @@
             components = new System.ComponentModel.Container();
             pictureBox1 = new PictureBox();
             ProgressBar = new ProgressBar();
-            Timer = new System.Windows.Forms.Timer(components);
+            timer = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // pictureBox1
             // 
-            pictureBox1.Location = new Point(153, -36);
+            pictureBox1.Location = new Point(238, 21);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(427, 356);
+            pictureBox1.Size = new Size(275, 266);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
             // ProgressBar
             // 
-            ProgressBar.Location = new Point(23, 293);
+            ProgressBar.Location = new Point(12, 310);
             ProgressBar.Name = "ProgressBar";
-            ProgressBar.Size = new Size(670, 34);
+            ProgressBar.Size = new Size(744, 23);
             ProgressBar.TabIndex = 1;
             // 
-            // Timer
+            // timer
             // 
-            Timer.Enabled = true;
-            Timer.Tick += timer_Tick;
+            timer.Enabled = true;
+            timer.Tick += timer_Tick;
             // 
             // SplashView
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(23, 39, 55);
-            ClientSize = new Size(717, 339);
+            BackColor = Color.FromArgb(4, 5, 4);
+            ClientSize = new Size(768, 345);
             Controls.Add(ProgressBar);
             Controls.Add(pictureBox1);
             FormBorderStyle = FormBorderStyle.None;
@@ -76,6 +76,6 @@
 
         private PictureBox pictureBox1;
         private ProgressBar ProgressBar;
-        private System.Windows.Forms.Timer Timer;
+        private System.Windows.Forms.Timer timer;
     }
 }

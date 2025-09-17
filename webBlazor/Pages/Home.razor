@@ -1,5 +1,20 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Inicio - Fidelium</PageTitle>
 
-<h1>Bienvenido a Fidelium!</h1>
+<div class="hero-section">
+    <h1 class="hero-title">Bienvenido a Fidelium</h1>
+    <p class="hero-subtitle">
+        La plataforma que te ayuda a gestionar y hacer crecer tu negocio de manera inteligente.
+        Simplifica tus operaciones y aumenta la satisfacción de tus clientes.
+    </p>
+    <div class="hero-actions">
+        <button class="btn btn-primary" @onclick="@(() => NavigationManager.NavigateTo("/clientes"))">
+            Comenzar ahora
+        </button>
+        <button class="btn btn-link" @onclick="@(() => NavigationManager.NavigateTo("/about"))">
+            Conoce más
+        </button>
+    </div>
+</div>

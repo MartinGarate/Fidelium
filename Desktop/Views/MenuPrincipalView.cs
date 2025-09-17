@@ -9,16 +9,29 @@ namespace Desktop
             InitializeComponent();
         }
 
-        private void SubMenuSalirDelSistema_Click(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
-            this.Close();
+
         }
 
-        private void SubMenuUsuarios_Click(object sender, EventArgs e)
+
+        private void usuarios_Click(object sender, EventArgs e)
         {
             var usuariosView = new UsuariosView();
             usuariosView.MdiParent = this;
             usuariosView.Show();
+        }
+
+        private void subMenuSalir_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void subMenu_Capacitaciones_Click(object sender, EventArgs e)
+        {
+            var capacitacionesView = new CapacitacionesView();
+            capacitacionesView.MdiParent = this;
+            capacitacionesView.Show();
 
         }
     }

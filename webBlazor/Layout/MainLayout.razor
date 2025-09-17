@@ -1,16 +1,42 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
+@inject AuthenticationStateService authStateService
+@inject NavigationManager navigationManager
+
+<PageTitle>Fidelium</PageTitle>
+
+@if (!authStateService.IsAuthenticated && !IsLoginPage)
+{
+    <div class="loading-container">
+        <div class="loading-spinner"></div>
+        @{
+            navigationManager.NavigateTo("/login", forceLoad: false);
+        }
     </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
+}
+else
+{
+    <div class="page">
+        <NavMenu />
+        <main class="main-content">
             @Body
-        </article>
-    </main>
-</div>
+        </main>
+    </div>
+}
+
+@code {
+    private bool IsLoginPage =>
+        navigationManager.Uri.EndsWith("/login", StringComparison.OrdinalIgnoreCase) ||
+        navigationManager.Uri.EndsWith("/signin", StringComparison.OrdinalIgnoreCase);
+
+    protected override void OnInitialized()
+    {
+        // Suscribirse a cambios en el estado de autenticación
+        authStateService.OnAuthenticationStateChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        // Limpieza de la suscripción
+        authStateService.OnAuthenticationStateChanged -= StateHasChanged;
+    }
+}

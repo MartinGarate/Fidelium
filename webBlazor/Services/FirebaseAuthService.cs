@@ -52,5 +52,7 @@ namespace webBlazor.Services
             var userId = await GetUserId();
             return !string.IsNullOrEmpty(userId);
         }
+
+        
     }
 }

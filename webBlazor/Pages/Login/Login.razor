@@ -1,98 +1,115 @@
 ﻿@page "/login"
 @inject FirebaseAuthService firebaseAuthService
+@inject AuthenticationStateService authStateService
+@inject SweetAlertService sweetAlert
 @inject NavigationManager navigationManager
+@inject ILogger<Login> logger
 
-
-@if (!isAuthenticated)
-{
-    <div class="card text-center">
+<div class="auth-container">
+    <div class="auth-card">
         <div class="card-header">
-            Iniciar sesión
+            <h2 class="text-gradient mb-0">¡Hola de Nuevo!</h2>
         </div>
         <div class="card-body">
-            <h3 class="card-title">Bienvenido a Ágora</h3>
-            <div class="container">
-                <div class="row mb-3">
-                    <div class="col-md-12 d-flex justify-content-center align-items-center">
-                        <label class="form-label me-2">Correo electrónico:</label>
-                        <InputText class="form-control w-50" @bind-Value="email" placeholder="usuario@gmail.com" />
-                        
+            <p class="card-subtitle mb-4">Por favor, inicia sesión para continuar en Ágora...</p>
+            <form class="auth-form" @onsubmit:preventDefault @onsubmit="Loguear">
+                <div class="form-group mb-4">
+                    <label class="form-label">Correo electrónico</label>
+                    <div class="input-group">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" class="form-control" @bind="email" placeholder="usuario@gmail.com" required />
                     </div>
                 </div>
-                <div class="row mb-3">
-                    <div class="col-md-12 d-flex justify-content-center align-items-center">
-                        <label class="form-label me-2">Contraseña:</label>
-                        <InputText class="form-control w-50" @bind-Value="password" placeholder="Contraseña" type="password" />
+                <div class="form-group mb-4">
+                    <label class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" class="form-control" @bind="password" placeholder="••••••••" required />
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12 d-flex justify-content-center">
-                        <button class="btn btn-primary mb-3" @onclick="Loguear">Acceder</button>
-                    </div>
-                    <div class="col-md-12 d-flex justify-content-center">
-                        <button class="btn btn-secondary" @onclick="RegisterMe">Registrarme</button>
-                    </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary w-100 mb-3" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            <span>Iniciando sesión...</span>
+                        }
+                        else
+                        {
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            <span>Acceder</span>
+                        }
+                    </button>
+                    <button type="button" class="btn btn-secondary w-100" @onclick="RegisterMe" disabled="@isLoading">
+                        <i class="fas fa-user-plus me-2"></i>
+                        Registrarme
+                    </button>
                 </div>
-            </div>
+            </form>
         </div>
-        <div class="card-footer text-body-secondary">
-            Desarrollo 2do año - TSDS - 2025
+        <div class="card-footer text-center">
+            <span class="text-muted">Martín Gárate | T.S.D.S 2025</span>
         </div>
     </div>
-}
-else
-{
-    <div class="card text-center">
-        <div class="card-header">
-            Cerrar sesión
-        </div>
-        <div class="card-body">
-            <p class="card-header">Cerrar sesión de Ágora</p>
-
-            <button class="btn btn-primary" @onclick="Desloguear">Cerrar sesión</button>
-        </div>
-        <div class="card-footer text-body-secondary">
-            Desarrollo 2do año - TSDS - 2025
-        </div>
-    </div>
-}
+</div>
 
 @code {
-    bool isAuthenticated = false;
-    string email = string.Empty;
-    string password = string.Empty;
+    private string email = string.Empty;
+    private string password = string.Empty;
+    private bool isLoading = false;
+
+    protected override void OnInitialized()
+    {
+        // Si ya está autenticado, redirigir al home
+        if (authStateService.IsAuthenticated)
+        {
+            navigationManager.NavigateTo("/");
+        }
+    }
 
     private async Task Loguear()
     {
-        var user = await firebaseAuthService.SignInWithEmailPassword(email, password);
-        if (user != null)
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
-            isAuthenticated = true;
+            await sweetAlert.FireAsync("Error", "Por favor, completa todos los campos.", SweetAlertIcon.Error);
+            return;
+        }
+
+        try
+        {
+            isLoading = true;
+            var user = await firebaseAuthService.SignInWithEmailPassword(email, password);
+
+            if (user != null)
+            {
+                // Actualizar el estado de autenticación global
+                authStateService.SetAuthenticationState(true);
+
+                // Mostrar mensaje de éxito
+                await sweetAlert.FireAsync("¡Bienvenido!", "Has iniciado sesión correctamente.", SweetAlertIcon.Success);
+
+                // Redirigir al home
+                navigationManager.NavigateTo("/");
+            }
+            else
+            {
+                await sweetAlert.FireAsync("Error", "Credenciales incorrectas.", SweetAlertIcon.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error durante el inicio de sesión");
+            await sweetAlert.FireAsync("Error", "Ocurrió un error al iniciar sesión. Por favor, intenta de nuevo.", SweetAlertIcon.Error);
+        }
+        finally
+        {
+            isLoading = false;
             StateHasChanged();
-            // Aquí podrías redirigir al usuario a otra página si es necesario
         }
-        else
-        {
-            // Manejar error de autenticación (mostrar mensaje, etc.)
-
-        }
-        
     }
 
-    private async Task Desloguear()
-    {
-        isAuthenticated = false;
-        email = string.Empty;
-        password = string.Empty;
-        await firebaseAuthService.SignOut();
-        StateHasChanged();
-    }
-
-    private async Task RegisterMe()
+    private void RegisterMe()
     {
         navigationManager.NavigateTo("/signin");
-        
     }
-
-
 }

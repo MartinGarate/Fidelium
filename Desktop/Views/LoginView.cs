@@ -15,13 +15,12 @@ namespace Desktop.Views
     public partial class LoginView : Form
     {
         FirebaseAuthClient _firebaseAuthClient;
-        int loginFailsCount = 0;
-
+        int loginFailCount = 0;
         public LoginView()
         {
             InitializeComponent();
             SettingFirebase();
-
+            labelErrorPassword.Visible = false;
         }
 
         private void SettingFirebase()
@@ -38,35 +37,45 @@ namespace Desktop.Views
             _firebaseAuthClient = new FirebaseAuthClient(config);
         }
 
-        private async void BtnIniciarSesion_Click(object sender, EventArgs e)
+        private async void ButtonLogIn_Click(object sender, EventArgs e)
         {
             try
             {
-                UserCredential userCredential = await _firebaseAuthClient.SignInWithEmailAndPasswordAsync(TxtEmail.Text, TxtPassword.Text);
+
+                UserCredential userCredential = await _firebaseAuthClient.SignInWithEmailAndPasswordAsync(txtEmail.Text, txtPassword.Text);
                 if (userCredential != null && !string.IsNullOrEmpty(userCredential.User.Uid))
                 {
-                    this.Hide();
-                    var menuPrincipalView = new MenuPrincipalView();
+                    labelErrorPassword.Visible = false;
+                    MenuPrincipalView menuPrincipalView = new MenuPrincipalView();
                     menuPrincipalView.ShowDialog();
-                    this.Close();
+                    this.Hide();
                 }
+  
             }
-            catch (FirebaseAuthException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show("Error al iniciar sesión. Verifique sus credenciales.");
-                loginFailsCount++;
-                if (loginFailsCount >= 3)
+                labelErrorPassword.Visible = true;
+                loginFailCount++;
+                if (loginFailCount >= 3)
                 {
-                    MessageBox.Show("Ha excedido el número máximo de intentos fallidos. La aplicación se cerrará.");
-                    this.Close();
+                    MessageBox.Show("Ha excedido el número máximo de intentos. La aplicación se cerrará.");
+                    Application.Exit();
                 }
             }
         }
 
-        private void CheckVerContraseña_CheckedChanged(object sender, EventArgs e)
+        private void LoginView_Load(object sender, EventArgs e)
         {
-            TxtPassword.PasswordChar = CheckVerContraseña.Checked? '\0':'*';
+
+        }
+
+        private void checkBoxVerContraseña_CheckedChanged(object sender, EventArgs e)
+        {
+            txtPassword.PasswordChar = checkBoxVerContraseña.Checked ? '\0' : '*';
+
+
 
         }
     }
 }
+

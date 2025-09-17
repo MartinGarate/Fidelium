@@ -1,6 +1,6 @@
 ﻿namespace Desktop.Views
 {
-    partial class ClientesView
+    partial class CapacitacionesView
     {
         /// <summary>
         /// Required designer variable.
@@ -29,9 +29,10 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClientesView));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CapacitacionesView));
             tabControl = new TabControl();
             tabPageLista = new TabPage();
+            checkBox_VerEliminados = new CheckBox();
             ButtonEliminarAuto = new FontAwesome.Sharp.IconButton();
             ButtonEditarAuto = new FontAwesome.Sharp.IconButton();
             ButtonAgregarAuto = new FontAwesome.Sharp.IconButton();
@@ -60,6 +61,7 @@
             textBoxImagenAuto = new TextBox();
             contextMenuStripLimpiar = new ContextMenuStrip(components);
             limpiarToolStripMenuItem = new ToolStripMenuItem();
+            buttonRestaurar = new FontAwesome.Sharp.IconButton();
             tabControl.SuspendLayout();
             tabPageLista.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView).BeginInit();
@@ -91,6 +93,8 @@
             // 
             tabPageLista.BackColor = Color.FromArgb(242, 242, 242);
             tabPageLista.BackgroundImageLayout = ImageLayout.None;
+            tabPageLista.Controls.Add(buttonRestaurar);
+            tabPageLista.Controls.Add(checkBox_VerEliminados);
             tabPageLista.Controls.Add(ButtonEliminarAuto);
             tabPageLista.Controls.Add(ButtonEditarAuto);
             tabPageLista.Controls.Add(ButtonAgregarAuto);
@@ -103,6 +107,17 @@
             tabPageLista.Size = new Size(981, 577);
             tabPageLista.TabIndex = 0;
             tabPageLista.Text = "Lista";
+            // 
+            // checkBox_VerEliminados
+            // 
+            checkBox_VerEliminados.AutoSize = true;
+            checkBox_VerEliminados.Location = new Point(818, 145);
+            checkBox_VerEliminados.Name = "checkBox_VerEliminados";
+            checkBox_VerEliminados.Size = new Size(103, 19);
+            checkBox_VerEliminados.TabIndex = 8;
+            checkBox_VerEliminados.Text = "Ver eliminados";
+            checkBox_VerEliminados.UseVisualStyleBackColor = true;
+            checkBox_VerEliminados.CheckedChanged += checkBox_VerEliminados_CheckedChanged;
             // 
             // ButtonEliminarAuto
             // 
@@ -137,9 +152,9 @@
             ButtonEditarAuto.IconFont = FontAwesome.Sharp.IconFont.Auto;
             ButtonEditarAuto.IconSize = 24;
             ButtonEditarAuto.ImageAlign = ContentAlignment.MiddleRight;
-            ButtonEditarAuto.Location = new Point(159, 512);
+            ButtonEditarAuto.Location = new Point(174, 512);
             ButtonEditarAuto.Name = "ButtonEditarAuto";
-            ButtonEditarAuto.Size = new Size(88, 28);
+            ButtonEditarAuto.Size = new Size(103, 28);
             ButtonEditarAuto.TabIndex = 6;
             ButtonEditarAuto.Text = "Editar";
             ButtonEditarAuto.TextAlign = ContentAlignment.MiddleLeft;
@@ -160,7 +175,7 @@
             ButtonAgregarAuto.ImageAlign = ContentAlignment.MiddleRight;
             ButtonAgregarAuto.Location = new Point(65, 512);
             ButtonAgregarAuto.Name = "ButtonAgregarAuto";
-            ButtonAgregarAuto.Size = new Size(88, 28);
+            ButtonAgregarAuto.Size = new Size(103, 28);
             ButtonAgregarAuto.TabIndex = 5;
             ButtonAgregarAuto.Text = "Agregar";
             ButtonAgregarAuto.TextAlign = ContentAlignment.MiddleLeft;
@@ -297,7 +312,6 @@
             // 
             // pictureBox2
             // 
-            //pictureBox2.Image = Properties.Resources.Agora_Logo2;
             pictureBox2.Location = new Point(17, 9);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(106, 103);
@@ -504,6 +518,27 @@
             limpiarToolStripMenuItem.Text = "Limpiar...";
             limpiarToolStripMenuItem.Click += limpiarToolStripMenuItem_Click;
             // 
+            // buttonRestaurar
+            // 
+            buttonRestaurar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            buttonRestaurar.BackColor = Color.FromArgb(28, 28, 27);
+            buttonRestaurar.FlatStyle = FlatStyle.Flat;
+            buttonRestaurar.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            buttonRestaurar.ForeColor = Color.FromArgb(242, 242, 242);
+            buttonRestaurar.IconChar = FontAwesome.Sharp.IconChar.Reply;
+            buttonRestaurar.IconColor = Color.FromArgb(242, 242, 242);
+            buttonRestaurar.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            buttonRestaurar.IconSize = 24;
+            buttonRestaurar.ImageAlign = ContentAlignment.MiddleRight;
+            buttonRestaurar.Location = new Point(283, 512);
+            buttonRestaurar.Name = "buttonRestaurar";
+            buttonRestaurar.Size = new Size(103, 28);
+            buttonRestaurar.TabIndex = 9;
+            buttonRestaurar.Text = "Restaurar";
+            buttonRestaurar.TextAlign = ContentAlignment.MiddleLeft;
+            buttonRestaurar.UseVisualStyleBackColor = false;
+            buttonRestaurar.Click += buttonRestaurar_Click;
+            // 
             // CapacitacionesView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -566,5 +601,7 @@
         private Panel panel2;
         private PictureBox pictureBox2;
         private FontAwesome.Sharp.IconButton ButtonClose;
+        private CheckBox checkBox_VerEliminados;
+        private FontAwesome.Sharp.IconButton buttonRestaurar;
     }
 }
