@@ -39,7 +39,7 @@ namespace Desktop.Views
 
         private async Task GetAllData()
         {
-            _clientes = await _clienteService.GetAllAsync();
+            //_clientes = await _clienteService.GetAllAsync();
             dataGridView.DataSource = _capacitaciones;
             ConfigurarDataGridView();
         }
@@ -47,29 +47,29 @@ namespace Desktop.Views
         private async void ButtonEliminarAuto_Click(object sender, EventArgs e)
         {
             //checkeamos que haya autos seleccionados
-            if (dataGridView.RowCount > 0 && dataGridView.SelectedRows.Count > 0)
-            {
-                Cliente entitySelected = (Cliente)dataGridView.SelectedRows[0].DataBoundItem;
-                var respuesta = MessageBox.Show($"¿Seguro que quieres borrar {entitySelected.Nombre}?", "Borrar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            //if (dataGridView.RowCount > 0 && dataGridView.SelectedRows.Count > 0)
+            //{
+            //    Cliente entitySelected = (Cliente)dataGridView.SelectedRows[0].DataBoundItem;
+            //    //var respuesta = MessageBox.Show($"¿Seguro que quieres borrar {entitySelected.Nombre}?", "Borrar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-                if (respuesta == DialogResult.Yes)
-                {
+            //    if (respuesta == DialogResult.Yes)
+            //    {
                     
-                    if (await _clienteService.DeleteAsync(entitySelected.Id))
-                    {
-                        MessageBox.Show($"El {entitySelected.Nombre} ha sido borrado correctamente", "Borrado correctamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        await GetAllData();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error al borrar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Debe de seleccionar un campo", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            //        //if (await _clienteService.DeleteAsync(entitySelected.Id))
+            //        {
+            //            //MessageBox.Show($"El {entitySelected.Nombre} ha sido borrado correctamente", "Borrado correctamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //            await GetAllData();
+            //        }
+            //        else
+            //        {
+            //            MessageBox.Show("Error al borrar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    MessageBox.Show("Debe de seleccionar un campo", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
         }
 
         private void dataGridViewAutos_SelectionChanged(object sender, EventArgs e)

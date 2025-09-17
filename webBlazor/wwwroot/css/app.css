@@ -102,8 +102,10 @@ code {
     color: #c02d76;
 }
 
-/* app.css */
-.input-error {
-    border-color: #e74c3c !important;
-    box-shadow: 0 0 0 0.2rem rgba(231,76,60,.25) !important;
+.custom-alert {
+    border-radius: 16px;
+    background: linear-gradient(135deg, #f6d365, #fda085);
+    color: #2d2d2d;
+    padding: 1.2rem 1.5rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }

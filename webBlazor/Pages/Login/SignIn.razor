@@ -1,178 +1,87 @@
 ﻿@page "/signin"
-@inject Radzen.NotificationService NotificationService
 @inject FirebaseAuthService firebaseAuthService
 @inject NavigationManager navigationManager
+@inject Blazored.Toast.Services.IToastService toastService
 
-<RadzenStack>
-    <RadzenTemplateForm TItem="SignInModel" Data=@model @ref="form" Submit=@OnSubmit InvalidSubmit=@OnInvalidSubmit>
-        <RadzenFieldset Text="Registro">
-            <RadzenStack Gap="2rem" class="rz-p-4 rz-p-md-12">
-                <RadzenRow AlignItems="AlignItems.Center" RowGap="0.25rem">
-                    <RadzenColumn Size="12" SizeMD="4" class="rz-text-align-start rz-text-align-md-end">
-                        <RadzenLabel Text="Nombre" Component="Nombre" />
-                    </RadzenColumn>
-                    <RadzenColumn Size="12" SizeMD="8">
-                        <RadzenTextBox Name="Nombre" @bind-Value=@model.Nombre Style="display: block; width: 100%;" />
-                        <RadzenRequiredValidator Component="Nombre" Text="El nombre es obligatorio"/>
-                    </RadzenColumn>
-                </RadzenRow>
-                <RadzenRow AlignItems="AlignItems.Center" RowGap="0.25rem">
-                    <RadzenColumn Size="12" SizeMD="4" class="rz-text-align-start rz-text-align-md-end">
-                        <RadzenLabel Text="Email" Component="Email" />
-                    </RadzenColumn>
-                    <RadzenColumn Size="12" SizeMD="8">
-                        <RadzenTextBox Name="Email" @bind-Value=@model.Email Style="display: block; width: 100%;" />
-                        <RadzenRequiredValidator Component="Email" Text="El email es obligatorio" />
-                        <RadzenEmailValidator Component="Email" Text="Proporcione un email válido" />
-                    </RadzenColumn>
-                </RadzenRow>
-                <RadzenRow AlignItems="AlignItems.Center" RowGap="0.25rem">
-                    <RadzenColumn Size="12" SizeMD="4" class="rz-text-align-start rz-text-align-md-end">
-                        <RadzenLabel Text="Password" Component="Password" />
-                    </RadzenColumn>
-                    <RadzenColumn Size="12" SizeMD="8">
-                        <RadzenTextBox Name="Password" @bind-Value=@model.Password Type="password" Style="display: block; width: 100%;" />
-                        <RadzenRequiredValidator Component="Password" Text="La contraseña es obligatoria"/>
-                        <RadzenLengthValidator Component="Password" Min="6" Text="La contraseña debe tener al menos 6 caracteres"/>
-                    </RadzenColumn>
-                </RadzenRow>
-                <RadzenRow AlignItems="AlignItems.Center" RowGap="0.25rem">
-                    <RadzenColumn Size="12" SizeMD="4" class="rz-text-align-start rz-text-align-md-end">
-                        <RadzenLabel Text="Verificar password" Component="PasswordVerify" />
-                    </RadzenColumn>
-                    <RadzenColumn Size="12" SizeMD="8">
-                        <RadzenTextBox Name="PasswordVerify"
-                                       @bind-Value=@model.PasswordVerify
-                                       Type="password"
-                                       Style="display: block; width: 100%;"
-                                       class="@(string.IsNullOrEmpty(passwordError) ? "" : "input-error")" />
-                        <RadzenRequiredValidator Component="PasswordVerify" Text="La verificación es obligatoria"/>
-                        @if (!string.IsNullOrEmpty(passwordError))
-                        {
-                            <div style="color: #e74c3c; font-size: 0.9em;">@passwordError</div>
-                        }
-                    </RadzenColumn>
-                </RadzenRow>
-                <RadzenRow AlignItems="AlignItems.Center" class="rz-mt-4">
-                    <RadzenColumn Size="12" Offset="0" SizeMD="8" OffsetMD="4">
-                        <RadzenButton ButtonType="ButtonType.Submit" Text="Enviar"></RadzenButton>
-                    </RadzenColumn>
-                </RadzenRow>
-            </RadzenStack>
-        </RadzenFieldset>
-    </RadzenTemplateForm>
-</RadzenStack>
+<div class="card text-center">
+    <div class="card-header">
+        Registro
+    </div>
+    <div class="card-body">
+        <form class="form-horizontal">
+            <div class="form-group row mb-2">
+                <label class="col-sm-2 col-form-label" for="Nombre">Nombre:</label>
+                <div class="col-sm-10">
+                    <InputText id="Nombre" class="form-control" @bind-Value="name" />
+                </div>
+            </div>
 
+            <div class="form-group row mb-2">
+                <label class="col-sm-2 col-form-label" for="email">Email:</label>
+                <div class="col-sm-10">
+                    <InputText type="text" id="email" class="form-control" @bind-Value="email" />
+                </div>
+            </div>
+
+            <div class="form-group row mb-2">
+                <label class="col-sm-2 col-form-label" for="password">Password:</label>
+                <div class="col-sm-10">
+                    <InputText type="password" id="password" class="form-control" @bind-Value="password" />
+                </div>
+            </div>
+
+            <div class="form-group row mb-2">
+                <label class="col-sm-2 col-form-label" for="passwordverify">Verificar password:</label>
+                <div class="col-sm-10">
+                    <InputText type="password" id="passwordverify" class="form-control" @bind-Value="passwordverify" />
+                </div>
+            </div>
+
+            <div class="form-group row mb-2">
+                <div class="col-sm-10 offset-sm-2">
+                    <button type="button" class="btn btn-primary mb-2" @onclick="Register">Enviar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer text-body-secondary">
+        Ágora
+    </div>
+</div>
+@* Colocamos blazoredToast para mostrar notificaciones emergentes al usuario, como mensajes de éxito o error durante el proceso de registro *@
+<BlazoredToast />
 @code {
-    SignInModel model = new();
-    string passwordError = string.Empty;
-    RadzenTemplateForm<SignInModel> form;
+    string name = string.Empty;
+    string email = string.Empty;
+    string password = string.Empty;
+    string passwordverify = string.Empty;
 
-    public class SignInModel
+    private async Task Register()
     {
-        public string Nombre { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string PasswordVerify { get; set; } = string.Empty;
-    }
-
-    async Task OnSubmit(SignInModel model)
-    {
-        passwordError = string.Empty;
-
-        // Forzar validación visual antes de lógica personalizada
-        form.EditContext.Validate();
-
-        // Solo validar coincidencia si la longitud es válida
-        if (!string.IsNullOrWhiteSpace(model.Password) && model.Password.Length >= 6 &&
-            !string.IsNullOrWhiteSpace(model.PasswordVerify) && model.PasswordVerify.Length >= 6)
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(passwordverify))
         {
-            if (model.Password != model.PasswordVerify)
-            {
-                passwordError = "Las contraseñas no coinciden";
-                StateHasChanged();
-                return;
-            }
+            toastService.ShowError("Por favor, complete todos los campos.");
+            return;
+        }
+        if (password != passwordverify)
+        {
+            toastService.ShowError("Las contraseñas no coinciden.");
+            return;
+        }
+        var result = await firebaseAuthService.createUserWithEmailAndPassword(email, password, name);
+        if (result != null)
+        {
+            toastService.ShowSuccess("Usuario registrado exitosamente.");
+            // Limpiar los campos después del registro exitoso
+            name = string.Empty;
+            email = string.Empty;
+            password = string.Empty;
+            passwordverify = string.Empty;
+            navigationManager.NavigateTo("/login");
         }
         else
         {
-            // No mostrar error de coincidencia si la longitud no es válida
-            StateHasChanged();
-            return;
-        }
-
-        try
-        {
-            var result = await firebaseAuthService.createUserWithEmailAndPassword(model.Email, model.Password, model.Nombre);
-            if (result != null)
-            {
-                NotificationService.Notify(new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Success,
-                    Summary = "Éxito",
-                    Detail = "Usuario registrado correctamente.",
-                    Duration = 4000
-                });
-                model.Nombre = string.Empty;
-                model.Email = string.Empty;
-                model.Password = string.Empty;
-                model.PasswordVerify = string.Empty;
-                navigationManager.NavigateTo("/login");
-            }
-            else
-            {
-                NotificationService.Notify(new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Error,
-                    Summary = "Error",
-                    Detail = "Error al registrar el usuario.",
-                    Duration = 4000
-                });
-            }
-        }
-        catch (Exception ex)
-        {
-            NotificationService.Notify(new NotificationMessage
-            {
-                Severity = NotificationSeverity.Error,
-                Summary = "Error",
-                Detail = $"Excepción: {ex.Message}",
-                Duration = 4000
-            });
-        }
-    }
-
-    void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
-    {
-        if (string.IsNullOrWhiteSpace(model.Nombre) || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password) || string.IsNullOrWhiteSpace(model.PasswordVerify))
-        {
-            Console.WriteLine("Por favor, complete todos los campos.");
-            return;
-        }
-
-        if (model.Nombre.Length < 3)
-        {
-            Console.WriteLine("El nombre debe tener al menos 3 caracteres.");
-            return;
-        }
-
-        if (model.Email == null || !model.Email.Contains("@"))
-        {
-            Console.WriteLine("Proporcione un email válido.");
-            return;
-        }
-
-        if (model.Password.Length < 6)
-        {
-            Console.WriteLine("La contraseña debe tener al menos 6 caracteres.");
-            return;
-        }
-
-        if (model.Password != model.PasswordVerify)
-        {
-            Console.WriteLine("Las contraseñas no coinciden.");
-
-            return;
+            toastService.ShowError("Error al registrar el usuario. Intente nuevamente.");
         }
     }
 }
