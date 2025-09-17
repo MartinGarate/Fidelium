@@ -297,7 +297,7 @@
             // 
             // pictureBox2
             // 
-            pictureBox2.Image = Properties.Resources.Agora_Logo2;
+            //pictureBox2.Image = Properties.Resources.Agora_Logo2;
             pictureBox2.Location = new Point(17, 9);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(106, 103);
