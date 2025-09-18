@@ -14,7 +14,7 @@ using Service.Services;
 
 namespace Desktop.Views
 {
-    public partial class CapacitacionesView : Form
+    public partial class ClientesView : Form
     {
         GenericService<Cliente> _clienteService = new GenericService<Cliente>();
         GenericService<Usuario> _usuarioService = new GenericService<Usuario>();
@@ -22,7 +22,7 @@ namespace Desktop.Views
         List<Cliente> _clientes; // Lista de clientes obtenida de la API
         List<Usuario> _usuarios; // Lista de usuarios obtenida de la API
 
-        public CapacitacionesView()
+        public ClientesView()
         {
             InitializeComponent();
             _ = GetAllData();

@@ -29,9 +29,9 @@ namespace Desktop
 
         private void subMenu_Capacitaciones_Click(object sender, EventArgs e)
         {
-            var capacitacionesView = new CapacitacionesView();
-            capacitacionesView.MdiParent = this;
-            capacitacionesView.Show();
+            var clientesView = new ClientesView();
+            clientesView.MdiParent = this;
+            clientesView.Show();
 
         }
     }

@@ -1,6 +1,6 @@
 ﻿namespace Desktop.Views
 {
-    partial class CapacitacionesView
+    partial class ClientesView
     {
         /// <summary>
         /// Required designer variable.
@@ -29,9 +29,10 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CapacitacionesView));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClientesView));
             tabControl = new TabControl();
             tabPageLista = new TabPage();
+            buttonRestaurar = new FontAwesome.Sharp.IconButton();
             checkBox_VerEliminados = new CheckBox();
             ButtonEliminarAuto = new FontAwesome.Sharp.IconButton();
             ButtonEditarAuto = new FontAwesome.Sharp.IconButton();
@@ -41,15 +42,12 @@
             dataGridView = new DataGridView();
             panel1 = new Panel();
             ButtonClose = new FontAwesome.Sharp.IconButton();
-            pictureBox1 = new PictureBox();
             tabPageAgregar_Editar = new TabPage();
             panel2 = new Panel();
-            pictureBox2 = new PictureBox();
             numericPrecioAuto = new NumericUpDown();
             numericAnioAuto = new NumericUpDown();
             ButtonCancelar = new FontAwesome.Sharp.IconButton();
             ButtonGuardar = new FontAwesome.Sharp.IconButton();
-            pictureBox4 = new PictureBox();
             checkBoxUsado = new CheckBox();
             label5 = new Label();
             label4 = new Label();
@@ -61,19 +59,18 @@
             textBoxImagenAuto = new TextBox();
             contextMenuStripLimpiar = new ContextMenuStrip(components);
             limpiarToolStripMenuItem = new ToolStripMenuItem();
-            buttonRestaurar = new FontAwesome.Sharp.IconButton();
+            pictureBox1 = new PictureBox();
+            pictureBox2 = new PictureBox();
             tabControl.SuspendLayout();
             tabPageLista.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView).BeginInit();
             panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             tabPageAgregar_Editar.SuspendLayout();
-            panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericPrecioAuto).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericAnioAuto).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             contextMenuStripLimpiar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             SuspendLayout();
             // 
             // tabControl
@@ -107,6 +104,27 @@
             tabPageLista.Size = new Size(981, 577);
             tabPageLista.TabIndex = 0;
             tabPageLista.Text = "Lista";
+            // 
+            // buttonRestaurar
+            // 
+            buttonRestaurar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            buttonRestaurar.BackColor = Color.FromArgb(28, 28, 27);
+            buttonRestaurar.FlatStyle = FlatStyle.Flat;
+            buttonRestaurar.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            buttonRestaurar.ForeColor = Color.FromArgb(242, 242, 242);
+            buttonRestaurar.IconChar = FontAwesome.Sharp.IconChar.Reply;
+            buttonRestaurar.IconColor = Color.FromArgb(242, 242, 242);
+            buttonRestaurar.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            buttonRestaurar.IconSize = 24;
+            buttonRestaurar.ImageAlign = ContentAlignment.MiddleRight;
+            buttonRestaurar.Location = new Point(283, 512);
+            buttonRestaurar.Name = "buttonRestaurar";
+            buttonRestaurar.Size = new Size(103, 28);
+            buttonRestaurar.TabIndex = 9;
+            buttonRestaurar.Text = "Restaurar";
+            buttonRestaurar.TextAlign = ContentAlignment.MiddleLeft;
+            buttonRestaurar.UseVisualStyleBackColor = false;
+            buttonRestaurar.Click += buttonRestaurar_Click;
             // 
             // checkBox_VerEliminados
             // 
@@ -236,8 +254,8 @@
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panel1.BackColor = Color.FromArgb(20, 21, 20);
-            panel1.Controls.Add(ButtonClose);
             panel1.Controls.Add(pictureBox1);
+            panel1.Controls.Add(ButtonClose);
             panel1.Location = new Point(-4, -7);
             panel1.Name = "panel1";
             panel1.Size = new Size(986, 110);
@@ -265,25 +283,15 @@
             ButtonClose.UseVisualStyleBackColor = false;
             ButtonClose.Click += ButtonClose_Click;
             // 
-            // pictureBox1
-            // 
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(17, 9);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(106, 103);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 1;
-            pictureBox1.TabStop = false;
-            // 
             // tabPageAgregar_Editar
             // 
             tabPageAgregar_Editar.BackColor = Color.FromArgb(242, 242, 242);
+            tabPageAgregar_Editar.Controls.Add(pictureBox2);
             tabPageAgregar_Editar.Controls.Add(panel2);
             tabPageAgregar_Editar.Controls.Add(numericPrecioAuto);
             tabPageAgregar_Editar.Controls.Add(numericAnioAuto);
             tabPageAgregar_Editar.Controls.Add(ButtonCancelar);
             tabPageAgregar_Editar.Controls.Add(ButtonGuardar);
-            tabPageAgregar_Editar.Controls.Add(pictureBox4);
             tabPageAgregar_Editar.Controls.Add(checkBoxUsado);
             tabPageAgregar_Editar.Controls.Add(label5);
             tabPageAgregar_Editar.Controls.Add(label4);
@@ -304,20 +312,10 @@
             // 
             panel2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panel2.BackColor = Color.FromArgb(20, 21, 20);
-            panel2.Controls.Add(pictureBox2);
             panel2.Location = new Point(-4, -7);
             panel2.Name = "panel2";
             panel2.Size = new Size(986, 110);
             panel2.TabIndex = 22;
-            // 
-            // pictureBox2
-            // 
-            pictureBox2.Location = new Point(17, 9);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(106, 103);
-            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox2.TabIndex = 1;
-            pictureBox2.TabStop = false;
             // 
             // numericPrecioAuto
             // 
@@ -384,17 +382,6 @@
             ButtonGuardar.TextAlign = ContentAlignment.MiddleLeft;
             ButtonGuardar.UseVisualStyleBackColor = false;
             ButtonGuardar.Click += ButtonGuardar_Click;
-            // 
-            // pictureBox4
-            // 
-            pictureBox4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
-            pictureBox4.Location = new Point(592, 207);
-            pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(291, 206);
-            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox4.TabIndex = 17;
-            pictureBox4.TabStop = false;
             // 
             // checkBoxUsado
             // 
@@ -518,53 +505,49 @@
             limpiarToolStripMenuItem.Text = "Limpiar...";
             limpiarToolStripMenuItem.Click += limpiarToolStripMenuItem_Click;
             // 
-            // buttonRestaurar
+            // pictureBox1
             // 
-            buttonRestaurar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            buttonRestaurar.BackColor = Color.FromArgb(28, 28, 27);
-            buttonRestaurar.FlatStyle = FlatStyle.Flat;
-            buttonRestaurar.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            buttonRestaurar.ForeColor = Color.FromArgb(242, 242, 242);
-            buttonRestaurar.IconChar = FontAwesome.Sharp.IconChar.Reply;
-            buttonRestaurar.IconColor = Color.FromArgb(242, 242, 242);
-            buttonRestaurar.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            buttonRestaurar.IconSize = 24;
-            buttonRestaurar.ImageAlign = ContentAlignment.MiddleRight;
-            buttonRestaurar.Location = new Point(283, 512);
-            buttonRestaurar.Name = "buttonRestaurar";
-            buttonRestaurar.Size = new Size(103, 28);
-            buttonRestaurar.TabIndex = 9;
-            buttonRestaurar.Text = "Restaurar";
-            buttonRestaurar.TextAlign = ContentAlignment.MiddleLeft;
-            buttonRestaurar.UseVisualStyleBackColor = false;
-            buttonRestaurar.Click += buttonRestaurar_Click;
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(40, 10);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(105, 100);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 9;
+            pictureBox1.TabStop = false;
             // 
-            // CapacitacionesView
+            // pictureBox2
+            // 
+            pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
+            pictureBox2.Location = new Point(654, 175);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(275, 266);
+            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox2.TabIndex = 23;
+            pictureBox2.TabStop = false;
+            // 
+            // ClientesView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(242, 242, 242);
             ClientSize = new Size(980, 599);
             Controls.Add(tabControl);
-            Icon = (Icon)resources.GetObject("$this.Icon");
-            Name = "CapacitacionesView";
+            Name = "ClientesView";
             StartPosition = FormStartPosition.CenterParent;
-            Text = "Auto Stock Garate";
+            Text = "Clientes";
             WindowState = FormWindowState.Maximized;
             tabControl.ResumeLayout(false);
             tabPageLista.ResumeLayout(false);
             tabPageLista.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView).EndInit();
             panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             tabPageAgregar_Editar.ResumeLayout(false);
             tabPageAgregar_Editar.PerformLayout();
-            panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericPrecioAuto).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericAnioAuto).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             contextMenuStripLimpiar.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ResumeLayout(false);
         }
 
@@ -574,7 +557,6 @@
         private TabPage tabPageLista;
         private TabPage tabPageAgregar_Editar;
         private Panel panel1;
-        private PictureBox pictureBox1;
         private PictureBox pictureBoxAuto;
         private FontAwesome.Sharp.IconButton ButtonBuscarAuto;
         private TextBox textBoxFiltrarAuto;
@@ -592,16 +574,16 @@
         private Label label4;
         private TextBox textBoxModeloAuto;
         private Label label5;
-        private PictureBox pictureBox4;
         private CheckBox checkBoxUsado;
         private FontAwesome.Sharp.IconButton ButtonCancelar;
         private FontAwesome.Sharp.IconButton ButtonGuardar;
         private NumericUpDown numericAnioAuto;
         private NumericUpDown numericPrecioAuto;
         private Panel panel2;
-        private PictureBox pictureBox2;
         private FontAwesome.Sharp.IconButton ButtonClose;
         private CheckBox checkBox_VerEliminados;
         private FontAwesome.Sharp.IconButton buttonRestaurar;
+        private PictureBox pictureBox1;
+        private PictureBox pictureBox2;
     }
 }

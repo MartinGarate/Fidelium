@@ -42,9 +42,9 @@
             menuStrip1 = new MenuStrip();
             menuPrincipal = new FontAwesome.Sharp.IconMenuItem();
             usuarios = new FontAwesome.Sharp.IconMenuItem();
+            subMenu_Capacitaciones = new FontAwesome.Sharp.IconMenuItem();
             menuSalir = new FontAwesome.Sharp.IconMenuItem();
             subMenuSalir = new FontAwesome.Sharp.IconMenuItem();
-            subMenu_Capacitaciones = new FontAwesome.Sharp.IconMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -146,6 +146,16 @@
             usuarios.Text = "Usuarios";
             usuarios.Click += usuarios_Click;
             // 
+            // subMenu_Capacitaciones
+            // 
+            subMenu_Capacitaciones.IconChar = FontAwesome.Sharp.IconChar.UserCircle;
+            subMenu_Capacitaciones.IconColor = Color.Black;
+            subMenu_Capacitaciones.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            subMenu_Capacitaciones.Name = "subMenu_Capacitaciones";
+            subMenu_Capacitaciones.Size = new Size(180, 22);
+            subMenu_Capacitaciones.Text = "Clientes";
+            subMenu_Capacitaciones.Click += subMenu_Capacitaciones_Click;
+            // 
             // menuSalir
             // 
             menuSalir.DropDownItems.AddRange(new ToolStripItem[] { subMenuSalir });
@@ -165,16 +175,6 @@
             subMenuSalir.Size = new Size(149, 22);
             subMenuSalir.Text = "Salir del Menu";
             subMenuSalir.Click += subMenuSalir_Click;
-            // 
-            // subMenu_Capacitaciones
-            // 
-            subMenu_Capacitaciones.IconChar = FontAwesome.Sharp.IconChar.BookBookmark;
-            subMenu_Capacitaciones.IconColor = Color.Black;
-            subMenu_Capacitaciones.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            subMenu_Capacitaciones.Name = "subMenu_Capacitaciones";
-            subMenu_Capacitaciones.Size = new Size(180, 22);
-            subMenu_Capacitaciones.Text = "Capacitaciones";
-            subMenu_Capacitaciones.Click += subMenu_Capacitaciones_Click;
             // 
             // MenuPrincipalView
             // 
