@@ -1,5 +1,5 @@
 ﻿@page "/login"
-@inject FirebaseAuthService firebaseAuthService
+@inject FirebaseAuthService _firebaseAuthService
 @inject AuthenticationStateService authStateService
 @inject SweetAlertService sweetAlert
 @inject NavigationManager navigationManager
@@ -57,7 +57,7 @@
     private string email = string.Empty;
     private string password = string.Empty;
     private bool isLoading = false;
-
+    bool isAuthenticated = false;
     protected override void OnInitialized()
     {
         // Si ya está autenticado, redirigir al home
@@ -78,10 +78,18 @@
         try
         {
             isLoading = true;
-            var user = await firebaseAuthService.SignInWithEmailPassword(email, password);
+            var user = await _firebaseAuthService.SignInWithEmailPassword(email, password);
 
             if (user != null)
             {
+                if (user.EmailVerified == false)
+                {
+                    await sweetAlert.FireAsync("Error de autenticación", "Por favor, verifica tu correo electrónico antes de iniciar sesión.", SweetAlertIcon.Warning);
+                    return;
+                }
+                isAuthenticated = true;
+                StateHasChanged(); // Fuerza la actualización de la interfaz de usuario después de iniciar sesión (Blazor)
+            
                 // Actualizar el estado de autenticación global
                 authStateService.SetAuthenticationState(true);
 
