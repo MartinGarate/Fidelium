@@ -32,7 +32,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
         builder => builder
-            .WithOrigins("https://localhost:8000", "https://apifidelium.azurewebsites.net")
+            .WithOrigins("https://localhost:8000", "https://fidelium.azurewebsites.net")
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
