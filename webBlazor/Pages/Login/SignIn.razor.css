@@ -1,0 +1,164 @@
+﻿/* =====================================
+   CONTENEDOR PRINCIPAL DE AUTENTICACIÓN
+   ===================================== */
+
+/* Contenedor que centra la tarjeta de registro en pantalla */
+.auth-container {
+    min-height: 100vh; /* Altura completa de la pantalla */
+    display: flex; /* Flex para centrar horizontal y verticalmente */
+    align-items: center; /* Centrar vertical */
+    justify-content: center; /* Centrar horizontal */
+    padding: var(--space-4); /* Espaciado interno */
+    background: linear-gradient( 135deg, var(--background) 0%, var(--surface-dark) 100% ); /* Fondo degradado */
+}
+
+/* =====================================
+   TARJETA DE REGISTRO
+   ===================================== */
+
+/* Card principal de registro */
+.auth-card {
+    background: var(--surface); /* Fondo oscuro */
+    border-radius: var(--radius-lg); /* Bordes redondeados */
+    border: 1px solid var(--border); /* Borde sutil */
+    box-shadow: var(--shadow-lg); /* Sombra para profundidad */
+    width: 100%;
+    max-width: 500px; /* Tamaño máximo */
+    overflow: hidden; /* Evita que elementos sobresalgan */
+    animation: fadeInUp 0.5s ease-out; /* Animación de aparición */
+}
+
+/* Cabecera de la tarjeta */
+.card-header {
+    background-color: var(--surface-dark); /* Fondo más oscuro que la card */
+    color: var(--text); /* Texto principal */
+    padding: var(--space-4); /* Espaciado interno */
+    border-bottom: 1px solid var(--border); /* Línea inferior */
+    font-weight: var(--font-semibold); /* Peso semi-negrita */
+    font-size: var(--subtitulo-seccion); /* Tamaño de subtítulo */
+}
+
+/* Cuerpo de la tarjeta */
+.card-body {
+    padding: var(--space-5); /* Espaciado interno */
+    background: var(--surface); /* Fondo principal de la card */
+}
+
+/* Footer de la tarjeta */
+.card-footer {
+    background-color: var(--surface-dark); /* Fondo más oscuro */
+    color: var(--text-muted); /* Texto secundario */
+    padding: var(--space-3); /* Espaciado interno */
+    border-top: 1px solid var(--border); /* Línea superior */
+    font-size: var(--texto-secundario); /* Tamaño de texto más pequeño */
+    text-align: center; /* Centrar contenido */
+}
+
+/* =====================================
+   FORMULARIO DE REGISTRO
+   ===================================== */
+
+/* Formulario completo */
+.auth-form {
+    width: 100%;
+    max-width: 400px; /* Tamaño máximo */
+    margin: 0 auto; /* Centrar horizontal */
+}
+
+    /* Grupo de formulario */
+    .auth-form .form-group {
+        position: relative; /* Necesario para íconos absolutos */
+        margin-bottom: var(--space-4); /* Espaciado entre campos */
+    }
+
+    /* Etiquetas de los campos */
+    .auth-form label {
+        color: var(--text-secondary); /* Texto secundario */
+        font-weight: var(--font-medium); /* Peso medio */
+        margin-bottom: 0.5rem; /* Separación del input */
+        display: block;
+        font-size: var(--texto-secundario); /* Tamaño de etiqueta */
+    }
+
+/* Contenedor de input con ícono */
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Íconos dentro de los inputs */
+.input-icon {
+    position: absolute; /* Posición absoluta dentro del input */
+    left: 1rem; /* Distancia del borde izquierdo */
+    color: var(--text-muted); /* Color más claro */
+    z-index: 1;
+}
+
+/* Inputs */
+.auth-form .form-control {
+    background: var(--surface-dark); /* Fondo oscuro del input */
+    border: 2px solid var(--border); /* Borde gris */
+    color: var(--text); /* Texto principal */
+    padding: 0.75rem 1rem 0.75rem 2.5rem; /* Espaciado interno con espacio para el ícono */
+    border-radius: var(--radius-md); /* Bordes redondeados */
+    width: 100%; /* Ocupa todo el ancho */
+    transition: all 0.2s ease; /* Transición suave */
+}
+
+    /* Hover sobre inputs */
+    .auth-form .form-control:hover {
+        border-color: var(--border-light); /* Cambia borde al pasar mouse */
+    }
+
+    /* Focus en inputs */
+    .auth-form .form-control:focus {
+        border-color: var(--primary); /* Borde primario al enfocar */
+        box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.2); /* Sombra leve */
+        outline: none; /* Quitar outline por defecto */
+    }
+
+/* Botón principal de registro */
+.auth-form .btn-primary {
+    padding: 0.75rem; /* Espaciado interno */
+    font-weight: var(--font-semibold); /* Peso semi-negrita */
+    text-transform: uppercase; /* Texto en mayúsculas */
+    letter-spacing: 0.05em; /* Espaciado entre letras */
+    transition: all 0.2s ease; /* Animación suave */
+    width: 100%; /* Botón ocupa todo el ancho */
+}
+
+    /* Hover sobre el botón */
+    .auth-form .btn-primary:hover {
+        transform: translateY(-1px); /* Leve levantamiento */
+        box-shadow: var(--shadow-md); /* Sombra media */
+    }
+
+/* =====================================
+   ESTILOS ADICIONALES
+   ===================================== */
+
+/* Texto con gradiente */
+.text-gradient {
+    background: linear-gradient( to right, var(--primary), var(--accent) );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent; /* Hace que el texto muestre el gradiente */
+}
+
+/* =====================================
+   ANIMACIONES
+   ===================================== */
+
+/* Animación de fadeInUp */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

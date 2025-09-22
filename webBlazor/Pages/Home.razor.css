@@ -1,0 +1,79 @@
+﻿/* =====================================
+   HERO SECTION
+   ===================================== */
+
+/* Contenedor principal del hero */
+.hero-seccion {
+  display: flex;                              /* Flexbox para centrar contenido */
+  flex-direction: column;                     /* Colocar elementos en columna */
+  align-items: center;                        /* Centrar horizontalmente */
+  justify-content: center;                    /* Centrar verticalmente */
+  min-height: calc(100vh - 4rem);            /* Ocupa toda la pantalla menos navbar */
+  text-align: center;                         /* Centrar texto */
+  padding: var(--espacio-4);                  /* Espaciado interno */
+}
+
+/* Título principal del hero */
+.hero-titulo {
+  font-size: clamp(2.5rem, 8vw, 4rem);       /* Tamaño responsivo */
+  font-weight: var(--peso-negrita);          /* Negrita */
+  background: linear-gradient(270deg, var(--color-principal), var(--color-acento)); /* Gradiente de colores */
+  -webkit-background-clip: text;             /* Para mostrar gradiente solo en texto */
+  color: transparent;                         /* Texto transparente para que se vea el gradiente */
+  margin-bottom: var(--espacio-3);           /* Separación del subtítulo */
+}
+
+/* Subtítulo o descripción */
+.hero-subtitulo {
+  font-size: clamp(1rem, 4vw, 1.25rem);      /* Tamaño responsivo */
+  color: var(--color-texto-secundario);      /* Color secundario */
+  max-width: 600px;                           /* Limitar ancho del texto */
+  margin-bottom: var(--espacio-4);           /* Separación del botón o acciones */
+}
+
+/* Contenedor de botones o acciones dentro del hero */
+.hero-acciones {
+  display: flex;                              /* Flexbox para botones */
+  gap: var(--espacio-2);                      /* Espacio entre botones */
+  justify-content: center;                    /* Centrar horizontalmente */
+}
+
+/* =====================================
+   BOTONES
+   ===================================== */
+
+/* Estilo base para todos los botones */
+.btn {
+    padding: 0.75rem 1.5rem; /* Espaciado interno */
+    font-weight: var(--peso-medio); /* Peso del texto */
+    border-radius: var(--radio-medio); /* Bordes redondeados */
+    border: none; /* Sin borde por defecto */
+    cursor: pointer; /* Mano al pasar el mouse */
+    transition: all 0.2s ease; /* Transición suave */
+}
+
+/* Botón principal */
+.btn-principal {
+    background-color: var(--color-principal); /* Fondo morado */
+    color: var(--color-texto); /* Texto blanco */
+}
+
+    /* Efectos al pasar el mouse sobre el botón principal */
+    .btn-principal:hover {
+        background-color: var(--color-principal-hover); /* Cambio de color */
+        box-shadow: var(--sombra-media); /* Sombra al pasar el mouse */
+    }
+
+/* Botón secundario */
+.btn-secundario {
+    background-color: var(--color-superficie-claro); /* Fondo gris oscuro */
+    color: var(--color-texto-secundario); /* Texto gris */
+    border: 1px solid var(--color-borde); /* Borde */
+}
+
+    /* Efectos al pasar el mouse sobre el botón secundario */
+    .btn-secundario:hover {
+        background-color: var(--color-superficie-oscuro); /* Fondo más oscuro */
+        color: var(--color-texto); /* Texto blanco */
+        border-color: var(--color-borde-claro); /* Borde más claro */
+    }
