@@ -1,67 +1,84 @@
 /* =====================================
-   CONTENEDOR PRINCIPAL DE LA PÁGINA
+   LAYOUT PRINCIPAL
    ===================================== */
-
-/* Contenedor general de toda la aplicación */
 .page {
-    display: flex; /* Flex para NavMenu + contenido */
-    min-height: 100vh; /* Altura completa */
-    background-color: var(--background); /* Fondo principal */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--background);
 }
 
-/* Contenedor del contenido principal */
+/* Contenido principal para páginas normales */
 .main-content {
-    flex: 1; /* Ocupa todo el espacio restante */
-    padding: var(--space-5); /* Espaciado interno */
-    overflow-y: auto; /* Scroll vertical si hace falta */
-    background-color: var(--surface); /* Fondo secundario */
-    transition: all 0.2s ease; /* Transiciones suaves al cambiar tamaño */
+    flex: 1;
+    padding: var(--space-4);
+    background: var(--background);
+    overflow-x: hidden;
+}
+
+/* Contenido principal para la página Home (sin padding) */
+.main-content-home {
+    flex: 1;
+    background: var(--background);
+    overflow-x: hidden;
+    padding: 0;  /* Sin padding para que hero ocupe toda la pantalla */
 }
 
 /* =====================================
-   ESTADO DE CARGA
+   ESTADO DE CARGA DEL LAYOUT
    ===================================== */
-
-/* Contenedor centrado para el loading */
 .loading-container {
-    display: flex; /* Flex centrado */
-    align-items: center; /* Centrar vertical */
-    justify-content: center; /* Centrar horizontal */
-    min-height: 100vh; /* Altura completa */
-    background-color: var(--surface-dark); /* Fondo oscuro durante carga */
-    flex-direction: column; /* Icono + texto debajo */
-    gap: var(--space-3); /* Espacio entre spinner y texto */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: var(--background);
+    color: var(--text-secondary);
 }
 
-/* Spinner de carga */
 .loading-spinner {
-    width: 3rem;
-    height: 3rem;
-    border: 0.4rem solid var(--border-light); /* Borde gris claro */
-    border-top: 0.4rem solid var(--primary); /* Borde superior con color primario */
-    border-radius: 50%; /* Redondear completamente */
-    animation: spin 1s linear infinite; /* Rotación infinita */
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--space-3);
 }
 
-/* Animación de rotación para el spinner */
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
+    to { 
+        transform: rotate(360deg); 
     }
+}
 
-    100% {
-        transform: rotate(360deg);
-    }
+/* Texto de carga */
+.loading-text {
+    margin-top: var(--space-3);
+    font-size: var(--texto-normal);
+    color: var(--text-secondary);
 }
 
 /* =====================================
-   NAVMENU (opcional, estilo base)
+   RESPONSIVE DESIGN
    ===================================== */
 
-nav {
-    width: 250px; /* Ancho fijo del menú lateral */
-    background-color: var(--surface-dark); /* Fondo oscuro */
-    border-right: 1px solid var(--border); /* Separador con contenido */
-    min-height: 100vh; /* Altura completa */
-    transition: all 0.3s ease; /* Animación al mostrar/ocultar */
+@media (max-width: 768px) {
+    .main-content {
+        padding: var(--space-2);            /* Menos padding en móviles */
+    }
+    
+    /* Home mantiene sin padding en móviles también */
+    .main-content-home {
+        padding: 0;
+    }
+}
+
+/* Para pantallas muy pequeñas */
+@media (max-width: 480px) {
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border-width: 3px;
+    }
 }

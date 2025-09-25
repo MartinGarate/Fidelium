@@ -12,17 +12,24 @@ namespace Service.Services
         protected readonly string _endpoint;
 
 
+
         public GenericService()
         {
             _httpClient = new HttpClient();
             _options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-            //_endpoint = Properties.Resources.UrlApi + ApiEndpoints.GetEndpoint(typeof(T).Name);
-            _endpoint = Properties.Resources.UrlApiLocal + ApiEndpoints.GetEndpoint(typeof(T).Name);
+            _endpoint = Properties.Resources.UrlApi + ApiEndpoints.GetEndpoint(typeof(T).Name);
+            //_endpoint = Properties.Resources.UrlApiLocal + ApiEndpoints.GetEndpoint(typeof(T).Name);
 
         }
-        public Task<T?> AddAsync(T? entity)
+        public async Task<T?> AddAsync(T? entity)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.PostAsJsonAsync(_endpoint, entity);
+            var content = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Error al agregar el dato: {response.StatusCode} - {content}");
+            }
+            return JsonSerializer.Deserialize<T>(content, _options);
         }
 
         public async Task<bool> DeleteAsync(int id)
@@ -38,7 +45,7 @@ namespace Service.Services
 
         public async Task<List<T>?> GetAllAsync(string? filtro = "")
         {
-            var response = await _httpClient.GetAsync(_endpoint);
+            var response = await _httpClient.GetAsync($"{_endpoint}?filter={filtro}");
             var content = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
@@ -50,11 +57,11 @@ namespace Service.Services
 
         public async Task<List<T>?> GetAllDeletedsAsync(string? filtro = "")
         {
-            var response = await _httpClient.GetAsync($"{_endpoint}/Deleteds");
+            var response = await _httpClient.GetAsync($"{_endpoint}/deleteds");
             var content = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"Error al obtener los datos: {response.StatusCode} - {content}");
+                throw new Exception($"Error al obtener los datos: {response.StatusCode}");
             }
             return JsonSerializer.Deserialize<List<T>>(content, _options);
         }
@@ -72,22 +79,17 @@ namespace Service.Services
 
         public async Task<bool> RestoreAsync(int id)
         {
-
             var response = await _httpClient.PutAsync($"{_endpoint}/restore/{id}", null);
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception("Hubo un problema al restaurar el dato");
+                throw new Exception($"Error al restaurar el dato: {response.StatusCode}");
             }
-            else
-            {
-                return response.IsSuccessStatusCode;
-            }
-
+            return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> UpdateAsync(T? entity)
         {
-            var idValue = entity.GetType().GetProperty("Id").GetValue(entity);
+            var idValue = entity.GetType().GetProperty("ID").GetValue(entity); // Cambiado de "Id" a "ID"
             var response = await _httpClient.PutAsJsonAsync($"{_endpoint}/{idValue}", entity);
             if (!response.IsSuccessStatusCode)
             {
@@ -101,3 +103,4 @@ namespace Service.Services
         }
     }
 }
+

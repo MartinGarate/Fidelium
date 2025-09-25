@@ -28,8 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginView));
             panel1 = new Panel();
-            pictureBox1 = new PictureBox();
+            pictureBox2 = new PictureBox();
             label1 = new Label();
             txtEmail = new TextBox();
             txtPassword = new TextBox();
@@ -43,28 +44,30 @@
             label4 = new Label();
             labelErrorPassword = new Label();
             panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox2).BeginInit();
             SuspendLayout();
             // 
             // panel1
             // 
-            panel1.BackColor = Color.FromArgb(4, 5, 4);
-            panel1.Controls.Add(pictureBox1);
+            panel1.BackColor = Color.FromArgb(6, 1, 9);
+            panel1.Controls.Add(pictureBox2);
+            panel1.ForeColor = Color.FromArgb(6, 1, 9);
             panel1.Location = new Point(426, -2);
             panel1.Name = "panel1";
             panel1.Size = new Size(488, 355);
             panel1.TabIndex = 0;
             // 
-            // pictureBox1
+            // pictureBox2
             // 
-            pictureBox1.Location = new Point(40, 14);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(350, 329);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 1;
-            pictureBox1.TabStop = false;
+            pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
+            pictureBox2.Location = new Point(71, 31);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(275, 266);
+            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox2.TabIndex = 24;
+            pictureBox2.TabStop = false;
             // 
             // label1
             // 
@@ -95,7 +98,7 @@
             // 
             // ButtonLogIn
             // 
-            ButtonLogIn.BackColor = Color.FromArgb(4, 5, 4);
+            ButtonLogIn.BackColor = Color.FromArgb(6, 1, 9);
             ButtonLogIn.FlatStyle = FlatStyle.Flat;
             ButtonLogIn.ForeColor = SystemColors.Control;
             ButtonLogIn.IconChar = FontAwesome.Sharp.IconChar.None;
@@ -154,6 +157,7 @@
             iconButton1.TabIndex = 8;
             iconButton1.Text = "Cancelar";
             iconButton1.UseVisualStyleBackColor = false;
+            iconButton1.Click += iconButton1_Click;
             // 
             // iconPictureBox1
             // 
@@ -231,7 +235,7 @@
             Text = "LoginView";
             Load += LoginView_Load;
             panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox2).EndInit();
             ResumeLayout(false);
@@ -241,7 +245,6 @@
         #endregion
 
         private Panel panel1;
-        private PictureBox pictureBox1;
         private Label label1;
         private TextBox txtEmail;
         private TextBox txtPassword;
@@ -254,5 +257,6 @@
         private FontAwesome.Sharp.IconPictureBox iconPictureBox2;
         private Label label4;
         private Label labelErrorPassword;
+        private PictureBox pictureBox2;
     }
 }

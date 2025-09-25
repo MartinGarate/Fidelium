@@ -6,14 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <!-- Remover ItemGroup con Content para archivos CSS con ámbito 
-  <ItemGroup>
-    <Content Include="Pages\Clientes.razor.css" />
-    <Content Include="Pages\Home.razor.css" />
-    <Content Include="Pages\Login\Login.razor.css" />
-  </ItemGroup>
-  -->
-
   <ItemGroup>
     <None Include="wwwroot\index.html" />
   </ItemGroup>

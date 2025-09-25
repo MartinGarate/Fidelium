@@ -17,7 +17,7 @@ else
 {
     <div class="page">
         <NavMenu />
-        <main class="main-content">
+        <main class="@GetMainContentClass()">
             @Body
         </main>
     </div>
@@ -27,6 +27,15 @@ else
     private bool IsLoginPage =>
         navigationManager.Uri.EndsWith("/login", StringComparison.OrdinalIgnoreCase) ||
         navigationManager.Uri.EndsWith("/signin", StringComparison.OrdinalIgnoreCase);
+
+    private bool IsHomePage =>
+        navigationManager.Uri.EndsWith("/", StringComparison.OrdinalIgnoreCase) ||
+        navigationManager.Uri.ToLower().EndsWith("/home", StringComparison.OrdinalIgnoreCase);
+
+    private string GetMainContentClass()
+    {
+        return IsHomePage ? "main-content-home" : "main-content";
+    }
 
     protected override void OnInitialized()
     {

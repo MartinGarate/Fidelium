@@ -50,7 +50,7 @@ namespace Desktop.Views
                     menuPrincipalView.ShowDialog();
                     this.Hide();
                 }
-  
+
             }
             catch (Exception ex)
             {
@@ -75,6 +75,11 @@ namespace Desktop.Views
 
 
 
+        }
+
+        private void iconButton1_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

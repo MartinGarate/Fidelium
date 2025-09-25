@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WebBlazor</title>
+    <title>Fidelium - Gestión Inteligente</title>
     <base href="/" />
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
@@ -13,7 +13,6 @@
     <link href="_content/Radzen.Blazor/css/default-base.css" rel="stylesheet" />
     <link href="_content/Radzen.Blazor/css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-
 </head>
 
 <body>
@@ -23,20 +22,30 @@
             <circle r="40%" cx="50%" cy="50%" />
         </svg>
         <div class="loading-progress-text"></div>
+
+        <!-- Información adicional durante la carga -->
+        <div class="loading-info">
+            <h2>Fidelium</h2>
+            <p>Cargando tu plataforma de gestión...</p>
+            <p><small>Esto puede tomar unos momentos</small></p>
+        </div>
     </div>
 
     <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="" class="reload">Reload</a>
+        <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
+        Ha ocurrido un error no controlado.
+        <a href="" class="reload">Recargar</a>
         <a class="dismiss">🗙</a>
     </div>
+
+    <!-- Scripts de Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <!-- Firebase Authentication -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
-
-    <!-- Configuración de Firebase -->
+    <!-- Configuración Firebase y funciones auxiliares -->
     <script>
+        console.log('🔥 Inicializando Firebase...');
+
         const firebaseConfig = {
             apiKey: "AIzaSyBCPRTKbCRp-OpZIym7mMADGDr705lnMck",
             authDomain: "fidelium-1e400.firebaseapp.com",
@@ -45,64 +54,165 @@
             messagingSenderId: "300056033532",
             appId: "1:300056033532:web:322c3e9089a6cbed2c3f79"
         };
-        firebase.initializeApp(firebaseConfig);
-        console.log(firebase);
-        window.firebaseAuth = {
-            signInWithEmailPassword: async function (email, password) {
-                try {
-                    const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
-                    console.log(userCredential);
-                    return userCredential.user;
-                } catch (error) {
-                    console.error("Error en autenticación:", error.message);
-                    return null;
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            console.log('✅ Firebase inicializado correctamente');
+
+            window.firebaseAuth = {
+                signInWithEmailPassword: async function (email, password) {
+                    try {
+                        console.log('🔑 Intentando login con:', email);
+                        const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+                        console.log('✅ Login exitoso:', userCredential.user.uid);
+                        return userCredential.user;
+                    } catch (error) {
+                        console.error("❌ Error en autenticación:", error.message);
+                        return null;
+                    }
+                },
+                createUserWithEmailAndPassword: async function (email, password, displayName) {
+                    try {
+                        console.log('👤 Creando usuario:', email, displayName);
+                        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+                        const user = userCredential.user;
+
+                        await user.updateProfile({ displayName: displayName });
+                        await user.sendEmailVerification();
+
+                        console.log('✅ Usuario creado:', user.uid);
+                        return userCredential.user.uid;
+                    } catch (error) {
+                        console.error("❌ Error creando usuario:", error.message);
+                        return null;
+                    }
+                },
+                signOut: async function () {
+                    try {
+                        await firebase.auth().signOut();
+                        console.log('✅ Sesión cerrada');
+                    } catch (error) {
+                        console.error("❌ Error cerrando sesión:", error.message);
+                    }
                 }
-            },
-            createUserWithEmailAndPassword: async function (email, password, displayName) {
-                try {
-                    //imprimo por consola los parámetros que llegan
-                    console.log(`email=${email} password=${password} displayName=${displayName}`)
-                    const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-                    // El usuario se ha creado correctamente
-                    const user = userCredential.user;
+            };
 
-                    // Actualizar el perfil del usuario
-                    user.updateProfile({
-                        displayName: displayName
-                    });
-                    
-                    // Enviar correo de verificación
-                    user.sendEmailVerification();
-                      
-                    return userCredential.user.uid;
+        } catch (error) {
+            console.error('❌ Error inicializando Firebase:', error);
+        }
 
-
-                } catch (error) {
-                    console.error("Error en autenticación:", error.message);
-                    return null;
-                }
-
-            },
-
-            signOut: async function () {
-                await firebase.auth().signOut();
-            }
-        };
+        // Helper para localStorage
         window.localStorageHelper = {
             setItem: function (key, value) {
-                localStorage.setItem(key, value);
+                try {
+                    localStorage.setItem(key, value);
+                    return true;
+                } catch (error) {
+                    console.error('❌ Error guardando en localStorage:', error);
+                    return false;
+                }
             },
             getItem: function (key) {
-                return localStorage.getItem(key);
+                try {
+                    return localStorage.getItem(key);
+                } catch (error) {
+                    console.error('❌ Error leyendo localStorage:', error);
+                    return null;
+                }
             },
             removeItem: function (key) {
-                localStorage.removeItem(key);
+                try {
+                    localStorage.removeItem(key);
+                    return true;
+                } catch (error) {
+                    console.error('❌ Error removiendo de localStorage:', error);
+                    return false;
+                }
             }
         };
+
+        // Manejo global de errores
+        window.addEventListener('error', function (e) {
+            console.error('🚨 Error global capturado:', {
+                message: e.message,
+                filename: e.filename,
+                lineno: e.lineno,
+                colno: e.colno,
+                error: e.error
+            });
+
+            // Mostrar un mensaje más descriptivo en el error UI
+            const errorUi = document.getElementById('blazor-error-ui');
+            if (errorUi) {
+                errorUi.innerHTML = `
+                    <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
+                    Error durante la carga: ${e.message || 'Error desconocido'}
+                    <a href="" class="reload">Recargar</a>
+                    <a class="dismiss" onclick="this.parentElement.style.display='none'">🗙</a>
+                `;
+            }
+        });
+
+        // Capturar errores de promesas no manejadas
+        window.addEventListener('unhandledrejection', function (e) {
+            console.error('🚨 Promesa rechazada no manejada:', e.reason);
+        });
+
+        // Mostrar progreso de carga
+        console.log('🚀 Iniciando aplicación Blazor...');
+
+        // Cuando Blazor termine de cargar
+        window.addEventListener('load', function () {
+            console.log('📄 Página cargada');
+
+            // Verificar que Blazor se cargue en un tiempo razonable
+            setTimeout(function () {
+                if (document.getElementById('app').innerHTML.includes('loading-progress')) {
+                    console.warn('⚠️ Blazor está tardando en cargar...');
+
+                    // Actualizar mensaje de carga
+                    const loadingText = document.querySelector('.loading-progress-text');
+                    if (loadingText) {
+                        loadingText.textContent = 'Carga inicial tardando más de lo esperado...';
+                    }
+                }
+            }, 10000); // 10 segundos
+        });
     </script>
 
+    <!-- Scripts de librerías -->
     <script src="_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js"></script>
-    <script src="_framework/blazor.webassembly.js"></script>
+
+    <!-- Blazor WebAssembly -->
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+
+    <!-- Inicialización personalizada de Blazor -->
+    <script>
+        console.log('🔧 Configurando Blazor...');
+
+        Blazor.start({
+            loadBootResource: function (type, name, defaultUri, integrity) {
+                console.log(`📦 Cargando recurso: ${type} - ${name}`);
+                return defaultUri;
+            }
+        }).then(() => {
+            console.log('✅ Blazor iniciado correctamente');
+        }).catch(error => {
+            console.error('❌ Error iniciando Blazor:', error);
+
+            // Mostrar error más específico
+            const errorUi = document.getElementById('blazor-error-ui');
+            if (errorUi) {
+                errorUi.innerHTML = `
+                    <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
+                    Error iniciando la aplicación: ${error.message || 'Error de inicialización'}
+                    <a href="" class="reload">Recargar</a>
+                    <a class="dismiss" onclick="this.parentElement.style.display='none'">🗙</a>
+                `;
+                errorUi.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 
 </html>

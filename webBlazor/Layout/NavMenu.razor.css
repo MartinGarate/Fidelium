@@ -1,50 +1,78 @@
 /* =====================================
-   NAVBAR
+   NAVEGACIÓN
    ===================================== */
-
-/* Contenedor principal de la barra de navegación */
 .navbar {
-    background: var(--color-superficie); /* Color de fondo de la navbar */
-    border-bottom: 1px solid var(--color-borde); /* Línea inferior para separar del contenido */
-    position: fixed; /* Fija la navbar en la parte superior */
-    top: 0; /* Posición arriba */
-    left: 0; /* Alineada a la izquierda */
-    right: 0; /* Alineada a la derecha */
-    z-index: 1000; /* Se muestra por encima de otros elementos */
-    padding: var(--espacio-3); /* Espaciado interno */
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: var(--space-3) 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
 }
 
-/* Contenedor interno para centrar contenido y separar elementos */
 .navbar-container {
-    display: flex; /* Usa Flexbox */
-    justify-content: space-between; /* Separar elementos (izq y der) */
-    align-items: center; /* Centrar verticalmente */
-    max-width: 1200px; /* Ancho máximo */
-    margin: 0 auto; /* Centrar horizontalmente */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Logo o nombre de la marca */
 .navbar-brand {
-    color: var(--color-texto); /* Color del texto */
-    font-weight: var(--peso-semi-negrita); /* Grosor del texto */
-    font-size: var(--titulo-pequeno); /* Tamaño del texto */
-    text-decoration: none; /* Sin subrayado */
+    font-size: var(--titulo-chico);
+    font-weight: var(--font-bold);
+    color: var(--primary-light);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
 }
 
-/* Lista de enlaces de navegación */
-.navbar-nav {
-    display: flex; /* Mostrar los items en fila */
-    gap: var(--espacio-4); /* Espacio entre cada enlace */
+    .navbar-brand:hover {
+        color: var(--primary-hover);
+    }
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
 }
 
-/* Estilo de cada enlace de navegación */
 .nav-link {
-    color: var(--color-texto-secundario); /* Color por defecto */
-    text-decoration: none; /* Sin subrayado */
-    transition: color 0.2s ease; /* Suaviza el cambio de color al pasar el mouse */
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
 }
 
-    /* Cambio de color al pasar el mouse */
     .nav-link:hover {
-        color: var(--color-texto); /* Color más visible al hacer hover */
+        color: var(--text);
+        background: var(--surface-light);
+    }
+
+    .nav-link.active {
+        color: var(--primary-light);
+        background: var(--surface-light);
+    }
+
+.logout-btn {
+    background: var(--primary);
+    color: var(--text);
+    border: none;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+    .logout-btn:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
     }

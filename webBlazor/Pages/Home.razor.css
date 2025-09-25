@@ -3,77 +3,202 @@
    ===================================== */
 
 /* Contenedor principal del hero */
-.hero-seccion {
-  display: flex;                              /* Flexbox para centrar contenido */
-  flex-direction: column;                     /* Colocar elementos en columna */
-  align-items: center;                        /* Centrar horizontalmente */
-  justify-content: center;                    /* Centrar verticalmente */
-  min-height: calc(100vh - 4rem);            /* Ocupa toda la pantalla menos navbar */
-  text-align: center;                         /* Centrar texto */
-  padding: var(--espacio-4);                  /* Espaciado interno */
+.hero-section {
+    display: flex;                              /* Flexbox para centrar contenido */
+    flex-direction: column;                     /* Colocar elementos en columna */
+    align-items: center;                        /* Centrar horizontalmente */
+    justify-content: center;                    /* Centrar verticalmente */
+    min-height: 100vh;                         /* Ocupa toda la pantalla */
+    text-align: center;                         /* Centrar texto */
+    padding: var(--space-4);                    /* Espaciado interno */
+    background: var(--background);              /* Fondo principal */
+    /* Ajustar para la navbar fija */
+    margin-top: calc(-60px);                   /* Compensar altura aproximada de navbar */
+    padding-top: calc(var(--space-4) + 60px); /* Agregar padding superior */
 }
 
 /* Título principal del hero */
-.hero-titulo {
-  font-size: clamp(2.5rem, 8vw, 4rem);       /* Tamaño responsivo */
-  font-weight: var(--peso-negrita);          /* Negrita */
-  background: linear-gradient(270deg, var(--color-principal), var(--color-acento)); /* Gradiente de colores */
-  -webkit-background-clip: text;             /* Para mostrar gradiente solo en texto */
-  color: transparent;                         /* Texto transparente para que se vea el gradiente */
-  margin-bottom: var(--espacio-3);           /* Separación del subtítulo */
+.hero-title {
+    font-size: clamp(2.5rem, 8vw, 4rem);       /* Tamaño responsivo */
+    font-weight: var(--font-bold);              /* Negrita */
+    background: linear-gradient(270deg, var(--primary), var(--accent)); /* Gradiente de colores */
+    -webkit-background-clip: text;             /* Para mostrar gradiente solo en texto */
+    -webkit-text-fill-color: transparent;     /* Webkit specific */
+    background-clip: text;                     /* Estándar */
+    color: transparent;                         /* Fallback */
+    margin-bottom: var(--space-3);             /* Separación del subtítulo */
+    line-height: 1.2;                          /* Altura de línea ajustada */
+}
+
+/* Fallback para navegadores que no soportan background-clip */
+@supports not (-webkit-background-clip: text) {
+    .hero-title {
+        color: var(--primary-light);           /* Color sólido como fallback */
+        background: none;                      /* Quitar gradiente */
+    }
 }
 
 /* Subtítulo o descripción */
-.hero-subtitulo {
-  font-size: clamp(1rem, 4vw, 1.25rem);      /* Tamaño responsivo */
-  color: var(--color-texto-secundario);      /* Color secundario */
-  max-width: 600px;                           /* Limitar ancho del texto */
-  margin-bottom: var(--espacio-4);           /* Separación del botón o acciones */
+.hero-subtitle {
+    font-size: clamp(1rem, 4vw, 1.25rem);      /* Tamaño responsivo */
+    color: var(--text-secondary);              /* Color secundario */
+    max-width: 700px;                           /* Limitar ancho del texto */
+    margin-bottom: var(--space-4);             /* Separación del botón o acciones */
+    line-height: 1.5;                          /* Altura de línea cómoda */
 }
 
 /* Contenedor de botones o acciones dentro del hero */
-.hero-acciones {
-  display: flex;                              /* Flexbox para botones */
-  gap: var(--espacio-2);                      /* Espacio entre botones */
-  justify-content: center;                    /* Centrar horizontalmente */
+.hero-actions {
+    display: flex;                              /* Flexbox para botones */
+    gap: var(--space-3);                        /* Espacio entre botones */
+    justify-content: center;                    /* Centrar horizontalmente */
+    flex-wrap: wrap;                            /* Permitir wrap en móviles */
 }
 
 /* =====================================
-   BOTONES
+   BOTONES ESPECÍFICOS DEL HERO
    ===================================== */
 
-/* Estilo base para todos los botones */
-.btn {
-    padding: 0.75rem 1.5rem; /* Espaciado interno */
-    font-weight: var(--peso-medio); /* Peso del texto */
-    border-radius: var(--radio-medio); /* Bordes redondeados */
-    border: none; /* Sin borde por defecto */
-    cursor: pointer; /* Mano al pasar el mouse */
-    transition: all 0.2s ease; /* Transición suave */
+/* Botones dentro del hero - estilos base */
+.hero-actions .btn {
+    padding: var(--space-3) var(--space-4) !important;   /* Mayor padding para hero */
+    font-weight: var(--font-semibold) !important;        /* Peso del texto */
+    border-radius: var(--radius-md) !important;          /* Bordes redondeados */
+    transition: all 0.2s ease !important;                /* Transición suave */
+    text-decoration: none !important;                     /* Sin subrayado para enlaces */
+    display: inline-flex !important;                      /* Flex para centrar contenido */
+    align-items: center !important;                       /* Centrar verticalmente */
+    gap: var(--space-2);                       /* Espacio entre ícono y texto */
+    cursor: pointer;                           /* Cursor pointer */
+    border: none;                              /* Sin borde por defecto */
+    font-size: var(--texto-normal) !important;           /* Tamaño de texto */
+    min-width: 150px;                         /* Ancho mínimo */
+    justify-content: center !important;                  /* Centrar contenido */
 }
 
-/* Botón principal */
-.btn-principal {
-    background-color: var(--color-principal); /* Fondo morado */
-    color: var(--color-texto); /* Texto blanco */
+/* Botón principal en hero */
+.hero-actions .btn-primary {
+    background-color: var(--primary) !important;          /* Fondo morado */
+    color: var(--text) !important;                        /* Texto blanco */
 }
 
-    /* Efectos al pasar el mouse sobre el botón principal */
-    .btn-principal:hover {
-        background-color: var(--color-principal-hover); /* Cambio de color */
-        box-shadow: var(--sombra-media); /* Sombra al pasar el mouse */
+.hero-actions .btn-primary:hover {
+    background-color: var(--primary-hover) !important;   /* Cambio de color */
+    box-shadow: var(--shadow-md) !important;             /* Sombra al pasar el mouse */
+    transform: translateY(-2px) !important;              /* Leve elevación */
+}
+
+/* Botón secundario/link en hero */
+.hero-actions .btn-link {
+    background-color: transparent !important;             /* Fondo transparente */
+    color: var(--text-secondary) !important;             /* Texto secundario */
+    border: 2px solid var(--border) !important;          /* Borde */
+}
+
+.hero-actions .btn-link:hover {
+    background-color: var(--surface-light) !important;   /* Fondo claro al hover */
+    color: var(--text) !important;                       /* Texto principal */
+    border-color: var(--border-light) !important;        /* Borde más claro */
+    transform: translateY(-2px) !important;              /* Leve elevación */
+}
+
+/* =====================================
+   EFECTOS Y ANIMACIONES
+   ===================================== */
+
+/* Animación de entrada para el hero */
+.hero-section {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
     }
-
-/* Botón secundario */
-.btn-secundario {
-    background-color: var(--color-superficie-claro); /* Fondo gris oscuro */
-    color: var(--color-texto-secundario); /* Texto gris */
-    border: 1px solid var(--color-borde); /* Borde */
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-    /* Efectos al pasar el mouse sobre el botón secundario */
-    .btn-secundario:hover {
-        background-color: var(--color-superficie-oscuro); /* Fondo más oscuro */
-        color: var(--color-texto); /* Texto blanco */
-        border-color: var(--color-borde-claro); /* Borde más claro */
+/* Efecto hover en el título */
+.hero-title:hover {
+    transform: scale(1.02);
+    transition: transform 0.3s ease;
+}
+
+/* =====================================
+   RESPONSIVE DESIGN
+   ===================================== */
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: var(--space-3);              /* Menos padding en móviles */
+        min-height: 100vh;                    /* Mantener altura completa */
+        margin-top: calc(-50px);              /* Navbar más pequeña en móviles */
+        padding-top: calc(var(--space-3) + 50px);
     }
+    
+    .hero-title {
+        margin-bottom: var(--space-2);       /* Menos separación */
+        font-size: clamp(2rem, 7vw, 3rem) !important;  /* Título más pequeño */
+    }
+    
+    .hero-subtitle {
+        margin-bottom: var(--space-3);       /* Menos separación */
+        font-size: clamp(0.9rem, 3.5vw, 1.1rem) !important; /* Subtítulo más pequeño */
+    }
+    
+    .hero-actions {
+        flex-direction: column;               /* Botones en columna en móviles */
+        width: 100%;                         /* Ancho completo */
+        gap: var(--space-2);                 /* Menos espacio entre botones */
+    }
+    
+    .hero-actions .btn {
+        width: 100% !important;                         /* Botones de ancho completo */
+        min-width: unset !important;                    /* Quitar ancho mínimo */
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section {
+        padding: var(--space-2);             /* Aún menos padding */
+        margin-top: calc(-45px);             /* Navbar aún más pequeña */
+        padding-top: calc(var(--space-2) + 45px);
+    }
+    
+    .hero-actions .btn {
+        padding: var(--space-2) var(--space-3) !important; /* Menos padding en botones */
+        font-size: var(--texto-secundario) !important;  /* Texto más pequeño */
+    }
+}
+
+/* Para pantallas muy grandes */
+@media (min-width: 1200px) {
+    .hero-section {
+        padding: var(--space-5);             /* Más padding en pantallas grandes */
+        margin-top: calc(-70px);             /* Navbar más grande en desktop */
+        padding-top: calc(var(--space-5) + 70px);
+    }
+}
+
+/* =====================================
+   DEBUG - REMOVER EN PRODUCCIÓN
+   ===================================== */
+/* Descomenta para debug visual */
+/*
+.hero-section {
+    border: 2px solid red !important;
+}
+.hero-title {
+    border: 1px solid blue !important;
+}
+.hero-subtitle {
+    border: 1px solid green !important;
+}
+.hero-actions {
+    border: 1px solid yellow !important;
+}
+*/
