@@ -1,0 +1,120 @@
+﻿@page "/nuevoEditarCliente"
+@using Service.Models
+@using Service.Enums
+@inject IGenericService<Cliente> _serviceCliente
+@inject IGenericService<Usuario> _serviceUsuario
+@inject NavigationManager NavigationManager
+
+<PageTitle>@tituloPagina</PageTitle>
+
+<div class="page-container">
+    <div class="page-header">
+        <h1>
+            <i class="fas fa-user-edit me-2"></i>
+            @tituloPagina
+        </h1>
+    </div>
+
+    @if (cliente == null || cliente.Usuario == null)
+    {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p><em>Cargando cliente...</em></p>
+        </div>
+    }
+    else
+    {
+        <EditForm Model="cliente" OnValidSubmit="Guardar">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-section col-md-5">
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-user me-2"></i>Nombre:</label>
+                    <InputText class="form-control mb-2" @bind-Value="cliente.Usuario.Nombre" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-envelope me-2"></i>Email:</label>
+                    <InputText class="form-control mb-2" type="email" @bind-Value="cliente.Usuario.Email" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-id-card me-2"></i>DNI:</label>
+                    <InputNumber class="form-control mb-2" @bind-Value="cliente.Usuario.DNI" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-user-tag me-2"></i>Tipo de Usuario:</label>
+                    <InputSelect class="form-control mb-2" @bind-Value="cliente.Usuario.TipoUsuario">
+                        @foreach (TipoUsuarioEnum tipo in Enum.GetValues(typeof(TipoUsuarioEnum)))
+                        {
+                            <option value="@tipo">@tipo</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div class="form-group">
+                    <label class="form-label"><i class="fab fa-instagram me-2"></i>Instagram:</label>
+                    <InputText class="form-control mb-2" @bind-Value="cliente.Instagram" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-phone me-2"></i>Teléfono:</label>
+                    <InputText class="form-control mb-2" @bind-Value="cliente.Telefono" />
+                </div>
+            </div>
+
+            <div class="form-actions mt-3">
+                <button class="btn btn-primary me-2" type="submit">@guardarButtonText</button>
+                <button class="btn btn-danger" type="button" @onclick="Cancelar">Cancelar</button>
+            </div>
+        </EditForm>
+    }
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    [Parameter]
+    public int? idCliente { get; set; }
+    [SupplyParameterFromQuery]
+    [Parameter]
+    public int? idUsuario { get; set; }
+    private Cliente? cliente;
+
+    private bool isEditing => idCliente.HasValue;
+    private string guardarButtonText => isEditing ? "Actualizar" : "Agregar";
+    private string tituloPagina => isEditing ? "Editando Cliente" : "Agregando nuevo Cliente";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (idCliente.HasValue)
+        {
+            cliente = await _serviceCliente.GetByIdAsync(idCliente.Value);
+            if (cliente != null && cliente.Usuario == null)
+            {
+                if (idUsuario.HasValue)
+                    cliente.Usuario = await _serviceUsuario.GetByIdAsync(idUsuario.Value);
+                else
+                    cliente.Usuario = new Usuario();
+            }
+        }
+        else
+        {
+            cliente = new Cliente
+            {
+                Usuario = new Usuario()
+            };
+        }
+    }
+
+    private async Task Guardar()
+    {
+        if (isEditing)
+            await _serviceCliente.UpdateAsync(cliente);
+        else
+            await _serviceCliente.AddAsync(cliente);
+
+        NavigationManager.NavigateTo("/clientes");
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/clientes");
+    }
+}
