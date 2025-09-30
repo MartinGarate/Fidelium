@@ -6,6 +6,10 @@ using Service.Services;
 using webBlazor;
 using webBlazor.Services;
 
+try
+{
+    Console.WriteLine("?? Iniciando aplicación Blazor WebAssembly...");
+    
     var builder = WebAssemblyHostBuilder.CreateDefault(args);
     
     // Configurar componentes raíz
@@ -35,15 +39,25 @@ using webBlazor.Services;
         logger.LogError(e.ExceptionObject as Exception, "Error no manejado en el dominio de aplicación");
     };
 
-    
+    TaskScheduler.UnobservedTaskException += (sender, e) =>
+    {
+        logger.LogError(e.Exception, "Excepción no observada en tarea");
+        e.SetObserved(); // Marcar como observada para evitar crash
+    };
+
     Console.WriteLine("? Iniciando aplicación...");
     await app.RunAsync();
-
-
+}
+catch (Exception ex)
+{
+    Console.Error.WriteLine($"? Error crítico iniciando la aplicación: {ex.Message}");
+    Console.Error.WriteLine($"Stack trace: {ex.StackTrace}");
+    
     // En desarrollo, mostrar más detalles
     if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
     {
         Console.Error.WriteLine($"Excepción completa: {ex}");
     }
     
-
+    throw; // Re-lanzar para que se maneje apropiadamente
+}
