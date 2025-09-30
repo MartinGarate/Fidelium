@@ -35,7 +35,7 @@ namespace Desktop.Views
         {
             textBoxBuscar.ContextMenuStrip = contextMenuStripLimpiar;
             buttonRestaurar.Visible = false;
-            
+
             // Configurar el ComboBox de TipoUsuario
             comboBoxTipoUsuario.DataSource = Enum.GetValues(typeof(TipoUsuarioEnum));
             comboBoxTipoUsuario.SelectedIndex = -1;
@@ -50,9 +50,9 @@ namespace Desktop.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar los datos iniciales: {ex.Message}", 
-                               "Error", 
-                               MessageBoxButtons.OK, 
+                MessageBox.Show($"Error al cargar los datos iniciales: {ex.Message}",
+                               "Error",
+                               MessageBoxButtons.OK,
                                MessageBoxIcon.Error);
             }
             finally
@@ -176,7 +176,10 @@ namespace Desktop.Views
 
         private void textBoxFiltrarAuto_TextChanged(object sender, EventArgs e)
         {
-            // Implementa lógica si lo necesitas
+            if (string.IsNullOrWhiteSpace(textBoxBuscar.Text))
+            {
+                ActualizarGridView();
+            }
         }
 
         private void ButtonCancelar_Click(object sender, EventArgs e)
@@ -187,6 +190,7 @@ namespace Desktop.Views
 
         private void ButtonEditar_Click(object sender, EventArgs e)
         {
+            labelAccion.Text = "Editar Cliente";
             try
             {
                 // Verificar que haya un cliente seleccionado
@@ -363,11 +367,6 @@ namespace Desktop.Views
             // Implementa lógica si lo necesitas
         }
 
-        private void ButtonAgregarAuto_Click(object sender, EventArgs e)
-        {
-            LimpiarCampos();
-            tabControl.SelectedTab = tabPageAgregar_Editar;
-        }
 
         private void ButtonClose_Click(object sender, EventArgs e)
         {
@@ -413,8 +412,16 @@ namespace Desktop.Views
 
         private async void ButtonBuscar_Click_1(object sender, EventArgs e)
         {
+
             dataGridView.DataSource = await _clienteService.GetAllAsync(textBoxBuscar.Text);
 
+        }
+
+        private void ButtonAgregar_Click(object sender, EventArgs e)
+        {
+            LimpiarCampos();
+            tabControl.SelectedTab = tabPageAgregar_Editar;
+            labelAccion.Text = "Agregar Cliente";
         }
     }
 }

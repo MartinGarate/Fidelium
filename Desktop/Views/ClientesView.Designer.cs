@@ -29,14 +29,18 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            DataGridViewCellStyle dataGridViewCellStyle17 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle18 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClientesView));
             tabControl = new TabControl();
             tabPageLista = new TabPage();
+            label9 = new Label();
+            label8 = new Label();
             buttonRestaurar = new FontAwesome.Sharp.IconButton();
             checkBox_VerEliminados = new CheckBox();
             ButtonEliminarAuto = new FontAwesome.Sharp.IconButton();
             ButtonEditar = new FontAwesome.Sharp.IconButton();
-            ButtonAgregarAuto = new FontAwesome.Sharp.IconButton();
+            ButtonAgregar = new FontAwesome.Sharp.IconButton();
             ButtonBuscar = new FontAwesome.Sharp.IconButton();
             textBoxBuscar = new TextBox();
             dataGridView = new DataGridView();
@@ -91,11 +95,13 @@
             // 
             tabPageLista.BackColor = Color.FromArgb(242, 242, 242);
             tabPageLista.BackgroundImageLayout = ImageLayout.None;
+            tabPageLista.Controls.Add(label9);
+            tabPageLista.Controls.Add(label8);
             tabPageLista.Controls.Add(buttonRestaurar);
             tabPageLista.Controls.Add(checkBox_VerEliminados);
             tabPageLista.Controls.Add(ButtonEliminarAuto);
             tabPageLista.Controls.Add(ButtonEditar);
-            tabPageLista.Controls.Add(ButtonAgregarAuto);
+            tabPageLista.Controls.Add(ButtonAgregar);
             tabPageLista.Controls.Add(ButtonBuscar);
             tabPageLista.Controls.Add(textBoxBuscar);
             tabPageLista.Controls.Add(dataGridView);
@@ -106,19 +112,42 @@
             tabPageLista.TabIndex = 0;
             tabPageLista.Text = "Lista";
             // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label9.ForeColor = Color.FromArgb(19, 10, 29);
+            label9.Location = new Point(22, 216);
+            label9.Name = "label9";
+            label9.Size = new Size(458, 15);
+            label9.TabIndex = 35;
+            label9.Text = "Administra, crea y actualiza la información de tus clientes de manera rápida y sencilla.";
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI", 30F, FontStyle.Bold);
+            label8.ForeColor = Color.FromArgb(19, 10, 29);
+            label8.Location = new Point(13, 157);
+            label8.Name = "label8";
+            label8.Size = new Size(487, 54);
+            label8.TabIndex = 34;
+            label8.Text = "Gestión Total de Clientes";
+            // 
             // buttonRestaurar
             // 
             buttonRestaurar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            buttonRestaurar.BackColor = Color.FromArgb(6, 1, 9);
+            buttonRestaurar.BackColor = Color.Transparent;
+            buttonRestaurar.FlatAppearance.BorderColor = Color.FromArgb(115, 108, 122);
             buttonRestaurar.FlatStyle = FlatStyle.Flat;
             buttonRestaurar.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            buttonRestaurar.ForeColor = Color.FromArgb(242, 242, 242);
-            buttonRestaurar.IconChar = FontAwesome.Sharp.IconChar.Reply;
-            buttonRestaurar.IconColor = Color.FromArgb(242, 242, 242);
+            buttonRestaurar.ForeColor = Color.FromArgb(19, 10, 29);
+            buttonRestaurar.IconChar = FontAwesome.Sharp.IconChar.ChevronCircleLeft;
+            buttonRestaurar.IconColor = Color.FromArgb(19, 10, 29);
             buttonRestaurar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             buttonRestaurar.IconSize = 24;
             buttonRestaurar.ImageAlign = ContentAlignment.MiddleRight;
-            buttonRestaurar.Location = new Point(283, 512);
+            buttonRestaurar.Location = new Point(866, 353);
             buttonRestaurar.Name = "buttonRestaurar";
             buttonRestaurar.Size = new Size(103, 28);
             buttonRestaurar.TabIndex = 9;
@@ -129,11 +158,12 @@
             // 
             // checkBox_VerEliminados
             // 
-            checkBox_VerEliminados.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             checkBox_VerEliminados.AutoSize = true;
-            checkBox_VerEliminados.Location = new Point(818, 145);
+            checkBox_VerEliminados.FlatStyle = FlatStyle.Flat;
+            checkBox_VerEliminados.Location = new Point(866, 530);
             checkBox_VerEliminados.Name = "checkBox_VerEliminados";
-            checkBox_VerEliminados.Size = new Size(103, 19);
+            checkBox_VerEliminados.RightToLeft = RightToLeft.No;
+            checkBox_VerEliminados.Size = new Size(100, 19);
             checkBox_VerEliminados.TabIndex = 8;
             checkBox_VerEliminados.Text = "Ver eliminados";
             checkBox_VerEliminados.UseVisualStyleBackColor = true;
@@ -142,18 +172,19 @@
             // ButtonEliminarAuto
             // 
             ButtonEliminarAuto.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            ButtonEliminarAuto.BackColor = Color.FromArgb(242, 242, 242);
+            ButtonEliminarAuto.BackColor = Color.Transparent;
+            ButtonEliminarAuto.FlatAppearance.BorderSize = 0;
             ButtonEliminarAuto.FlatStyle = FlatStyle.Flat;
             ButtonEliminarAuto.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            ButtonEliminarAuto.ForeColor = Color.FromArgb(28, 28, 27);
-            ButtonEliminarAuto.IconChar = FontAwesome.Sharp.IconChar.TrashAlt;
-            ButtonEliminarAuto.IconColor = Color.FromArgb(28, 28, 27);
+            ButtonEliminarAuto.ForeColor = Color.FromArgb(19, 10, 29);
+            ButtonEliminarAuto.IconChar = FontAwesome.Sharp.IconChar.UserMinus;
+            ButtonEliminarAuto.IconColor = Color.FromArgb(19, 10, 29);
             ButtonEliminarAuto.IconFont = FontAwesome.Sharp.IconFont.Auto;
             ButtonEliminarAuto.IconSize = 24;
             ButtonEliminarAuto.ImageAlign = ContentAlignment.MiddleRight;
-            ButtonEliminarAuto.Location = new Point(833, 512);
+            ButtonEliminarAuto.Location = new Point(866, 387);
             ButtonEliminarAuto.Name = "ButtonEliminarAuto";
-            ButtonEliminarAuto.Size = new Size(88, 28);
+            ButtonEliminarAuto.Size = new Size(103, 28);
             ButtonEliminarAuto.TabIndex = 7;
             ButtonEliminarAuto.Text = "Eliminar";
             ButtonEliminarAuto.TextAlign = ContentAlignment.MiddleLeft;
@@ -163,16 +194,17 @@
             // ButtonEditar
             // 
             ButtonEditar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            ButtonEditar.BackColor = Color.FromArgb(6, 1, 9);
+            ButtonEditar.BackColor = Color.Transparent;
+            ButtonEditar.FlatAppearance.BorderColor = Color.FromArgb(115, 108, 122);
             ButtonEditar.FlatStyle = FlatStyle.Flat;
             ButtonEditar.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            ButtonEditar.ForeColor = Color.FromArgb(242, 242, 242);
-            ButtonEditar.IconChar = FontAwesome.Sharp.IconChar.Pencil;
-            ButtonEditar.IconColor = Color.FromArgb(242, 242, 242);
+            ButtonEditar.ForeColor = Color.FromArgb(19, 10, 29);
+            ButtonEditar.IconChar = FontAwesome.Sharp.IconChar.UserPen;
+            ButtonEditar.IconColor = Color.FromArgb(19, 10, 29);
             ButtonEditar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             ButtonEditar.IconSize = 24;
             ButtonEditar.ImageAlign = ContentAlignment.MiddleRight;
-            ButtonEditar.Location = new Point(174, 512);
+            ButtonEditar.Location = new Point(866, 319);
             ButtonEditar.Name = "ButtonEditar";
             ButtonEditar.Size = new Size(103, 28);
             ButtonEditar.TabIndex = 6;
@@ -181,38 +213,39 @@
             ButtonEditar.UseVisualStyleBackColor = false;
             ButtonEditar.Click += ButtonEditar_Click;
             // 
-            // ButtonAgregarAuto
+            // ButtonAgregar
             // 
-            ButtonAgregarAuto.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            ButtonAgregarAuto.BackColor = Color.FromArgb(6, 1, 9);
-            ButtonAgregarAuto.FlatStyle = FlatStyle.Flat;
-            ButtonAgregarAuto.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            ButtonAgregarAuto.ForeColor = Color.FromArgb(242, 242, 242);
-            ButtonAgregarAuto.IconChar = FontAwesome.Sharp.IconChar.PlusSquare;
-            ButtonAgregarAuto.IconColor = Color.FromArgb(242, 242, 242);
-            ButtonAgregarAuto.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            ButtonAgregarAuto.IconSize = 24;
-            ButtonAgregarAuto.ImageAlign = ContentAlignment.MiddleRight;
-            ButtonAgregarAuto.Location = new Point(65, 512);
-            ButtonAgregarAuto.Name = "ButtonAgregarAuto";
-            ButtonAgregarAuto.Size = new Size(103, 28);
-            ButtonAgregarAuto.TabIndex = 5;
-            ButtonAgregarAuto.Text = "Agregar";
-            ButtonAgregarAuto.TextAlign = ContentAlignment.MiddleLeft;
-            ButtonAgregarAuto.UseVisualStyleBackColor = false;
-            ButtonAgregarAuto.Click += ButtonAgregarAuto_Click;
+            ButtonAgregar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            ButtonAgregar.BackColor = Color.FromArgb(109, 40, 217);
+            ButtonAgregar.FlatAppearance.BorderSize = 0;
+            ButtonAgregar.FlatStyle = FlatStyle.Flat;
+            ButtonAgregar.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
+            ButtonAgregar.ForeColor = Color.FromArgb(242, 242, 242);
+            ButtonAgregar.IconChar = FontAwesome.Sharp.IconChar.UserPlus;
+            ButtonAgregar.IconColor = Color.FromArgb(242, 242, 242);
+            ButtonAgregar.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            ButtonAgregar.IconSize = 26;
+            ButtonAgregar.ImageAlign = ContentAlignment.MiddleRight;
+            ButtonAgregar.Location = new Point(866, 285);
+            ButtonAgregar.Name = "ButtonAgregar";
+            ButtonAgregar.Size = new Size(103, 28);
+            ButtonAgregar.TabIndex = 5;
+            ButtonAgregar.Text = "Agregar";
+            ButtonAgregar.TextAlign = ContentAlignment.MiddleLeft;
+            ButtonAgregar.UseVisualStyleBackColor = false;
+            ButtonAgregar.Click += ButtonAgregar_Click;
             // 
             // ButtonBuscar
             // 
             ButtonBuscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            ButtonBuscar.BackColor = Color.FromArgb(6, 1, 9);
+            ButtonBuscar.BackColor = Color.FromArgb(31, 31, 35);
             ButtonBuscar.FlatStyle = FlatStyle.Popup;
             ButtonBuscar.ForeColor = Color.FromArgb(242, 242, 242);
             ButtonBuscar.IconChar = FontAwesome.Sharp.IconChar.Search;
             ButtonBuscar.IconColor = Color.FromArgb(242, 242, 242);
             ButtonBuscar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             ButtonBuscar.IconSize = 20;
-            ButtonBuscar.Location = new Point(885, 170);
+            ButtonBuscar.Location = new Point(817, 260);
             ButtonBuscar.Name = "ButtonBuscar";
             ButtonBuscar.Size = new Size(36, 25);
             ButtonBuscar.TabIndex = 4;
@@ -224,10 +257,10 @@
             textBoxBuscar.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxBuscar.Font = new Font("Segoe UI", 10F);
             textBoxBuscar.ForeColor = Color.FromArgb(28, 28, 27);
-            textBoxBuscar.Location = new Point(65, 170);
+            textBoxBuscar.Location = new Point(22, 260);
             textBoxBuscar.Name = "textBoxBuscar";
-            textBoxBuscar.PlaceholderText = "¿Qué estás buscando?...";
-            textBoxBuscar.Size = new Size(820, 25);
+            textBoxBuscar.PlaceholderText = " Escriba el cliente que desea encontrar...";
+            textBoxBuscar.Size = new Size(797, 25);
             textBoxBuscar.TabIndex = 3;
             textBoxBuscar.TextChanged += textBoxFiltrarAuto_TextChanged;
             // 
@@ -240,35 +273,54 @@
             dataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             dataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            dataGridView.BackgroundColor = Color.FromArgb(242, 242, 242);
+            dataGridView.BackgroundColor = Color.FromArgb(245, 245, 244);
+            dataGridView.BorderStyle = BorderStyle.None;
+            dataGridView.CellBorderStyle = DataGridViewCellBorderStyle.None;
+            dataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle17.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle17.BackColor = Color.FromArgb(24, 24, 27);
+            dataGridViewCellStyle17.Font = new Font("Segoe UI", 10F);
+            dataGridViewCellStyle17.ForeColor = Color.FromArgb(248, 250, 252);
+            dataGridViewCellStyle17.SelectionBackColor = Color.FromArgb(24, 24, 27);
+            dataGridViewCellStyle17.SelectionForeColor = Color.FromArgb(248, 250, 252);
+            dataGridViewCellStyle17.WrapMode = DataGridViewTriState.True;
+            dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle17;
             dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView.GridColor = Color.FromArgb(20, 21, 20);
-            dataGridView.Location = new Point(65, 201);
+            dataGridViewCellStyle18.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle18.BackColor = Color.FromArgb(24, 24, 27);
+            dataGridViewCellStyle18.Font = new Font("Segoe UI", 10F);
+            dataGridViewCellStyle18.ForeColor = Color.FromArgb(248, 250, 252);
+            dataGridViewCellStyle18.SelectionBackColor = Color.FromArgb(24, 24, 27);
+            dataGridViewCellStyle18.SelectionForeColor = Color.FromArgb(248, 250, 252);
+            dataGridViewCellStyle18.WrapMode = DataGridViewTriState.False;
+            dataGridView.DefaultCellStyle = dataGridViewCellStyle18;
+            dataGridView.GridColor = Color.FromArgb(24, 24, 27);
+            dataGridView.Location = new Point(22, 285);
             dataGridView.MultiSelect = false;
             dataGridView.Name = "dataGridView";
             dataGridView.ReadOnly = true;
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView.Size = new Size(856, 305);
+            dataGridView.Size = new Size(831, 264);
             dataGridView.TabIndex = 2;
             dataGridView.SelectionChanged += dataGridViewAutos_SelectionChanged;
             // 
             // panel1
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            panel1.BackColor = Color.FromArgb(6, 1, 9);
+            panel1.BackColor = Color.FromArgb(19, 10, 29);
             panel1.Controls.Add(pictureBox1);
             panel1.Controls.Add(ButtonClose);
             panel1.Location = new Point(-4, -7);
             panel1.Name = "panel1";
-            panel1.Size = new Size(986, 110);
+            panel1.Size = new Size(986, 146);
             panel1.TabIndex = 0;
             // 
             // pictureBox1
             // 
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(40, 10);
+            pictureBox1.Location = new Point(17, 10);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(105, 100);
+            pictureBox1.Size = new Size(133, 133);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 9;
             pictureBox1.TabStop = false;
@@ -286,7 +338,7 @@
             ButtonClose.IconFont = FontAwesome.Sharp.IconFont.Auto;
             ButtonClose.IconSize = 24;
             ButtonClose.ImageAlign = ContentAlignment.MiddleRight;
-            ButtonClose.Location = new Point(917, 15);
+            ButtonClose.Location = new Point(917, 10);
             ButtonClose.Name = "ButtonClose";
             ButtonClose.Size = new Size(65, 28);
             ButtonClose.TabIndex = 8;
@@ -338,6 +390,7 @@
             // comboBoxTipoUsuario
             // 
             comboBoxTipoUsuario.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            comboBoxTipoUsuario.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxTipoUsuario.FormattingEnabled = true;
             comboBoxTipoUsuario.Location = new Point(197, 215);
             comboBoxTipoUsuario.Name = "comboBoxTipoUsuario";
@@ -361,6 +414,7 @@
             textBoxEmail.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             textBoxEmail.Location = new Point(197, 289);
             textBoxEmail.Name = "textBoxEmail";
+            textBoxEmail.PlaceholderText = "usuario@ejemplo.com";
             textBoxEmail.Size = new Size(174, 23);
             textBoxEmail.TabIndex = 36;
             // 
@@ -437,6 +491,7 @@
             textBoxTelefono.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             textBoxTelefono.Location = new Point(197, 400);
             textBoxTelefono.Name = "textBoxTelefono";
+            textBoxTelefono.PlaceholderText = "Ej: +54 9 11 1234-5678";
             textBoxTelefono.Size = new Size(174, 23);
             textBoxTelefono.TabIndex = 32;
             // 
@@ -445,6 +500,7 @@
             textBoxInstagram.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             textBoxInstagram.Location = new Point(197, 363);
             textBoxInstagram.Name = "textBoxInstagram";
+            textBoxInstagram.PlaceholderText = "@usuario_instagram";
             textBoxInstagram.Size = new Size(174, 23);
             textBoxInstagram.TabIndex = 30;
             // 
@@ -453,6 +509,7 @@
             textBoxNombre.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             textBoxNombre.Location = new Point(197, 328);
             textBoxNombre.Name = "textBoxNombre";
+            textBoxNombre.PlaceholderText = "Ej: Juan Pérez";
             textBoxNombre.Size = new Size(174, 23);
             textBoxNombre.TabIndex = 26;
             // 
@@ -461,6 +518,7 @@
             textBoxDNI.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             textBoxDNI.Location = new Point(197, 252);
             textBoxDNI.Name = "textBoxDNI";
+            textBoxDNI.PlaceholderText = "Ej: 45678912";
             textBoxDNI.Size = new Size(174, 23);
             textBoxDNI.TabIndex = 24;
             // 
@@ -574,7 +632,7 @@
         private FontAwesome.Sharp.IconButton ButtonBuscar;
         private TextBox textBoxBuscar;
         private DataGridView dataGridView;
-        private FontAwesome.Sharp.IconButton ButtonAgregarAuto;
+        private FontAwesome.Sharp.IconButton ButtonAgregar;
         private FontAwesome.Sharp.IconButton ButtonEliminarAuto;
         private FontAwesome.Sharp.IconButton ButtonEditar;
         private ContextMenuStrip contextMenuStripLimpiar;
@@ -601,5 +659,7 @@
         private TextBox textBoxEmail;
         private Label label7;
         private ComboBox comboBoxTipoUsuario;
+        private Label label8;
+        private Label label9;
     }
 }
