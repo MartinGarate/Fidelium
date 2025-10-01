@@ -1,9 +1,11 @@
 ﻿@page "/clientes"
+@using System.Diagnostics
 @inject IGenericService<Cliente> _serviceCliente
 @inject IGenericService<Usuario> _serviceUsuario
 @inject SweetAlertService sweetAlert
 @inject FirebaseAuthService FirebaseAuthService // Servicio para verificar autenticación
 @inject NavigationManager NavigationManager     // Servicio para redirigir
+@inject ILogger<Clientes> _logger
 
 <PageTitle>Clientes</PageTitle>
 
@@ -173,9 +175,18 @@
         }
 
         // Si está autenticado, carga los datos normalmente
-        clientes = (await _serviceCliente.GetAllAsync(null))?.ToList();
-        usuarios = (await _serviceUsuario.GetAllAsync(null))?.ToList();
-        // await Task.WhenAll(clientes, usuarios);
+        var stopwach = Stopwatch.StartNew();
+        var clienteTask = _serviceCliente.GetAllAsync(null);
+        var usuarioTask = _serviceUsuario.GetAllAsync(null);
+
+        await Task.WhenAll(clienteTask, usuarioTask);
+
+        stopwach.Stop();
+        _logger.LogInformation("Tiempo de carga de productos y categorias: {ElapsedMilliseconds} ms", stopwach.ElapsedMilliseconds);
+
+
+        //clientes = (await _serviceCliente.GetAllAsync(null))?.ToList();
+        //usuarios = (await _serviceUsuario.GetAllAsync(null))?.ToList();
     }
 
 
