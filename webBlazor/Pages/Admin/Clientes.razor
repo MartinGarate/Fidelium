@@ -180,6 +180,8 @@
         var usuarioTask = _serviceUsuario.GetAllAsync(null);
 
         await Task.WhenAll(clienteTask, usuarioTask);
+        clientes = (await clienteTask)?.ToList();
+        usuarios = (await usuarioTask)?.ToList();
 
         stopwach.Stop();
         _logger.LogInformation("Tiempo de carga de productos y categorias: {ElapsedMilliseconds} ms", stopwach.ElapsedMilliseconds);
