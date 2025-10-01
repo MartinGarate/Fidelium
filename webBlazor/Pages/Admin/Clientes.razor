@@ -175,6 +175,7 @@
         // Si está autenticado, carga los datos normalmente
         clientes = (await _serviceCliente.GetAllAsync(null))?.ToList();
         usuarios = (await _serviceUsuario.GetAllAsync(null))?.ToList();
+        // await Task.WhenAll(clientes, usuarios);
     }
 
 

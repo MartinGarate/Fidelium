@@ -38,9 +38,13 @@ namespace webBlazor.Services
 
         public async Task SignOut()
         {
+            //Console.WriteLine("Ejecutando SignOut...");
             await _jsRuntime.InvokeVoidAsync("firebaseAuth.signOut");
+            //Console.WriteLine("Sesión cerrada en Firebase.");
             await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", UserIdKey);
+            //Console.WriteLine("Clave eliminada de localStorage.");
             OnChangeLogin?.Invoke();
+            //Console.WriteLine("Evento OnChangeLogin invocado.");
         }
 
         public async Task<string> GetUserId()
@@ -51,6 +55,7 @@ namespace webBlazor.Services
         public async Task<bool> IsUserAuthenticated()
         {
             var userId = await GetUserId();
+            Console.WriteLine($"Valor recuperado de localStorage: {userId}");
             return !string.IsNullOrEmpty(userId);
         }
 

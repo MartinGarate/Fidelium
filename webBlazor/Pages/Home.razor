@@ -22,18 +22,23 @@
 
 @code {
     /// Al hacer clic en "Comenzar ahora", verifica si el usuario está autenticado.
-    /// Si está autenticado, navega a /clientes. Si no, navega a /login.
+    /// Si está autenticado, navega a /clientes. Si no, navega a /login obligatoriamente.
 
     private async Task ComenzarAhora()
     {
         var isAuthenticated = await FirebaseAuthService.IsUserAuthenticated();
-        if (isAuthenticated)
+        Console.WriteLine($"Usuario autenticado: {isAuthenticated}");
+
+        if (!isAuthenticated)
         {
-            NavigationManager.NavigateTo("/clientes");
+            Console.WriteLine("Redirigiendo a /login");
+            // Redirige al usuario a la página de inicio de sesión obligatoriamente
+            NavigationManager.NavigateTo("/login", forceLoad: true);
+            return;
         }
-        else
-        {
-            NavigationManager.NavigateTo("/login");
-        }
+
+        Console.WriteLine("Redirigiendo a /clientes");
+        // Si está autenticado, navega a la página de clientes
+        NavigationManager.NavigateTo("/clientes");
     }
 }
