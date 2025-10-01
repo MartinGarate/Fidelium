@@ -32,11 +32,13 @@ namespace Backend.Controllers
 
         }
 
-        // GET: api/Clientes/5
+        // GET: api/Cliente/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Cliente>> GetCliente(int id)
         {
-            var cliente = await _context.Clientes.FindAsync(id);
+            var cliente = await _context.Clientes
+                .Include(c => c.Usuario)
+                .FirstOrDefaultAsync(c => c.ID == id);
 
             if (cliente == null)
             {

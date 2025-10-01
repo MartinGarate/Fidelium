@@ -1,51 +1,28 @@
 ﻿@inherits LayoutComponentBase
-@inject AuthenticationStateService authStateService
 @inject NavigationManager navigationManager
 
 <PageTitle>Fidelium</PageTitle>
 
-@if (!authStateService.IsAuthenticated && !IsLoginPage)
-{
-    <div class="loading-container">
-        <div class="loading-spinner"></div>
-        @{
-            navigationManager.NavigateTo("/login", forceLoad: false);
-        }
-    </div>
-}
-else
-{
-    <div class="page">
-        <NavMenu />
-        <main class="@GetMainContentClass()">
-            @Body
-        </main>
-    </div>
-}
+<div class="page">
+    <NavMenu />
+    <main class="@ObtenerClaseContenidoPrincipal()">
+        @Body
+    </main>
+</div>
 
 @code {
-    private bool IsLoginPage =>
-        navigationManager.Uri.EndsWith("/login", StringComparison.OrdinalIgnoreCase) ||
-        navigationManager.Uri.EndsWith("/signin", StringComparison.OrdinalIgnoreCase);
-
-    private bool IsHomePage =>
+    /// Determina si la página actual es la página de inicio.
+    /// Se considera página de inicio si la URL termina en "/" o en "/home".
+    private bool EsPaginaInicio =>
         navigationManager.Uri.EndsWith("/", StringComparison.OrdinalIgnoreCase) ||
         navigationManager.Uri.ToLower().EndsWith("/home", StringComparison.OrdinalIgnoreCase);
 
-    private string GetMainContentClass()
-    {
-        return IsHomePage ? "main-content-home" : "main-content";
-    }
 
-    protected override void OnInitialized()
-    {
-        // Suscribirse a cambios en el estado de autenticación
-        authStateService.OnAuthenticationStateChanged += StateHasChanged;
-    }
+    /// Devuelve la clase CSS que se aplicará al contenido principal.
+    /// Si es la página de inicio, retorna "main-content-home", de lo contrario "main-content".
 
-    public void Dispose()
+    private string ObtenerClaseContenidoPrincipal()
     {
-        // Limpieza de la suscripción
-        authStateService.OnAuthenticationStateChanged -= StateHasChanged;
+        return EsPaginaInicio ? "main-content-home" : "main-content";
     }
 }

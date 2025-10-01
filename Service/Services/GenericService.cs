@@ -1,4 +1,5 @@
 ﻿using Service.Interfaces;
+using Service.Models;
 using Service.Utils;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -17,8 +18,8 @@ namespace Service.Services
         {
             _httpClient = new HttpClient();
             _options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-            _endpoint = Properties.Resources.UrlApi + ApiEndpoints.GetEndpoint(typeof(T).Name);
-            //_endpoint = Properties.Resources.UrlApiLocal + ApiEndpoints.GetEndpoint(typeof(T).Name);
+            //_endpoint = Properties.Resources.UrlApi + ApiEndpoints.GetEndpoint(typeof(T).Name);
+            _endpoint = Properties.Resources.UrlApiLocal + ApiEndpoints.GetEndpoint(typeof(T).Name);
 
         }
         public async Task<T?> AddAsync(T? entity)
@@ -74,7 +75,16 @@ namespace Service.Services
             {
                 throw new Exception($"Error al obtener los datos: {response.StatusCode}");
             }
-            return JsonSerializer.Deserialize<T>(content, _options);
+            var entidad = JsonSerializer.Deserialize<T>(content, _options);
+
+            // Si T es Cliente, inicializa Usuario si está nulo
+            if (typeof(T) == typeof(Cliente) && entidad is Cliente cliente && cliente.Usuario == null)
+            {
+                cliente.Usuario = new Usuario();
+                return entidad;
+            }
+
+            return entidad;
         }
 
         public async Task<bool> RestoreAsync(int id)

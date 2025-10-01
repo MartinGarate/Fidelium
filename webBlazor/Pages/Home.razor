@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject NavigationManager NavigationManager
+@inject FirebaseAuthService FirebaseAuthService
 
 <PageTitle>Inicio - Fidelium</PageTitle>
 
@@ -10,7 +11,7 @@
         Simplifica tus operaciones y aumenta la satisfacción de tus clientes.
     </p>
     <div class="hero-actions">
-        <button class="btn btn-primary" @onclick="@(() => NavigationManager.NavigateTo("/clientes"))">
+        <button class="btn btn-primary" @onclick="ComenzarAhora">
             Comenzar ahora
         </button>
         <button class="btn btn-link" @onclick="@(() => NavigationManager.NavigateTo("/about"))">
@@ -18,3 +19,21 @@
         </button>
     </div>
 </div>
+
+@code {
+    /// Al hacer clic en "Comenzar ahora", verifica si el usuario está autenticado.
+    /// Si está autenticado, navega a /clientes. Si no, navega a /login.
+
+    private async Task ComenzarAhora()
+    {
+        var isAuthenticated = await FirebaseAuthService.IsUserAuthenticated();
+        if (isAuthenticated)
+        {
+            NavigationManager.NavigateTo("/clientes");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+}

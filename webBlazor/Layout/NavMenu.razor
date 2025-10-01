@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager NavigationManager
-@inject AuthenticationStateService AuthStateService
 @inject FirebaseAuthService FirebaseAuthService
 @inject SweetAlertService SweetAlert
+@inject AuthStateService AuthStateService // Servicio de estado global
 
 <nav class="navbar">
     <div class="navbar-container">
@@ -9,17 +9,24 @@
             <i class="fas fa-book-open me-2"></i>
             Fidelium
         </a>
-
         <div class="navbar-right">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <i class="fas fa-home me-2"></i> Inicio
             </NavLink>
-
-            @if (AuthStateService.IsAuthenticated)
+            @if (isAuthenticated)
             {
+                // Botón para cerrar sesión si el usuario está autenticado
                 <button @onclick="HandleLogout" class="logout-btn">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Cerrar sesión</span>
+                </button>
+            }
+            else
+            {
+                // Botón para iniciar sesión si el usuario NO está autenticado
+                <button @onclick="IrALogin" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Iniciar sesión</span>
                 </button>
             }
         </div>
@@ -27,30 +34,49 @@
 </nav>
 
 @code {
+    // Variable que indica si el usuario está autenticado
+    private bool isAuthenticated;
+
+    // Al inicializar el componente, consulta el estado y se suscribe al evento de cambio
     protected override void OnInitialized()
     {
-        // Forzar actualización cuando cambie el estado de autenticación
-        AuthStateService.OnAuthenticationStateChanged += StateHasChanged;
+        isAuthenticated = AuthStateService.IsAuthenticated;
+        AuthStateService.OnAuthenticationStateChanged += ActualizarEstado;
     }
 
+    // Actualiza el estado y refresca la UI cuando cambia la autenticación
+    private void ActualizarEstado()
+    {
+        isAuthenticated = AuthStateService.IsAuthenticated;
+        StateHasChanged();
+    }
+
+    // Cancela la suscripción al evento al destruir el componente
+    public void Dispose()
+    {
+        AuthStateService.OnAuthenticationStateChanged -= ActualizarEstado;
+    }
+
+    // Redirige a la página de login
+    private void IrALogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+
+    // Maneja el cierre de sesión del usuario
     private async Task HandleLogout()
     {
         try
         {
-            await FirebaseAuthService.SignOut();
-            AuthStateService.SetAuthenticationState(false);
+            await FirebaseAuthService.SignOut(); // Cierra sesión en Firebase
+            AuthStateService.SetAuthenticationState(false); // Actualiza el estado global
+            isAuthenticated = false; // Actualiza la variable local
             await SweetAlert.FireAsync("¡Hasta pronto!", "Has cerrado sesión correctamente.", SweetAlertIcon.Success);
-            NavigationManager.NavigateTo("/login");
+            NavigationManager.NavigateTo("/"); // Redirige al inicio
         }
         catch (Exception)
         {
             await SweetAlert.FireAsync("Error", "No se pudo cerrar la sesión.", SweetAlertIcon.Error);
         }
-    }
-
-    public void Dispose()
-    {
-        // Limpieza del evento cuando se destruye el componente
-        AuthStateService.OnAuthenticationStateChanged -= StateHasChanged;
     }
 }
