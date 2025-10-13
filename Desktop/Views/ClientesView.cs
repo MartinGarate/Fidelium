@@ -1,6 +1,8 @@
-﻿using Service.Enums;
+﻿using Desktop.Utils.HelpersDesktop;
+using Service.Enums;
 using Service.Models;
 using Service.Services;
+using Service.Utils.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +13,6 @@ using System.Net.Http.Json;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Forms;
 
 namespace Desktop.Views
@@ -28,325 +29,324 @@ namespace Desktop.Views
         {
             InitializeComponent();
             ConfigurarControlesIniciales();
-            CargarDatosIniciales();
+            _ = GetAllData();
         }
 
+
+        // Métodos principales
+        private async Task<bool> GuardarEntidades(Cliente cliente, Usuario usuario)
+        {
+            // Si estamos editando un cliente existente
+            if (_currentCliente != null)
+            {
+                if (!await _usuarioService.UpdateAsync(usuario))
+                    throw new Exception("Error al actualizar el usuario");
+
+                if (!await _clienteService.UpdateAsync(cliente))
+                    throw new Exception("Error al actualizar el cliente");
+            }
+            else // Si estamos creando un nuevo cliente
+            {
+                // Verificar nuevamente si existe un usuario con el mismo DNI justo antes de crear
+                var existingUser = _usuarios.FirstOrDefault(u => u.DNI == usuario.DNI);
+                if (existingUser != null)
+                    throw new Exception("Ya existe un usuario con este DNI");
+
+                var nuevoUsuario = await _usuarioService.AddAsync(usuario)
+                    ?? throw new Exception("Error al crear el usuario");
+
+                cliente.UsuarioID = nuevoUsuario.ID;
+                var nuevoCliente = await _clienteService.AddAsync(cliente)
+                    ?? throw new Exception("Error al crear el cliente");
+            }
+
+            return true;
+        }
+        private (Cliente cliente, Usuario usuario) CrearEntidades()
+        {
+            // Método que crea objetos Cliente y Usuario desde los campos del formulario
+            // Retorna una    tupla     (dos objetos relacionados en una sola devolución)
+            var cliente = new Cliente
+            {
+                ID = _currentCliente?.ID ?? 0,          // Si hay cliente actual usa su ID, si no 0
+                UsuarioID = _currentCliente?.UsuarioID ?? 0, // Lo mismo para UsuarioID
+                Telefono = textBoxTelefono.Text?.Trim(),
+                Instagram = textBoxInstagram.Text?.Trim()
+            };
+
+            var usuario = new Usuario
+            {
+                ID = _currentCliente?.UsuarioID ?? 0,
+                DNI = textBoxDNI.Text,
+                Nombre = textBoxNombre.Text.Trim(),
+                Email = textBoxEmail.Text.Trim(),
+                TipoUsuario = TipoUsuarioEnum.Usuario
+            };
+
+            return (cliente, usuario); // Devuelve ambos objetos en una tupla
+        }
+        private bool ValidarFormulario()
+        {
+            // Método que valida todos los campos del formulario
+            // Usa la clase Validations para reglas de validación reutilizables
+            if (!Validations.Strings.HasValue(textBoxDNI.Text) ||
+                !Validations.Strings.HasValue(textBoxNombre.Text) ||
+                !Validations.Strings.HasValue(textBoxEmail.Text))
+            {
+                MessageBox.Show("Todos los campos marcados son obligatorios.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            // Valida formato de DNI usando el helper
+            if (!Validations.Numbers.IsValidDNI(textBoxDNI.Text))
+            {
+                MessageBox.Show("El DNI debe ser un número válido.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            // Valida formato de email usando el helper
+            if (!Validations.Strings.IsValidEmail(textBoxEmail.Text))
+            {
+                MessageBox.Show("El formato del email no es válido.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            return true;
+        }
+        private void CargarDatosEnControles(Cliente cliente)
+        {
+            textBoxDNI.Text = cliente.Usuario?.DNI?.ToString() ?? "";
+            textBoxNombre.Text = cliente.Usuario?.Nombre ?? "";
+            textBoxEmail.Text = cliente.Usuario?.Email ?? "";
+            textBoxInstagram.Text = cliente.Instagram ?? "";
+            textBoxTelefono.Text = cliente.Telefono ?? "";
+        }
+        private void SetControlsEnabled(bool enabled)
+        {
+            // Lista de controles a deshabilitar durante operaciones
+            var controls = new Control[]
+            {
+                buttonRestaurar,
+                ButtonAgregar,
+                ButtonBuscar,
+                ButtonCancelar,
+                ButtonClose,
+                ButtonEditar,
+                ButtonEliminar,
+                ButtonGuardar,
+                checkBox_VerEliminados,
+                textBoxBuscar,
+                textBoxDNI,
+                textBoxNombre,
+                textBoxEmail,
+                textBoxInstagram,
+                textBoxTelefono,
+                dataGridView // Agregar también el grid
+            };
+
+            foreach (var control in controls)
+            {
+                control.Enabled = enabled;
+            }
+
+            // Mostrar cursor de espera
+            Cursor = enabled ? Cursors.Default : Cursors.WaitCursor;
+        }
+
+
+        // Poniendo a prueba: Principios de Responsabilidades Únicas (SRP) :D
         private void ConfigurarControlesIniciales()
         {
             textBoxBuscar.ContextMenuStrip = contextMenuStripLimpiar;
             buttonRestaurar.Visible = false;
-
-            // Configurar el ComboBox de TipoUsuario
-            comboBoxTipoUsuario.DataSource = Enum.GetValues(typeof(TipoUsuarioEnum));
-            comboBoxTipoUsuario.SelectedIndex = -1;
+            DataGridHelpers.SetupBasicGrid(dataGridView);
         }
-
-        private async void CargarDatosIniciales()
-        {
-            try
-            {
-                Cursor = Cursors.WaitCursor; // Cambia el cursor a "espera" mientras se cargan los datos 
-                await GetAllData();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar los datos iniciales: {ex.Message}",
-                               "Error",
-                               MessageBoxButtons.OK,
-                               MessageBoxIcon.Error);
-            }
-            finally
-            {
-                Cursor = Cursors.Default;
-            }
-        }
-
-        private void ConfigurarDataGridView()
-        {
-            // Oculta las columnas que no quieres mostrar
-            if (dataGridView.Columns.Contains("ID"))
-                dataGridView.Columns["ID"].Visible = false;
-            if (dataGridView.Columns.Contains("UsuarioID"))
-                dataGridView.Columns["UsuarioID"].Visible = false;
-            if (dataGridView.Columns.Contains("IsDeleted"))
-                dataGridView.Columns["IsDeleted"].Visible = false;
-        }
-
-        private async Task GetAllData()
-        {
-            dataGridView.Enabled = false; // Deshabilita el DataGridView mientras se cargan los datos
-            try
-            {
-                if (checkBox_VerEliminados.Checked)
-                    _clientes = await _clienteService.GetAllDeletedsAsync() ?? new List<Cliente>(); // Obtener todos los clientes, incluidos los eliminados
-                else
-                    _clientes = await _clienteService.GetAllAsync() ?? new List<Cliente>(); // Obtener solo los clientes activos
-
-                _usuarios = await _usuarioService.GetAllAsync() ?? new List<Usuario>(); // Obtener todos los usuarios
-
-                if (_clientes == null || _usuarios == null)
-                {
-                    throw new Exception("No se pudieron cargar los datos del servidor"); // Manejo de error si la lista es null
-                }
-
-                ActualizarGridView();
-            }
-            catch (Exception)
-            {
-                throw; // Re-lanzar la excepción para que sea manejada en el método llamante
-            }
-            finally
-            {
-                dataGridView.Enabled = true; // Asegúrate de que el DataGridView esté habilitado después de la carga
-            }
-        }
-
-        private void ActualizarGridView()
-        {
-            // Asocia el usuario correspondiente a cada cliente
-            foreach (var cliente in _clientes)
-            {
-                cliente.Usuario = _usuarios.FirstOrDefault(u => u.ID == cliente.UsuarioID);
-            }
-
-            var datosParaGrid = _clientes.Select(c => new
-            {
-                c.ID,
-                DNI = c.Usuario?.DNI?.ToString() ?? "Sin DNI",
-                Nombre = c.Usuario?.Nombre ?? "Sin nombre",
-                Email = c.Usuario?.Email ?? "Sin email",
-                Instagram = c.Instagram ?? "",
-                ClienteTelefono = c.Telefono ?? "",
-                Eliminado = c.IsDeleted
-            }).ToList();
-
-            dataGridView.DataSource = null;
-            dataGridView.DataSource = datosParaGrid;
-            ConfigurarDataGridView();
-        }
-
-        private async void ButtonEliminarAuto_Click(object sender, EventArgs e)
-        {
-            if (dataGridView.RowCount > 0 && dataGridView.SelectedRows.Count > 0)
-            {
-                int idCliente = (int)dataGridView.SelectedRows[0].Cells["ID"].Value;
-                Cliente clienteSeleccionado = _clientes.First(c => c.ID == idCliente);
-                var respuesta = MessageBox.Show($"¿Seguro que quieres borrar a {clienteSeleccionado.Usuario?.Nombre}?", "Borrar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (respuesta == DialogResult.Yes)
-                {
-                    if (await _clienteService.DeleteAsync(clienteSeleccionado.ID))
-                    {
-                        MessageBox.Show($"{clienteSeleccionado.Usuario?.Nombre} ha sido borrado correctamente", "Borrado correctamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        await GetAllData();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error al borrar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Debe de seleccionar un campo", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void dataGridViewAutos_SelectionChanged(object sender, EventArgs e)
-        {
-            // Puedes implementar lógica de selección si lo necesitas
-        }
-
         private void LimpiarCampos()
         {
             textBoxNombre.Clear();
             textBoxEmail.Clear();
             textBoxInstagram.Clear();
             textBoxTelefono.Clear();
-            comboBoxTipoUsuario.DataSource = Enum.GetValues(typeof(TipoUsuarioEnum));
-            comboBoxTipoUsuario.SelectedIndex = -1; // No seleccionar nada por defecto
             textBoxDNI.Clear();
 
         }
-
-        public void limpiarToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ConfigurarDataGridView()
         {
-            LimpiarCampos();
+            DataGridHelpers.HideColumns(dataGridView, "ID", "UsuarioID", "IsDeleted");
         }
-
-        private void textBoxFiltrarAuto_TextChanged(object sender, EventArgs e)
+        private void ActualizarGridView()
         {
-            if (string.IsNullOrWhiteSpace(textBoxBuscar.Text))
+            foreach (var cliente in _clientes)
             {
-                ActualizarGridView();
+                cliente.Usuario = _usuarios.FirstOrDefault(u => u.ID == cliente.UsuarioID); //Ejemplo: Si Cliente.UsuarioID = 5, busca el Usuario donde Usuario.ID = 5
             }
-        }
 
-        private void ButtonCancelar_Click(object sender, EventArgs e)
-        {
-            tabControl.SelectedTab = tabPageLista;
-            LimpiarCampos();
-        }
+            var datosParaGrid = _clientes.Select(c => new
+            {
+                c.ID,                                              // ID del cliente
+                DNI = c.Usuario?.DNI?.ToString() ?? "Sin DNI",    // Datos del usuario asociado
+                Nombre = c.Usuario?.Nombre ?? "Sin nombre",        // Datos del usuario asociado
+                Email = c.Usuario?.Email ?? "Sin email",          // Datos del usuario asociado
+                Instagram = c.Instagram ?? "",                     // Datos propios del cliente
+                ClienteTelefono = c.Telefono ?? "",               // Datos propios del cliente
+                Eliminado = c.IsDeleted
+            }).ToList();
 
-        private void ButtonEditar_Click(object sender, EventArgs e)
+            dataGridView.DataSource = null; // Limpia la fuente de datos antes de asignar una nueva
+            dataGridView.DataSource = datosParaGrid; // Asigna la nueva fuente de datos
+            ConfigurarDataGridView();
+        }
+        private async Task GetAllData(string? filtro = null)
         {
-            labelAccion.Text = "Editar Cliente";
             try
             {
-                // Verificar que haya un cliente seleccionado
-                if (dataGridView.RowCount == 0 || dataGridView.SelectedRows.Count == 0)
-                {
-                    MessageBox.Show("Debe seleccionar un cliente para modificarlo",
-                                  "Error",
-                                  MessageBoxButtons.OK,
-                                  MessageBoxIcon.Error);
-                    return;
-                }
+                SetControlsEnabled(false);
 
-                // Obtener y validar el ID del cliente
-                if (!int.TryParse(dataGridView.SelectedRows[0].Cells["ID"].Value?.ToString(), out int idCliente))
-                {
-                    MessageBox.Show("Error al obtener el ID del cliente",
-                                  "Error",
-                                  MessageBoxButtons.OK,
-                                  MessageBoxIcon.Error);
-                    return;
-                }
+                if (checkBox_VerEliminados.Checked)
+                    _clientes = await _clienteService.GetAllDeletedsAsync(filtro) ?? new List<Cliente>();
+                else
+                    _clientes = await _clienteService.GetAllAsync(filtro) ?? new List<Cliente>();
 
-                // Buscar el cliente seleccionado
-                _currentCliente = _clientes.FirstOrDefault(c => c.ID == idCliente);
-                if (_currentCliente == null)
-                {
-                    MessageBox.Show("No se encontró el cliente seleccionado",
-                                  "Error",
-                                  MessageBoxButtons.OK,
-                                  MessageBoxIcon.Error);
-                    return;
-                }
+                _usuarios = await _usuarioService.GetAllAsync() ?? new List<Usuario>();
 
-                // Llenar los campos con la información del cliente
-                textBoxDNI.Text = _currentCliente.Usuario?.DNI?.ToString() ?? "";
-                textBoxNombre.Text = _currentCliente.Usuario?.Nombre ?? "";
-                textBoxEmail.Text = _currentCliente.Usuario?.Email ?? "";
-                textBoxInstagram.Text = _currentCliente.Instagram ?? "";
-                textBoxTelefono.Text = _currentCliente.Telefono ?? "";
-                comboBoxTipoUsuario.SelectedItem = _currentCliente.Usuario?.TipoUsuario ?? TipoUsuarioEnum.Usuario;
-
-                // Cambiar a la pestaña de edición
-                tabControl.SelectedTab = tabPageAgregar_Editar;
+                if (_clientes == null || _usuarios == null)
+                    MessageHelpers.ShowError("No se pudieron cargar los datos del servidor");
+                else
+                    ActualizarGridView();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar los datos del cliente: {ex.Message}",
-                               "Error",
-                               MessageBoxButtons.OK,
-                               MessageBoxIcon.Error);
+                MessageHelpers.ShowError($"Error al cargar datos: {ex.Message}");
             }
+            finally
+            {
+                SetControlsEnabled(true);
+            }
+        }
+
+
+
+
+        // Eventos de los controles
+        private void ButtonAgregar_Click(object sender, EventArgs e)
+        {
+            LimpiarCampos();
+            _currentCliente = null; //
+            tabControl.SelectedTab = tabPageAgregar_Editar;
+            labelAccion.Text = "Agregar Cliente";
+        }
+        private async void ButtonEditar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Deshabilitar controles mientras carga
+                SetControlsEnabled(false);
+
+                if (!DataGridHelpers.TryGetSelectedId(dataGridView, "ID", out int idCliente))
+                {
+                    MessageHelpers.ShowError("Debe seleccionar un cliente");
+                    return;
+                }
+
+                _currentCliente = _clientes.FirstOrDefault(c => c.ID == idCliente);
+                if (_currentCliente == null)
+                {
+                    MessageHelpers.ShowError("Cliente no encontrado");
+                    return;
+                }
+
+                // Cargar datos en los controles
+                CargarDatosEnControles(_currentCliente);
+
+                tabControl.SelectedTab = tabPageAgregar_Editar;
+                labelAccion.Text = "Editar Cliente";
+            }
+            catch (Exception ex)
+            {
+                MessageHelpers.ShowError($"Error: {ex.Message}");
+            }
+            finally
+            {
+                // Rehabilitar controles
+                SetControlsEnabled(true);
+            }
+        }
+        private async void ButtonEliminar_Click(object sender, EventArgs e)
+        {
+            if (!DataGridHelpers.TryGetSelectedId(dataGridView, "ID", out int idCliente))
+            {
+                MessageHelpers.ShowError("Debe seleccionar un cliente");
+                return;
+            }
+
+            var cliente = _clientes.FirstOrDefault(c => c.ID == idCliente);
+            if (cliente == null)
+            {
+                MessageHelpers.ShowError("Cliente no encontrado");
+                return;
+            }
+
+            if (await CrudHelpers.DeleteEntity(_clienteService, cliente.ID, cliente.Usuario?.Nombre ?? "Cliente"))
+            {
+                await GetAllData();
+            }
+        }
+
+        private async void buttonRestaurar_Click(object sender, EventArgs e)
+        {
+            if (!DataGridHelpers.TryGetSelectedId(dataGridView, "ID", out int idCliente))
+            {
+                MessageHelpers.ShowError("Debe seleccionar un cliente");
+                return;
+            }
+
+            var cliente = _clientes.FirstOrDefault(c => c.ID == idCliente);
+            if (cliente == null)
+            {
+                MessageHelpers.ShowError("Cliente no encontrado");
+                return;
+            }
+
+            if (await CrudHelpers.RestoreEntity(_clienteService, cliente.ID, cliente.Usuario?.Nombre ?? "Cliente"))
+            {
+                textBoxBuscar.Clear(); // Limpiar el texto de búsqueda
+                await GetAllData(); // Recargar todos los datos
+            }
+        }
+        private async void ButtonBuscar_Click(object sender, EventArgs e)
+        {
+            await GetAllData(textBoxBuscar.Text);
         }
 
         private async void ButtonGuardar_Click(object sender, EventArgs e)
         {
             try
             {
-                // 1. Validación de campos obligatorios
-                if (string.IsNullOrWhiteSpace(textBoxDNI.Text) ||
-                    string.IsNullOrWhiteSpace(textBoxNombre.Text) ||
-                    string.IsNullOrWhiteSpace(textBoxEmail.Text) ||
-                    comboBoxTipoUsuario.SelectedItem == null)
+                SetControlsEnabled(false);
+
+                if (!ValidarFormulario()) return;
+
+                // Validar DNI único antes de guardar
+                var validacionDni = await Validations.Users.ValidarDNIUnico(
+                    dni: textBoxDNI.Text,
+                    existingUsers: _usuarios,
+                    getDNI: u => u.DNI,
+                    currentUserId: _currentCliente?.UsuarioID,
+                    getUserId: u => u.ID);
+
+                if (!validacionDni.IsValid)
                 {
-                    MessageBox.Show("Todos los campos marcados son obligatorios.",
-                                  "Validación",
-                                  MessageBoxButtons.OK,
-                                  MessageBoxIcon.Warning);
+                    MessageHelpers.ShowError(validacionDni.ErrorMessage ?? "DNI duplicado");
                     return;
                 }
 
-                // 2. Validación del formato de DNI
-                if (!int.TryParse(textBoxDNI.Text, out int dniValue))
+                var (cliente, usuario) = CrearEntidades();
+                if (await GuardarEntidades(cliente, usuario))
                 {
-                    MessageBox.Show("El DNI debe ser un número válido.",
-                                  "Validación",
-                                  MessageBoxButtons.OK,
-                                  MessageBoxIcon.Warning);
-                    return;
-                }
-
-                // 3. Validación de DNI único
-                var usuarios = await _usuarioService.GetAllAsync();
-                var dniExistente = usuarios?.Any(u =>
-                    u.DNI == dniValue &&
-                    u.ID != (_currentCliente?.UsuarioID ?? 0)) ?? false;
-
-                if (dniExistente)
-                {
-                    MessageBox.Show("El DNI ingresado ya existe en el sistema.",
-                                  "Validación",
-                                  MessageBoxButtons.OK,
-                                  MessageBoxIcon.Warning);
-                    return;
-                }
-
-                // 4. Validación del formato de email
-                if (!textBoxEmail.Text.Contains("@") || !textBoxEmail.Text.Contains("."))
-                {
-                    MessageBox.Show("El formato del email no es válido.",
-                                  "Validación",
-                                  MessageBoxButtons.OK,
-                                  MessageBoxIcon.Warning);
-                    return;
-                }
-
-                Cliente clienteAGuardar = new Cliente
-                {
-                    ID = _currentCliente?.ID ?? 0,
-                    UsuarioID = _currentCliente?.UsuarioID ?? 0,
-                    Telefono = textBoxTelefono.Text?.Trim(),
-                    Instagram = textBoxInstagram.Text?.Trim()
-                };
-
-                Usuario usuarioAGuardar = new Usuario
-                {
-                    ID = _currentCliente?.UsuarioID ?? 0,
-                    DNI = dniValue,
-                    Nombre = textBoxNombre.Text.Trim(),
-                    Email = textBoxEmail.Text.Trim(),
-                    TipoUsuario = (TipoUsuarioEnum)comboBoxTipoUsuario.SelectedItem
-                };
-
-                bool success = false;
-
-                if (_currentCliente != null)
-                {
-                    // Actualización
-                    if (!await _usuarioService.UpdateAsync(usuarioAGuardar))
-                        throw new Exception("Error al actualizar el usuario");
-
-                    if (!await _clienteService.UpdateAsync(clienteAGuardar))
-                        throw new Exception("Error al actualizar el cliente");
-
-                    success = true;
-                }
-                else
-                {
-                    // Creación
-                    var nuevoUsuario = await _usuarioService.AddAsync(usuarioAGuardar);
-                    if (nuevoUsuario == null)
-                        throw new Exception("Error al crear el usuario");
-
-                    clienteAGuardar.UsuarioID = nuevoUsuario.ID;
-                    var nuevoCliente = await _clienteService.AddAsync(clienteAGuardar);
-                    if (nuevoCliente == null)
-                        throw new Exception("Error al crear el cliente");
-
-                    success = true;
-                }
-
-                if (success)
-                {
-                    MessageBox.Show($"Cliente {usuarioAGuardar.Nombre} guardado correctamente",
-                                  "Éxito",
-                                  MessageBoxButtons.OK,
-                                  MessageBoxIcon.Information);
+                    MessageHelpers.ShowSuccess($"Cliente {usuario.Nombre} guardado correctamente");
                     await GetAllData();
                     LimpiarCampos();
                     tabControl.SelectedTab = tabPageLista;
@@ -355,73 +355,40 @@ namespace Desktop.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error en la operación: {ex.Message}",
-                               "Error",
-                               MessageBoxButtons.OK,
-                               MessageBoxIcon.Error);
+                MessageHelpers.ShowError($"Error: {ex.Message}");
+            }
+            finally
+            {
+                SetControlsEnabled(true);
             }
         }
-
-        private void textBoxImagenAuto_TextChanged(object sender, EventArgs e)
+        private void ButtonCancelar_Click(object sender, EventArgs e)
         {
-            // Implementa lógica si lo necesitas
+            tabControl.SelectedTab = tabPageLista;
+            LimpiarCampos();
         }
-
 
         private void ButtonClose_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
+
+        public void limpiarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LimpiarCampos();
+        }
+        private async void textBoxBuscar_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(textBoxBuscar.Text))
+            {
+                await GetAllData(); // Recargar todos los datos cuando se limpia el texto
+            }
+        }
         private async void checkBox_VerEliminados_CheckedChanged(object sender, EventArgs e)
         {
             await GetAllData();
             buttonRestaurar.Visible = checkBox_VerEliminados.Checked;
-        }
-
-        private async void buttonRestaurar_Click(object sender, EventArgs e)
-        {
-            if (!checkBox_VerEliminados.Checked)
-            {
-                MessageBox.Show("Debe de estar seleccionado 'Ver eliminados' para restaurar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            if (dataGridView.RowCount > 0 && dataGridView.SelectedRows.Count > 0)
-            {
-                int idCliente = (int)dataGridView.SelectedRows[0].Cells["ID"].Value;
-                Cliente clienteSeleccionado = _clientes.First(c => c.ID == idCliente);
-                var respuesta = MessageBox.Show($"¿Seguro que quieres restaurar a {clienteSeleccionado.Usuario?.Nombre}?", "Restaurar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (respuesta == DialogResult.Yes)
-                {
-                    if (await _clienteService.RestoreAsync(clienteSeleccionado.ID))
-                    {
-                        MessageBox.Show($"{clienteSeleccionado.Usuario?.Nombre} ha sido restaurado correctamente", "Restaurado correctamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        await GetAllData();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error al restaurar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Debe de seleccionar un campo", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private async void ButtonBuscar_Click_1(object sender, EventArgs e)
-        {
-
-            dataGridView.DataSource = await _clienteService.GetAllAsync(textBoxBuscar.Text);
-
-        }
-
-        private void ButtonAgregar_Click(object sender, EventArgs e)
-        {
-            LimpiarCampos();
-            tabControl.SelectedTab = tabPageAgregar_Editar;
-            labelAccion.Text = "Agregar Cliente";
         }
     }
 }

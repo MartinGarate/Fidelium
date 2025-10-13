@@ -10,7 +10,7 @@ namespace Service.Models
     public class Usuario
     {
         public int ID { get; set; }
-        public int? DNI { get; set; } // Opcional
+        public string? DNI { get; set; } // Opcional
         public string Nombre { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty; // Único → login
         public string Password{ get; set; } = string.Empty; // Guardado encriptado

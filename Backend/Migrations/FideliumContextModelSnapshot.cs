@@ -232,8 +232,8 @@ namespace Backend.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<int?>("DNI")
-                        .HasColumnType("int");
+                    b.Property<string>("DNI")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -261,7 +261,7 @@ namespace Backend.Migrations
                         new
                         {
                             ID = 1,
-                            DNI = 46447189,
+                            DNI = "46447189",
                             Email = "valemacha1805@gmail.com",
                             IsDeleted = false,
                             Nombre = "Valentino",
@@ -271,7 +271,7 @@ namespace Backend.Migrations
                         new
                         {
                             ID = 2,
-                            DNI = 46447190,
+                            DNI = "46447190",
                             Email = "martingarate0@gmail.com",
                             IsDeleted = false,
                             Nombre = "Martin",
@@ -281,7 +281,7 @@ namespace Backend.Migrations
                         new
                         {
                             ID = 3,
-                            DNI = 46997851,
+                            DNI = "46997851",
                             Email = "martingarate100@gmail.com",
                             IsDeleted = false,
                             Nombre = "Martin G",

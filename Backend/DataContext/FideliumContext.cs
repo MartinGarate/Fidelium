@@ -48,7 +48,7 @@ namespace Backend.DataContext
                new Usuario
                {
                      ID = 1,
-                     DNI = 46447189,
+                     DNI = "46447189",
                      Nombre = "Valentino", 
                      Email = "valemacha1805@gmail.com",
                      TipoUsuario = Service.Enums.TipoUsuarioEnum.Usuario,
@@ -57,7 +57,7 @@ namespace Backend.DataContext
                 new Usuario
                 {
                     ID = 2,
-                    DNI = 46447190,
+                    DNI = "46447190",
                     Nombre = "Martin",
                     Email = "martingarate0@gmail.com",
                     TipoUsuario = Service.Enums.TipoUsuarioEnum.Empleado,
@@ -66,7 +66,7 @@ namespace Backend.DataContext
                 new Usuario
                 {
                     ID = 3,
-                    DNI = 46997851,
+                    DNI = "46997851",
                     Nombre = "Martin G",
                     Email = "martingarate100@gmail.com",
                     TipoUsuario = Service.Enums.TipoUsuarioEnum.Administrador,

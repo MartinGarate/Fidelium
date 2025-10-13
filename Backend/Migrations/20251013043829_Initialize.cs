@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class PrimeraCorrecionAlePassword : Migration
+    public partial class Initialize : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,38 +18,13 @@ namespace Backend.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Clientes",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Nombre = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Apellido = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Telefono = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Instagram = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    FechaCreacion = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DeleteDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Clientes", x => x.ID);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "Usuarios",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    DNI = table.Column<int>(type: "int", nullable: true),
+                    DNI = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Nombre = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Email = table.Column<string>(type: "longtext", nullable: false)
@@ -57,12 +32,36 @@ namespace Backend.Migrations
                     Password = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     TipoUsuario = table.Column<int>(type: "int", nullable: false),
-                    DeleteDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Usuarios", x => x.ID);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Clientes",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UsuarioID = table.Column<int>(type: "int", nullable: false),
+                    Telefono = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Instagram = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clientes", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Clientes_Usuarios_UsuarioID",
+                        column: x => x.UsuarioID,
+                        principalTable: "Usuarios",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -78,9 +77,11 @@ namespace Backend.Migrations
                     FechaCompra = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ComentarioFeedback = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    EmpleadoID = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     DeleteDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UsuarioID = table.Column<int>(type: "int", nullable: false)
+                    UpdateAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -92,8 +93,8 @@ namespace Backend.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ComprasServicios_Usuarios_UsuarioID",
-                        column: x => x.UsuarioID,
+                        name: "FK_ComprasServicios_Usuarios_EmpleadoID",
+                        column: x => x.EmpleadoID,
                         principalTable: "Usuarios",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -113,12 +114,21 @@ namespace Backend.Migrations
                     Estado = table.Column<int>(type: "int", nullable: false),
                     ComentarioEmpleado = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UsuarioID = table.Column<int>(type: "int", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    ClienteID = table.Column<int>(type: "int", nullable: false),
+                    EmpleadoID = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    CreateAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdateAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Notificaciones", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Notificaciones_Clientes_ClienteID",
+                        column: x => x.ClienteID,
+                        principalTable: "Clientes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Notificaciones_ComprasServicios_CompraServicioID",
                         column: x => x.CompraServicioID,
@@ -126,8 +136,8 @@ namespace Backend.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Notificaciones_Usuarios_UsuarioID",
-                        column: x => x.UsuarioID,
+                        name: "FK_Notificaciones_Usuarios_EmpleadoID",
+                        column: x => x.EmpleadoID,
                         principalTable: "Usuarios",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -135,41 +145,46 @@ namespace Backend.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.InsertData(
-                table: "Clientes",
-                columns: new[] { "ID", "Apellido", "DeleteDate", "Email", "FechaCreacion", "Instagram", "IsDeleted", "Nombre", "Telefono" },
+                table: "Usuarios",
+                columns: new[] { "ID", "DNI", "Email", "IsDeleted", "Nombre", "Password", "TipoUsuario" },
                 values: new object[,]
                 {
-                    { 1, "Machado", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "valeprivado03@gmail.com", new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "vale.macha2", false, "Valentin", "3498000000" },
-                    { 2, "Detal", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "fulanitodetal@gmail.com", new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "fulanito.detal", false, "Fulanito", "3498000001" }
+                    { 1, "46447189", "valemacha1805@gmail.com", false, "Valentino", "", 2 },
+                    { 2, "46447190", "martingarate0@gmail.com", false, "Martin", "", 1 },
+                    { 3, "46997851", "martingarate100@gmail.com", false, "Martin G", "", 0 }
                 });
 
             migrationBuilder.InsertData(
-                table: "Usuarios",
-                columns: new[] { "ID", "DNI", "DeleteDate", "Email", "IsDeleted", "Nombre", "Password", "TipoUsuario" },
+                table: "Clientes",
+                columns: new[] { "ID", "Instagram", "IsDeleted", "Telefono", "UsuarioID" },
                 values: new object[,]
                 {
-                    { 1, 12345678, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "alejandro@gmail.com", false, "Alejandro", "qwerty12345", 0 },
-                    { 2, 123456789, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "empleado1@gmail.com", false, "Empleado1", "qwerty12345", 1 },
-                    { 3, 123456790, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Usuario1@gmail.com", false, "UsuarioTest", "qwerty12345", 2 }
+                    { 1, "Vale.macha2", false, "3498 474852", 1 },
+                    { 2, "Fulanito.detal", false, "3498 474853", 2 }
                 });
 
             migrationBuilder.InsertData(
                 table: "ComprasServicios",
-                columns: new[] { "ID", "ClienteID", "ComentarioFeedback", "DeleteDate", "Descripcion", "FechaCompra", "IsDeleted", "UsuarioID" },
+                columns: new[] { "ID", "ClienteID", "ComentarioFeedback", "CreatedAt", "DeleteDate", "Descripcion", "EmpleadoID", "FechaCompra", "IsDeleted", "UpdateAt" },
                 values: new object[,]
                 {
-                    { 1, 1, "Muy conforme con el servicio", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Compra de PC Gamer", new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 1 },
-                    { 2, 2, "Buen servicio, pero podría mejorar la atención", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Servicio Tecnico de PC", new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 1 }
+                    { 1, 1, "Muy conforme con el servicio", new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Compra de PC Gamer", 2, new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, 2, "Buen servicio, pero podría mejorar la atención", new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Servicio Tecnico de PC", 2, new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
                 table: "Notificaciones",
-                columns: new[] { "ID", "ComentarioEmpleado", "CompraServicioID", "DiasParaRecordatorio", "Estado", "FechaGenerada", "FechaRecordatorio", "IsDeleted", "UsuarioID" },
+                columns: new[] { "ID", "ClienteID", "ComentarioEmpleado", "CompraServicioID", "CreateAt", "DiasParaRecordatorio", "EmpleadoID", "Estado", "FechaGenerada", "FechaRecordatorio", "IsDeleted", "UpdateAt" },
                 values: new object[,]
                 {
-                    { 1, "Recordatorio programado para seguimiento.", 1, 7, 0, new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 1 },
-                    { 2, null, 2, 3, 1, new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 1 }
+                    { 1, 1, "Recordatorio programado para seguimiento.", 1, new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 7, 2, 0, new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, 2, null, 2, new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 2, 1, new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clientes_UsuarioID",
+                table: "Clientes",
+                column: "UsuarioID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ComprasServicios_ClienteID",
@@ -177,9 +192,14 @@ namespace Backend.Migrations
                 column: "ClienteID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ComprasServicios_UsuarioID",
+                name: "IX_ComprasServicios_EmpleadoID",
                 table: "ComprasServicios",
-                column: "UsuarioID");
+                column: "EmpleadoID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notificaciones_ClienteID",
+                table: "Notificaciones",
+                column: "ClienteID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notificaciones_CompraServicioID",
@@ -187,9 +207,9 @@ namespace Backend.Migrations
                 column: "CompraServicioID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Notificaciones_UsuarioID",
+                name: "IX_Notificaciones_EmpleadoID",
                 table: "Notificaciones",
-                column: "UsuarioID");
+                column: "EmpleadoID");
         }
 
         /// <inheritdoc />
