@@ -16,7 +16,6 @@ namespace Desktop.Views
         public SplashView()
         {
             InitializeComponent();
-            timer.Interval = 100;
         }
         private void SplashView_Load(object sender, EventArgs e)
         {

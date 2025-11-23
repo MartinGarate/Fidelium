@@ -115,6 +115,7 @@
             // 
             checkBoxVerContraseña.AutoSize = true;
             checkBoxVerContraseña.Font = new Font("Clash Display Light", 8F);
+            checkBoxVerContraseña.ForeColor = Color.FromArgb(11, 0, 25);
             checkBoxVerContraseña.Location = new Point(261, 261);
             checkBoxVerContraseña.Name = "checkBoxVerContraseña";
             checkBoxVerContraseña.Size = new Size(108, 17);
@@ -127,6 +128,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Clash Display Light", 10F);
+            label2.ForeColor = Color.FromArgb(11, 0, 25);
             label2.Location = new Point(120, 148);
             label2.Name = "label2";
             label2.Size = new Size(130, 16);
@@ -137,6 +139,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Clash Display Light", 10F);
+            label3.ForeColor = Color.FromArgb(11, 0, 25);
             label3.Location = new Point(122, 199);
             label3.Name = "label3";
             label3.Size = new Size(84, 16);
@@ -149,9 +152,9 @@
             iconButton1.FlatAppearance.BorderSize = 0;
             iconButton1.FlatStyle = FlatStyle.Flat;
             iconButton1.Font = new Font("Clash Display Semibold", 9F, FontStyle.Bold);
-            iconButton1.ForeColor = Color.FromArgb(4, 5, 4);
+            iconButton1.ForeColor = Color.FromArgb(11, 0, 25);
             iconButton1.IconChar = FontAwesome.Sharp.IconChar.None;
-            iconButton1.IconColor = Color.FromArgb(4, 5, 4);
+            iconButton1.IconColor = Color.FromArgb(11, 0, 25);
             iconButton1.IconFont = FontAwesome.Sharp.IconFont.Auto;
             iconButton1.Location = new Point(122, 312);
             iconButton1.Name = "iconButton1";
@@ -164,9 +167,9 @@
             // iconPictureBox1
             // 
             iconPictureBox1.BackColor = Color.White;
-            iconPictureBox1.ForeColor = SystemColors.ControlText;
+            iconPictureBox1.ForeColor = Color.FromArgb(11, 0, 25);
             iconPictureBox1.IconChar = FontAwesome.Sharp.IconChar.UserAstronaut;
-            iconPictureBox1.IconColor = SystemColors.ControlText;
+            iconPictureBox1.IconColor = Color.FromArgb(11, 0, 25);
             iconPictureBox1.IconFont = FontAwesome.Sharp.IconFont.Auto;
             iconPictureBox1.IconSize = 21;
             iconPictureBox1.Location = new Point(99, 168);
@@ -179,9 +182,9 @@
             // iconPictureBox2
             // 
             iconPictureBox2.BackColor = Color.White;
-            iconPictureBox2.ForeColor = SystemColors.ControlText;
+            iconPictureBox2.ForeColor = Color.FromArgb(11, 0, 25);
             iconPictureBox2.IconChar = FontAwesome.Sharp.IconChar.Key;
-            iconPictureBox2.IconColor = SystemColors.ControlText;
+            iconPictureBox2.IconColor = Color.FromArgb(11, 0, 25);
             iconPictureBox2.IconFont = FontAwesome.Sharp.IconFont.Auto;
             iconPictureBox2.IconSize = 21;
             iconPictureBox2.Location = new Point(99, 219);
@@ -206,6 +209,7 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Clash Display Semibold", 29.9999962F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.ForeColor = Color.FromArgb(11, 0, 25);
             label5.Location = new Point(12, 39);
             label5.Name = "label5";
             label5.Size = new Size(320, 46);

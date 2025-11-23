@@ -48,6 +48,8 @@ namespace Desktop.Views
             if (e.KeyChar == (char)Keys.Enter)
             {
                 BtnLogin_Click(sender, e);
+                //desactivamos sonido del enter
+                e.Handled = true;
             }
         }
 

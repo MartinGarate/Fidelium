@@ -28,47 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MenuPrincipalView));
-            iconMenuItem1 = new FontAwesome.Sharp.IconMenuItem();
-            toolStrip1 = new ToolStrip();
-            contextMenuStrip1 = new ContextMenuStrip(components);
             salirMenu = new ToolStripMenuItem();
             subMenu_Salir = new ToolStripMenuItem();
             subMenu_Principal = new ToolStripMenuItem();
-            subMenuUsuarios = new FontAwesome.Sharp.IconMenuItem();
-            iconMenuItem2 = new FontAwesome.Sharp.IconMenuItem();
-            salir_menu = new FontAwesome.Sharp.IconMenuItem();
-            menuStrip1 = new MenuStrip();
-            menuPrincipal = new FontAwesome.Sharp.IconMenuItem();
-            usuarios = new FontAwesome.Sharp.IconMenuItem();
-            subMenu_Capacitaciones = new FontAwesome.Sharp.IconMenuItem();
-            menuSalir = new FontAwesome.Sharp.IconMenuItem();
-            subMenuSalir = new FontAwesome.Sharp.IconMenuItem();
-            menuStrip1.SuspendLayout();
+            Menu = new Panel();
+            panel1 = new Panel();
+            UserLabel = new Label();
+            pictureBoxUserLogo = new PictureBox();
+            panel2 = new Panel();
+            BtnNotificaciones = new FontAwesome.Sharp.IconButton();
+            BtnCompras = new FontAwesome.Sharp.IconButton();
+            BtnUsuarios = new FontAwesome.Sharp.IconButton();
+            BtnDashboard = new FontAwesome.Sharp.IconButton();
+            pictureBox1 = new PictureBox();
+            label5 = new Label();
+            Menu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxUserLogo).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
-            // 
-            // iconMenuItem1
-            // 
-            iconMenuItem1.IconChar = FontAwesome.Sharp.IconChar.None;
-            iconMenuItem1.IconColor = Color.Black;
-            iconMenuItem1.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconMenuItem1.Name = "iconMenuItem1";
-            iconMenuItem1.Size = new Size(32, 19);
-            iconMenuItem1.Text = "iconMenuItem1";
-            // 
-            // toolStrip1
-            // 
-            toolStrip1.Location = new Point(0, 24);
-            toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(800, 25);
-            toolStrip1.TabIndex = 6;
-            toolStrip1.Text = "toolStrip1";
-            // 
-            // contextMenuStrip1
-            // 
-            contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(61, 4);
             // 
             // salirMenu
             // 
@@ -89,118 +67,195 @@
             subMenu_Principal.Size = new Size(180, 22);
             subMenu_Principal.Text = "Menu Principal";
             // 
-            // subMenuUsuarios
+            // Menu
             // 
-            subMenuUsuarios.IconChar = FontAwesome.Sharp.IconChar.None;
-            subMenuUsuarios.IconColor = Color.Black;
-            subMenuUsuarios.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            subMenuUsuarios.Name = "subMenuUsuarios";
-            subMenuUsuarios.Size = new Size(180, 22);
-            subMenuUsuarios.Text = "Usuarios";
+            Menu.BackColor = Color.White;
+            Menu.Controls.Add(panel1);
+            Menu.Controls.Add(UserLabel);
+            Menu.Controls.Add(pictureBoxUserLogo);
+            Menu.Controls.Add(panel2);
+            Menu.Controls.Add(BtnNotificaciones);
+            Menu.Controls.Add(BtnCompras);
+            Menu.Controls.Add(BtnUsuarios);
+            Menu.Controls.Add(BtnDashboard);
+            Menu.Controls.Add(pictureBox1);
+            Menu.Controls.Add(label5);
+            Menu.Dock = DockStyle.Left;
+            Menu.Location = new Point(0, 0);
+            Menu.Name = "Menu";
+            Menu.Size = new Size(370, 1041);
+            Menu.TabIndex = 13;
             // 
-            // iconMenuItem2
+            // panel1
             // 
-            iconMenuItem2.DropDownItems.AddRange(new ToolStripItem[] { salir_menu });
-            iconMenuItem2.IconChar = FontAwesome.Sharp.IconChar.None;
-            iconMenuItem2.IconColor = Color.Black;
-            iconMenuItem2.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconMenuItem2.Name = "iconMenuItem2";
-            iconMenuItem2.Size = new Size(57, 20);
-            iconMenuItem2.Text = "Salir";
+            panel1.BackColor = Color.Silver;
+            panel1.Location = new Point(24, 117);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(323, 2);
+            panel1.TabIndex = 23;
             // 
-            // salir_menu
+            // UserLabel
             // 
-            salir_menu.IconChar = FontAwesome.Sharp.IconChar.None;
-            salir_menu.IconColor = Color.Black;
-            salir_menu.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            salir_menu.Name = "salir_menu";
-            salir_menu.Size = new Size(149, 22);
-            salir_menu.Text = "Salir del Menu";
+            UserLabel.AutoSize = true;
+            UserLabel.BackColor = Color.Transparent;
+            UserLabel.Font = new Font("Clash Display Light", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            UserLabel.Location = new Point(126, 935);
+            UserLabel.Name = "UserLabel";
+            UserLabel.Size = new Size(55, 22);
+            UserLabel.TabIndex = 22;
+            UserLabel.Text = "User";
             // 
-            // menuStrip1
+            // pictureBoxUserLogo
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { menuPrincipal, menuSalir });
-            menuStrip1.Location = new Point(0, 0);
-            menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(800, 24);
-            menuStrip1.TabIndex = 11;
-            menuStrip1.Text = "menuStrip1";
+            pictureBoxUserLogo.BackColor = Color.Transparent;
+            pictureBoxUserLogo.Image = (Image)resources.GetObject("pictureBoxUserLogo.Image");
+            pictureBoxUserLogo.Location = new Point(42, 912);
+            pictureBoxUserLogo.Name = "pictureBoxUserLogo";
+            pictureBoxUserLogo.Size = new Size(71, 65);
+            pictureBoxUserLogo.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxUserLogo.TabIndex = 21;
+            pictureBoxUserLogo.TabStop = false;
             // 
-            // menuPrincipal
+            // panel2
             // 
-            menuPrincipal.DropDownItems.AddRange(new ToolStripItem[] { usuarios, subMenu_Capacitaciones });
-            menuPrincipal.IconChar = FontAwesome.Sharp.IconChar.Bars;
-            menuPrincipal.IconColor = Color.Black;
-            menuPrincipal.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            menuPrincipal.Name = "menuPrincipal";
-            menuPrincipal.Size = new Size(115, 20);
-            menuPrincipal.Text = "Menu Principal";
+            panel2.BackColor = Color.Silver;
+            panel2.Location = new Point(24, 894);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(323, 2);
+            panel2.TabIndex = 20;
             // 
-            // usuarios
+            // BtnNotificaciones
             // 
-            usuarios.IconChar = FontAwesome.Sharp.IconChar.Users;
-            usuarios.IconColor = Color.Black;
-            usuarios.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            usuarios.Name = "usuarios";
-            usuarios.Size = new Size(180, 22);
-            usuarios.Text = "Usuarios";
-            usuarios.Click += usuarios_Click;
+            BtnNotificaciones.BackColor = Color.Transparent;
+            BtnNotificaciones.FlatAppearance.BorderSize = 0;
+            BtnNotificaciones.FlatStyle = FlatStyle.Flat;
+            BtnNotificaciones.Font = new Font("Clash Display Medium", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            BtnNotificaciones.ForeColor = Color.FromArgb(4, 5, 4);
+            BtnNotificaciones.IconChar = FontAwesome.Sharp.IconChar.Bell;
+            BtnNotificaciones.IconColor = Color.FromArgb(4, 5, 4);
+            BtnNotificaciones.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            BtnNotificaciones.IconSize = 33;
+            BtnNotificaciones.ImageAlign = ContentAlignment.MiddleLeft;
+            BtnNotificaciones.Location = new Point(45, 394);
+            BtnNotificaciones.Name = "BtnNotificaciones";
+            BtnNotificaciones.Padding = new Padding(3, 3, 32, 3);
+            BtnNotificaciones.Size = new Size(259, 52);
+            BtnNotificaciones.TabIndex = 19;
+            BtnNotificaciones.Text = "Notificaciones";
+            BtnNotificaciones.TextAlign = ContentAlignment.MiddleRight;
+            BtnNotificaciones.UseVisualStyleBackColor = false;
+            BtnNotificaciones.Click += BtnNotificaciones_Click;
             // 
-            // subMenu_Capacitaciones
+            // BtnCompras
             // 
-            subMenu_Capacitaciones.IconChar = FontAwesome.Sharp.IconChar.UserCircle;
-            subMenu_Capacitaciones.IconColor = Color.Black;
-            subMenu_Capacitaciones.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            subMenu_Capacitaciones.Name = "subMenu_Capacitaciones";
-            subMenu_Capacitaciones.Size = new Size(180, 22);
-            subMenu_Capacitaciones.Text = "Clientes";
-            subMenu_Capacitaciones.Click += subMenu_Capacitaciones_Click;
+            BtnCompras.BackColor = Color.Transparent;
+            BtnCompras.FlatAppearance.BorderSize = 0;
+            BtnCompras.FlatStyle = FlatStyle.Flat;
+            BtnCompras.Font = new Font("Clash Display Medium", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            BtnCompras.ForeColor = Color.FromArgb(4, 5, 4);
+            BtnCompras.IconChar = FontAwesome.Sharp.IconChar.CartShopping;
+            BtnCompras.IconColor = Color.FromArgb(4, 5, 4);
+            BtnCompras.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            BtnCompras.IconSize = 33;
+            BtnCompras.ImageAlign = ContentAlignment.MiddleLeft;
+            BtnCompras.Location = new Point(45, 319);
+            BtnCompras.Name = "BtnCompras";
+            BtnCompras.Padding = new Padding(3, 3, 86, 3);
+            BtnCompras.Size = new Size(259, 52);
+            BtnCompras.TabIndex = 18;
+            BtnCompras.Text = "Compras";
+            BtnCompras.TextAlign = ContentAlignment.MiddleRight;
+            BtnCompras.UseVisualStyleBackColor = false;
+            BtnCompras.Click += BtnCompras_Click;
             // 
-            // menuSalir
+            // BtnUsuarios
             // 
-            menuSalir.DropDownItems.AddRange(new ToolStripItem[] { subMenuSalir });
-            menuSalir.IconChar = FontAwesome.Sharp.IconChar.RightToBracket;
-            menuSalir.IconColor = Color.Black;
-            menuSalir.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            menuSalir.Name = "menuSalir";
-            menuSalir.Size = new Size(57, 20);
-            menuSalir.Text = "Salir";
+            BtnUsuarios.BackColor = Color.Transparent;
+            BtnUsuarios.FlatAppearance.BorderSize = 0;
+            BtnUsuarios.FlatStyle = FlatStyle.Flat;
+            BtnUsuarios.Font = new Font("Clash Display Medium", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            BtnUsuarios.ForeColor = Color.FromArgb(4, 5, 4);
+            BtnUsuarios.IconChar = FontAwesome.Sharp.IconChar.UserPlus;
+            BtnUsuarios.IconColor = Color.FromArgb(4, 5, 4);
+            BtnUsuarios.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            BtnUsuarios.IconSize = 33;
+            BtnUsuarios.ImageAlign = ContentAlignment.MiddleLeft;
+            BtnUsuarios.Location = new Point(45, 244);
+            BtnUsuarios.Name = "BtnUsuarios";
+            BtnUsuarios.Padding = new Padding(3, 3, 88, 3);
+            BtnUsuarios.Size = new Size(259, 52);
+            BtnUsuarios.TabIndex = 17;
+            BtnUsuarios.Text = "Usuarios";
+            BtnUsuarios.TextAlign = ContentAlignment.MiddleRight;
+            BtnUsuarios.UseVisualStyleBackColor = false;
+            BtnUsuarios.Click += BtnUsuarios_Click;
             // 
-            // subMenuSalir
+            // BtnDashboard
             // 
-            subMenuSalir.IconChar = FontAwesome.Sharp.IconChar.RightToBracket;
-            subMenuSalir.IconColor = Color.Black;
-            subMenuSalir.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            subMenuSalir.Name = "subMenuSalir";
-            subMenuSalir.Size = new Size(149, 22);
-            subMenuSalir.Text = "Salir del Menu";
-            subMenuSalir.Click += subMenuSalir_Click;
+            BtnDashboard.BackColor = Color.FromArgb(88, 1, 180);
+            BtnDashboard.FlatAppearance.BorderSize = 0;
+            BtnDashboard.FlatStyle = FlatStyle.Flat;
+            BtnDashboard.Font = new Font("Clash Display Medium", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            BtnDashboard.ForeColor = Color.White;
+            BtnDashboard.IconChar = FontAwesome.Sharp.IconChar.ChartLine;
+            BtnDashboard.IconColor = Color.White;
+            BtnDashboard.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            BtnDashboard.IconSize = 33;
+            BtnDashboard.ImageAlign = ContentAlignment.MiddleLeft;
+            BtnDashboard.Location = new Point(45, 169);
+            BtnDashboard.Name = "BtnDashboard";
+            BtnDashboard.Padding = new Padding(3, 3, 66, 3);
+            BtnDashboard.Size = new Size(259, 52);
+            BtnDashboard.TabIndex = 16;
+            BtnDashboard.Text = "Dashboard";
+            BtnDashboard.TextAlign = ContentAlignment.MiddleRight;
+            BtnDashboard.UseVisualStyleBackColor = false;
+            BtnDashboard.Click += BtnDashboard_Click;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.BackColor = Color.Transparent;
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(42, 31);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(90, 46);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 14;
+            pictureBox1.TabStop = false;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.BackColor = Color.Transparent;
+            label5.Font = new Font("Clash Display Semibold", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.Location = new Point(129, 32);
+            label5.Name = "label5";
+            label5.Size = new Size(188, 46);
+            label5.TabIndex = 14;
+            label5.Text = "Fidelium";
             // 
             // MenuPrincipalView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(toolStrip1);
-            Controls.Add(menuStrip1);
+            ClientSize = new Size(1904, 1041);
+            Controls.Add(Menu);
             Icon = (Icon)resources.GetObject("$this.Icon");
             IsMdiContainer = true;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "MenuPrincipalView";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Ágora | Software de Acreditación de Capacitaciones ISP 20";
-            Load += Form1_Load;
-            menuStrip1.ResumeLayout(false);
-            menuStrip1.PerformLayout();
+            Text = "Fidelium";
+            WindowState = FormWindowState.Maximized;
+            Menu.ResumeLayout(false);
+            Menu.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxUserLogo).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
-
-        private FontAwesome.Sharp.IconMenuItem iconMenuItem1;
-        private ToolStrip toolStrip1;
-        private ContextMenuStrip contextMenuStrip1;
-        private FontAwesome.Sharp.IconMenuItem iconMenuItem2;
         private ToolStripMenuItem subMenuPrincipal;
         private ToolStripMenuItem salirToolStripMenuItem;
         private ToolStripMenuItem salirSubMenu;
@@ -212,13 +267,16 @@
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripMenuItem sub_menuSalir;
         private FontAwesome.Sharp.IconMenuItem iconMenuItem4;
-        private FontAwesome.Sharp.IconMenuItem subMenuUsuarios;
-        private FontAwesome.Sharp.IconMenuItem salir_menu;
-        private MenuStrip menuStrip1;
-        private FontAwesome.Sharp.IconMenuItem menuPrincipal;
-        private FontAwesome.Sharp.IconMenuItem usuarios;
-        private FontAwesome.Sharp.IconMenuItem menuSalir;
-        private FontAwesome.Sharp.IconMenuItem subMenuSalir;
-        private FontAwesome.Sharp.IconMenuItem subMenu_Capacitaciones;
+        private Panel Menu;
+        private Label label5;
+        private PictureBox pictureBox1;
+        private FontAwesome.Sharp.IconButton BtnDashboard;
+        private FontAwesome.Sharp.IconButton BtnUsuarios;
+        private FontAwesome.Sharp.IconButton BtnCompras;
+        private FontAwesome.Sharp.IconButton BtnNotificaciones;
+        private Label UserLabel;
+        private PictureBox pictureBoxUserLogo;
+        private Panel panel2;
+        private Panel panel1;
     }
 }
