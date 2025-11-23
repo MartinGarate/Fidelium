@@ -3,47 +3,46 @@ using Service.Models;
 using Service.Services;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace Desktop.Views
 {
     public partial class UsuariosView : Form
     {
-        GenericService<Usuario> _usuarioService = new();
-        GenericService<Cliente> _clienteService = new();
-        List<Usuario> _usuarios = new();
-        List<Cliente> _clientes = new();
+        private readonly GenericService<Usuario> _usuarioService = new(); // Readonly es una practica mas segura para no romper nada, evitando cambiarlo.
+        private readonly GenericService<Cliente> _clienteService = new();
 
         public UsuariosView()
         {
             InitializeComponent();
         }
+
         private async void UsuariosView_Load(object sender, EventArgs e)
         {
             await GetAllData();
         }
 
+        //  Obtener datos (SRP)
         private async Task<(List<Cliente> clientes, List<Usuario> usuarios)> ObtenerDatosAsync(string? filtro = null)
         {
             if (checkBoxEliminados.Checked)
             {
-                var clientes = await _clienteService.GetAllDeletedsAsync(filtro) ?? new List<Cliente>();
-                var usuarios = await _usuarioService.GetAllDeletedsAsync(filtro) ?? new List<Usuario>();
-                return (clientes, usuarios);
+                return (
+                    await _clienteService.GetAllDeletedsAsync(filtro) ?? new List<Cliente>(),
+                    await _usuarioService.GetAllDeletedsAsync(filtro) ?? new List<Usuario>()
+                );
             }
-            else
-            {
-                var clientes = await _clienteService.GetAllAsync(filtro) ?? new List<Cliente>();
-                var usuarios = await _usuarioService.GetAllAsync(filtro) ?? new List<Usuario>();
-                return (clientes, usuarios);
-            }
+
+            return (
+                await _clienteService.GetAllAsync(filtro) ?? new List<Cliente>(),
+                await _usuarioService.GetAllAsync(filtro) ?? new List<Usuario>()
+            );
         }
+
+        //  Asociar usuarios a clientes (SRP)
         private void AsociarUsuariosAClientes(List<Cliente> clientes, List<Usuario> usuarios)
         {
             foreach (var cliente in clientes)
@@ -51,50 +50,67 @@ namespace Desktop.Views
                 cliente.Usuario = usuarios.FirstOrDefault(u => u.ID == cliente.UsuarioID);
             }
         }
-        private object TransformarDatosParaGrid(List<Cliente> clientes)
+
+        private object TransformarDatosParaGrid(List<Cliente> clientes, List<Usuario> usuarios)
         {
-            // Retorna una lista que el DataGridView puede manejar.
-            var datosParaGrid = clientes.Select(c => new
+            var listaFinal = new List<object>();
+
+            // Agregar clientes con su usuario 
+            foreach (var c in clientes)
             {
-                c.ID,
-                // Acceso seguro a la propiedad Usuario que fue asignada previamente
-                DNI = c.Usuario?.DNI,
-                Nombre = c.Usuario?.Nombre,
-                Email = c.Usuario?.Email,
+                listaFinal.Add(new
+                {
+                    c.ID,
+                    DNI = c.Usuario?.DNI ?? "N/A",
+                    Nombre = c.Usuario.Nombre,
+                    Email = c.Usuario?.Email ?? "N/A",
+                    Instagram = c.Instagram ?? "N/A",
+                    ClienteTelefono = c.Telefono ?? "N/A",
+                    Tipo = "Cliente"
+                });
+            }
 
-                // Datos propios del Cliente
-                Instagram = c.Instagram ?? "N/A",
-                ClienteTelefono = c.Telefono ?? "N/A",
-            }).ToList();
+            // Agregar usuarios sin cliente 
+            foreach (var u in usuarios)
+            {
+                bool tieneCliente = clientes.Any(c => c.UsuarioID == u.ID);
 
-            return datosParaGrid; // Retorna List<tipo anónimo> como 'object'
+                if (!tieneCliente)
+                {
+                    listaFinal.Add(new
+                    {
+                        u.ID,
+                        DNI = u.DNI ?? "N/A",
+                        Nombre = u.Nombre,
+                        Email = u.Email,
+                        Instagram = "N/A",
+                        ClienteTelefono = "N/A",
+                        Tipo = u.TipoUsuario.ToString()
+                    });
+                }
+            }
+
+            return listaFinal;
         }
+
+
         private void ActualizarGrid(object datos)
         {
             dataGridViewUsuarios.DataSource = null;
             dataGridViewUsuarios.DataSource = datos;
-            DataGridHelpers.HideColumns(dataGridViewUsuarios, "UsuarioID", "IsDeleted");
         }
+
+
         private async Task GetAllData(string? filtro = null)
         {
             try
             {
-                // 1. Obtención de datos
                 var (clientes, usuarios) = await ObtenerDatosAsync(filtro);
 
-                if (clientes == null || usuarios == null)
-                {
-                    MessageHelpers.ShowError("No se pudieron cargar los datos del servidor");
-                    return;
-                }
-
-                //  Asociación de Datos (SRP)
                 AsociarUsuariosAClientes(clientes, usuarios);
 
-                //  Transformación de Datos (SRP)
-                var datosParaGrid = TransformarDatosParaGrid(clientes);
+                var datosParaGrid = TransformarDatosParaGrid(clientes, usuarios);
 
-                //  Actualización de Interfaz (SRP)
                 ActualizarGrid(datosParaGrid);
             }
             catch (Exception ex)
@@ -102,8 +118,5 @@ namespace Desktop.Views
                 MessageHelpers.ShowError($"Error al cargar datos: {ex.Message}");
             }
         }
-
     }
 }
-
-      

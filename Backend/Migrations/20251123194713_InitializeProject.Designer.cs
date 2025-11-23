@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(FideliumContext))]
-    [Migration("20251123100029_InitializeProject")]
+    [Migration("20251123194713_InitializeProject")]
     partial class InitializeProject
     {
         /// <inheritdoc />
@@ -397,10 +397,6 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<int>("TipoUsuario")
                         .HasColumnType("int");
 
@@ -417,7 +413,6 @@ namespace Backend.Migrations
                             Email = "martingarate0@gmail.com",
                             IsDeleted = false,
                             Nombre = "Martin Garte",
-                            Password = "qwerty123",
                             TipoUsuario = 0
                         },
                         new
@@ -428,7 +423,6 @@ namespace Backend.Migrations
                             Email = "leonelarrieta@gmail.com",
                             IsDeleted = false,
                             Nombre = "Leonel Arrieta",
-                            Password = "qwerty123",
                             TipoUsuario = 0
                         },
                         new
@@ -439,7 +433,6 @@ namespace Backend.Migrations
                             Email = "valentinomachado@gmail.com",
                             IsDeleted = false,
                             Nombre = "Valentino Machado",
-                            Password = "qwerty123",
                             TipoUsuario = 0
                         },
                         new
@@ -450,7 +443,6 @@ namespace Backend.Migrations
                             Email = "testdelete@gmail.com",
                             IsDeleted = true,
                             Nombre = "Test Delete",
-                            Password = "qwerty123",
                             TipoUsuario = 0
                         },
                         new
@@ -461,7 +453,6 @@ namespace Backend.Migrations
                             Email = "corradicande@gmail.com",
                             IsDeleted = false,
                             Nombre = "Candela Agustina Corradi",
-                            Password = "qwerty123",
                             TipoUsuario = 1
                         },
                         new
@@ -472,7 +463,6 @@ namespace Backend.Migrations
                             Email = "ximenagorosito0@gmail.com",
                             IsDeleted = false,
                             Nombre = "Ximena Gorosito",
-                            Password = "qwerty123",
                             TipoUsuario = 1
                         },
                         new
@@ -483,7 +473,6 @@ namespace Backend.Migrations
                             Email = "testdelete2@gmail.com",
                             IsDeleted = true,
                             Nombre = "Test2 Delete",
-                            Password = "qwerty123",
                             TipoUsuario = 1
                         },
                         new
@@ -494,7 +483,6 @@ namespace Backend.Migrations
                             Email = "danielobregon621@gmail.com",
                             IsDeleted = false,
                             Nombre = "Daniel Alejandro Obregon",
-                            Password = "qwerty123",
                             TipoUsuario = 2
                         },
                         new
@@ -505,7 +493,6 @@ namespace Backend.Migrations
                             Email = "lucilencina6@gmail.com",
                             IsDeleted = false,
                             Nombre = "Lucia Lencina",
-                            Password = "qwerty123",
                             TipoUsuario = 2
                         },
                         new
@@ -516,7 +503,6 @@ namespace Backend.Migrations
                             Email = "testdelete3@gmail.com",
                             IsDeleted = true,
                             Nombre = "Test3 Delete",
-                            Password = "qwerty123",
                             TipoUsuario = 2
                         });
                 });

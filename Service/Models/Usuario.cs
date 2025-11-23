@@ -12,7 +12,7 @@ namespace Service.Models
         public int ID { get; set; }
         public string? DNI { get; set; } // Opcional
         public string Nombre { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty; // Único → login
+        public string? Email { get; set; } = string.Empty; // Opcional
         public TipoUsuarioEnum TipoUsuario { get; set; } = TipoUsuarioEnum.Cliente;
         public bool IsDeleted { get; set; } = false;
         public DateTime DeleteDate { get; set; } = DateTime.MinValue; // Fecha de eliminación (soft delete)

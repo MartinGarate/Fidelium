@@ -29,8 +29,6 @@ namespace Backend.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Email = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Password = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     TipoUsuario = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     DeleteDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
@@ -151,19 +149,19 @@ namespace Backend.Migrations
 
             migrationBuilder.InsertData(
                 table: "Usuarios",
-                columns: new[] { "ID", "DNI", "DeleteDate", "Email", "IsDeleted", "Nombre", "Password", "TipoUsuario" },
+                columns: new[] { "ID", "DNI", "DeleteDate", "Email", "IsDeleted", "Nombre", "TipoUsuario" },
                 values: new object[,]
                 {
-                    { 1, "46997850", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "martingarate0@gmail.com", false, "Martin Garte", "qwerty123", 0 },
-                    { 2, "39144832", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "leonelarrieta@gmail.com", false, "Leonel Arrieta", "qwerty123", 0 },
-                    { 3, "46447189", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "valentinomachado@gmail.com", false, "Valentino Machado", "qwerty123", 0 },
-                    { 4, "123456789", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "testdelete@gmail.com", true, "Test Delete", "qwerty123", 0 },
-                    { 5, "41287827", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "corradicande@gmail.com", false, "Candela Agustina Corradi", "qwerty123", 1 },
-                    { 6, "40317292", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "ximenagorosito0@gmail.com", false, "Ximena Gorosito", "qwerty123", 1 },
-                    { 7, "123456781", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "testdelete2@gmail.com", true, "Test2 Delete", "qwerty123", 1 },
-                    { 8, "46133497", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "danielobregon621@gmail.com", false, "Daniel Alejandro Obregon", "qwerty123", 2 },
-                    { 9, "45641614", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "lucilencina6@gmail.com", false, "Lucia Lencina", "qwerty123", 2 },
-                    { 10, "123456782", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "testdelete3@gmail.com", true, "Test3 Delete", "qwerty123", 2 }
+                    { 1, "46997850", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "martingarate0@gmail.com", false, "Martin Garte", 0 },
+                    { 2, "39144832", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "leonelarrieta@gmail.com", false, "Leonel Arrieta", 0 },
+                    { 3, "46447189", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "valentinomachado@gmail.com", false, "Valentino Machado", 0 },
+                    { 4, "123456789", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "testdelete@gmail.com", true, "Test Delete", 0 },
+                    { 5, "41287827", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "corradicande@gmail.com", false, "Candela Agustina Corradi", 1 },
+                    { 6, "40317292", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "ximenagorosito0@gmail.com", false, "Ximena Gorosito", 1 },
+                    { 7, "123456781", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "testdelete2@gmail.com", true, "Test2 Delete", 1 },
+                    { 8, "46133497", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "danielobregon621@gmail.com", false, "Daniel Alejandro Obregon", 2 },
+                    { 9, "45641614", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "lucilencina6@gmail.com", false, "Lucia Lencina", 2 },
+                    { 10, "123456782", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "testdelete3@gmail.com", true, "Test3 Delete", 2 }
                 });
 
             migrationBuilder.InsertData(
