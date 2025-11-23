@@ -12,10 +12,10 @@ namespace Service.Models.Login
         public string DisplayName { get; set; }      // Nombre del usuario (puede ser null)
         public string Email { get; set; }            // Correo electrónico del usuario
         public bool EmailVerified { get; set; }      // Indica si el correo ha sido verificado
-        public string PhoneNumber { get; set; }      // Número de teléfono del usuario (puede ser null)
-        public string PhotoUrl { get; set; }         // URL de la foto de perfil del usuario (puede ser null)
-        public string ProviderId { get; set; }       // Identificador del proveedor (por ejemplo, "firebase")
+        public string? PhoneNumber { get; set; }      // Número de teléfono del usuario (puede ser null)
+        public string? PhotoUrl { get; set; }         // URL de la foto de perfil del usuario (puede ser null)
+        public string? ProviderId { get; set; }       // Identificador del proveedor (por ejemplo, "firebase")
         public bool IsAnonymous { get; set; }        // Indica si el usuario inició sesión de manera anónima
-        public string TenantId { get; set; }         // ID del tenant si se utiliza multitenancy (puede ser null)
+        public string? TenantId { get; set; }         // ID del tenant si se utiliza multitenancy (puede ser null)
     }
 }

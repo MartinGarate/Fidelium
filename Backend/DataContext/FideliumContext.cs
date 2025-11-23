@@ -35,7 +35,6 @@ namespace Backend.DataContext
                         DNI = "46997850",
                         Nombre = "Martin Garte", 
                         Email = "martingarate0@gmail.com",
-                        Password = "qwerty123",
                         TipoUsuario = TipoUsuarioEnum.Administrador,
                         IsDeleted = false,
                         DeleteDate = DateTime.MinValue
@@ -46,7 +45,6 @@ namespace Backend.DataContext
                         DNI = "39144832",
                         Nombre = "Leonel Arrieta", 
                         Email = "leonelarrieta@gmail.com",
-                        Password = "qwerty123",
                         TipoUsuario = TipoUsuarioEnum.Administrador,
                         IsDeleted = false,
                         DeleteDate = DateTime.MinValue
@@ -57,7 +55,6 @@ namespace Backend.DataContext
                         DNI = "46447189",
                         Nombre = "Valentino Machado", 
                         Email = "valentinomachado@gmail.com",
-                        Password = "qwerty123",
                         TipoUsuario = TipoUsuarioEnum.Administrador,
                         IsDeleted = false,
                         DeleteDate = DateTime.MinValue
@@ -68,7 +65,6 @@ namespace Backend.DataContext
                         DNI = "123456789",
                         Nombre = "Test Delete",
                         Email = "testdelete@gmail.com",
-                        Password = "qwerty123",
                         TipoUsuario = TipoUsuarioEnum.Administrador,
                         IsDeleted = true,
                         DeleteDate = DateTime.MinValue
@@ -85,7 +81,6 @@ namespace Backend.DataContext
                         DNI = "41287827",
                         Nombre = "Candela Agustina Corradi",
                         Email = "corradicande@gmail.com",
-                        Password = "qwerty123",
                         TipoUsuario = TipoUsuarioEnum.Empleado,
                         IsDeleted = false,
                         DeleteDate = DateTime.MinValue
@@ -97,7 +92,6 @@ namespace Backend.DataContext
                         DNI = "40317292",
                         Nombre = "Ximena Gorosito",
                         Email = "ximenagorosito0@gmail.com",
-                        Password = "qwerty123",
                         TipoUsuario = TipoUsuarioEnum.Empleado,
                         IsDeleted = false,
                         DeleteDate = DateTime.MinValue
@@ -109,7 +103,6 @@ namespace Backend.DataContext
                         DNI = "123456781",
                         Nombre = "Test2 Delete",
                         Email = "testdelete2@gmail.com",
-                        Password = "qwerty123",
                         TipoUsuario = TipoUsuarioEnum.Empleado,
                         IsDeleted = true,
                         DeleteDate = DateTime.MinValue
@@ -125,7 +118,6 @@ namespace Backend.DataContext
                         DNI = "46133497",
                         Nombre = "Daniel Alejandro Obregon",
                         Email = "danielobregon621@gmail.com",
-                        Password = "qwerty123",
                         TipoUsuario = TipoUsuarioEnum.Cliente,
                         IsDeleted = false,
                         DeleteDate = DateTime.MinValue
@@ -136,7 +128,6 @@ namespace Backend.DataContext
                         DNI = "45641614",
                         Nombre = "Lucia Lencina",
                         Email = "lucilencina6@gmail.com",
-                        Password = "qwerty123",
                         TipoUsuario = TipoUsuarioEnum.Cliente,
                         IsDeleted = false,
                         DeleteDate = DateTime.MinValue
@@ -147,7 +138,6 @@ namespace Backend.DataContext
                         DNI = "123456782",
                         Nombre = "Test3 Delete",
                         Email = "testdelete3@gmail.com",
-                        Password = "qwerty123",
                         TipoUsuario = TipoUsuarioEnum.Cliente,
                         IsDeleted = true,
                         DeleteDate = DateTime.MinValue
