@@ -14,15 +14,14 @@ namespace Service.Models
         public string Nombre { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty; // Único → login
         public string Password{ get; set; } = string.Empty; // Guardado encriptado
-        public TipoUsuarioEnum TipoUsuario { get; set; } = TipoUsuarioEnum.Usuario;
+        public TipoUsuarioEnum TipoUsuario { get; set; } = TipoUsuarioEnum.Cliente;
         public bool IsDeleted { get; set; } = false;
+        public DateTime DeleteDate { get; set; } = DateTime.MinValue; // Fecha de eliminación (soft delete)
 
         public override string ToString()
         {
             return Nombre;
         }
 
-        
-        
     }
 }

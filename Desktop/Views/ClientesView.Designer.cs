@@ -86,7 +86,7 @@
             tabControl.Multiline = true;
             tabControl.Name = "tabControl";
             tabControl.SelectedIndex = 0;
-            tabControl.Size = new Size(989, 605);
+            tabControl.Size = new Size(1913, 1047);
             tabControl.TabIndex = 0;
             // 
             // tabPageLista
@@ -106,7 +106,7 @@
             tabPageLista.Controls.Add(panel1);
             tabPageLista.Location = new Point(4, 24);
             tabPageLista.Name = "tabPageLista";
-            tabPageLista.Size = new Size(981, 577);
+            tabPageLista.Size = new Size(1905, 1019);
             tabPageLista.TabIndex = 0;
             tabPageLista.Text = "Lista";
             // 
@@ -145,7 +145,7 @@
             buttonRestaurar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             buttonRestaurar.IconSize = 24;
             buttonRestaurar.ImageAlign = ContentAlignment.MiddleRight;
-            buttonRestaurar.Location = new Point(866, 353);
+            buttonRestaurar.Location = new Point(866, 795);
             buttonRestaurar.Name = "buttonRestaurar";
             buttonRestaurar.Size = new Size(103, 28);
             buttonRestaurar.TabIndex = 9;
@@ -180,7 +180,7 @@
             ButtonEliminar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             ButtonEliminar.IconSize = 24;
             ButtonEliminar.ImageAlign = ContentAlignment.MiddleRight;
-            ButtonEliminar.Location = new Point(866, 387);
+            ButtonEliminar.Location = new Point(1790, 829);
             ButtonEliminar.Name = "ButtonEliminar";
             ButtonEliminar.Size = new Size(103, 28);
             ButtonEliminar.TabIndex = 7;
@@ -202,7 +202,7 @@
             ButtonEditar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             ButtonEditar.IconSize = 24;
             ButtonEditar.ImageAlign = ContentAlignment.MiddleRight;
-            ButtonEditar.Location = new Point(866, 319);
+            ButtonEditar.Location = new Point(866, 761);
             ButtonEditar.Name = "ButtonEditar";
             ButtonEditar.Size = new Size(103, 28);
             ButtonEditar.TabIndex = 6;
@@ -224,7 +224,7 @@
             ButtonAgregar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             ButtonAgregar.IconSize = 26;
             ButtonAgregar.ImageAlign = ContentAlignment.MiddleRight;
-            ButtonAgregar.Location = new Point(866, 285);
+            ButtonAgregar.Location = new Point(866, 727);
             ButtonAgregar.Name = "ButtonAgregar";
             ButtonAgregar.Size = new Size(103, 28);
             ButtonAgregar.TabIndex = 5;
@@ -243,7 +243,7 @@
             ButtonBuscar.IconColor = Color.FromArgb(242, 242, 242);
             ButtonBuscar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             ButtonBuscar.IconSize = 20;
-            ButtonBuscar.Location = new Point(817, 260);
+            ButtonBuscar.Location = new Point(1741, 260);
             ButtonBuscar.Name = "ButtonBuscar";
             ButtonBuscar.Size = new Size(36, 25);
             ButtonBuscar.TabIndex = 4;
@@ -258,7 +258,7 @@
             textBoxBuscar.Location = new Point(22, 260);
             textBoxBuscar.Name = "textBoxBuscar";
             textBoxBuscar.PlaceholderText = " Escriba el cliente que desea encontrar...";
-            textBoxBuscar.Size = new Size(797, 25);
+            textBoxBuscar.Size = new Size(1721, 25);
             textBoxBuscar.TabIndex = 3;
             textBoxBuscar.TextChanged += textBoxBuscar_TextChanged;
             // 
@@ -298,7 +298,7 @@
             dataGridView.Name = "dataGridView";
             dataGridView.ReadOnly = true;
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView.Size = new Size(831, 264);
+            dataGridView.Size = new Size(1755, 706);
             dataGridView.TabIndex = 2;
             // 
             // panel1
@@ -309,7 +309,7 @@
             panel1.Controls.Add(ButtonClose);
             panel1.Location = new Point(-4, -7);
             panel1.Name = "panel1";
-            panel1.Size = new Size(986, 146);
+            panel1.Size = new Size(1910, 146);
             panel1.TabIndex = 0;
             // 
             // pictureBox1
@@ -335,7 +335,7 @@
             ButtonClose.IconFont = FontAwesome.Sharp.IconFont.Auto;
             ButtonClose.IconSize = 24;
             ButtonClose.ImageAlign = ContentAlignment.MiddleRight;
-            ButtonClose.Location = new Point(917, 10);
+            ButtonClose.Location = new Point(1841, 10);
             ButtonClose.Name = "ButtonClose";
             ButtonClose.Size = new Size(65, 28);
             ButtonClose.TabIndex = 8;
@@ -366,7 +366,7 @@
             tabPageAgregar_Editar.Location = new Point(4, 24);
             tabPageAgregar_Editar.Name = "tabPageAgregar_Editar";
             tabPageAgregar_Editar.Padding = new Padding(3);
-            tabPageAgregar_Editar.Size = new Size(981, 577);
+            tabPageAgregar_Editar.Size = new Size(1905, 1019);
             tabPageAgregar_Editar.TabIndex = 1;
             tabPageAgregar_Editar.Text = "Agregar o Editar";
             // 
@@ -576,7 +576,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(242, 242, 242);
-            ClientSize = new Size(980, 599);
+            ClientSize = new Size(1904, 1041);
             Controls.Add(tabControl);
             Name = "ClientesView";
             StartPosition = FormStartPosition.CenterParent;

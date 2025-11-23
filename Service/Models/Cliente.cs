@@ -16,6 +16,7 @@ namespace Service.Models
         public string? Telefono { get; set; } = string.Empty;
         public string? Instagram { get; set; } = string.Empty;
         public bool IsDeleted { get; set; } = false; // Soft delete
+        public DateTime DeleteDate { get; set; } = DateTime.MinValue; // Fecha de eliminación (soft delete)
 
 
     }

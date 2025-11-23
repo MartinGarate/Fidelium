@@ -11,7 +11,8 @@ namespace Service.Models
         public int ID { get; set; }
         public int ClienteID { get; set; } // FK    
         public Cliente? Cliente { get; set; }
-        public string Descripcion { get; set; } = string.Empty;
+        public string Nombre { get; set; }
+        public string? Descripcion { get; set; } = string.Empty;
         public DateTime FechaCompra { get; set; } = DateTime.Now;
         public string ComentarioFeedback { get; set; } = string.Empty; // Campo libre para feedback
         public int EmpleadoID { get; set; } // FK

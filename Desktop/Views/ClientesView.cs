@@ -80,7 +80,7 @@ namespace Desktop.Views
                 DNI = textBoxDNI.Text,
                 Nombre = textBoxNombre.Text.Trim(),
                 Email = textBoxEmail.Text.Trim(),
-                TipoUsuario = TipoUsuarioEnum.Usuario
+                TipoUsuario = TipoUsuarioEnum.Cliente
             };
 
             return (cliente, usuario); // Devuelve ambos objetos en una tupla

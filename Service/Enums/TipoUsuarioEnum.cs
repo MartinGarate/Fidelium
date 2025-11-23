@@ -10,6 +10,6 @@ namespace Service.Enums
     {
         Administrador,
         Empleado,
-        Usuario
+        Cliente
     }
 }
