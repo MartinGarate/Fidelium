@@ -37,7 +37,26 @@ namespace Desktop.Views
             _firebaseAuthClient = new FirebaseAuthClient(config);
         }
 
-        private async void ButtonLogIn_Click(object sender, EventArgs e)
+        private void checkBoxVerContraseña_CheckedChanged(object sender, EventArgs e)
+        {
+            txtPassword.PasswordChar = checkBoxVerContraseña.Checked ? '\0' : '*';
+        }
+
+
+        private void txtPassword_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                BtnLogin_Click(sender, e);
+            }
+        }
+
+        private void BtnCancelar_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private async void BtnLogin_Click(object sender, EventArgs e)
         {
             try
             {
@@ -62,24 +81,6 @@ namespace Desktop.Views
                     Application.Exit();
                 }
             }
-        }
-
-        private void LoginView_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void checkBoxVerContraseña_CheckedChanged(object sender, EventArgs e)
-        {
-            txtPassword.PasswordChar = checkBoxVerContraseña.Checked ? '\0' : '*';
-
-
-
-        }
-
-        private void iconButton1_Click(object sender, EventArgs e)
-        {
-            this.Close();
         }
     }
 }
