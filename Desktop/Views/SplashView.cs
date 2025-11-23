@@ -12,22 +12,27 @@ namespace Desktop.Views
 {
     public partial class SplashView : Form
     {
+        private int _tickCount = 0;
         public SplashView()
         {
             InitializeComponent();
+            timer.Interval = 100;
+        }
+        private void SplashView_Load(object sender, EventArgs e)
+        {
+            timer.Start();
         }
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            ProgressBar.Value+=5;
-            if (ProgressBar.Value == 100)
+            _tickCount += 5;
+            if (_tickCount == 100)
             {
                 timer.Stop();
                 this.Hide();
                 var menuView = new LoginView();
                 menuView.ShowDialog();
                 this.Close();
-
             }
         }
     }
