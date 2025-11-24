@@ -34,9 +34,6 @@
             subMenu_Principal = new ToolStripMenuItem();
             Menu = new Panel();
             panel1 = new Panel();
-            UserLabel = new Label();
-            pictureBoxUserLogo = new PictureBox();
-            panel2 = new Panel();
             BtnNotificaciones = new FontAwesome.Sharp.IconButton();
             BtnCompras = new FontAwesome.Sharp.IconButton();
             BtnUsuarios = new FontAwesome.Sharp.IconButton();
@@ -44,7 +41,6 @@
             pictureBox1 = new PictureBox();
             label5 = new Label();
             Menu.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxUserLogo).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -71,9 +67,6 @@
             // 
             Menu.BackColor = Color.White;
             Menu.Controls.Add(panel1);
-            Menu.Controls.Add(UserLabel);
-            Menu.Controls.Add(pictureBoxUserLogo);
-            Menu.Controls.Add(panel2);
             Menu.Controls.Add(BtnNotificaciones);
             Menu.Controls.Add(BtnCompras);
             Menu.Controls.Add(BtnUsuarios);
@@ -88,41 +81,11 @@
             // 
             // panel1
             // 
-            panel1.BackColor = Color.Silver;
-            panel1.Location = new Point(24, 117);
+            panel1.BackColor = Color.Black;
+            panel1.Location = new Point(24, 119);
             panel1.Name = "panel1";
             panel1.Size = new Size(323, 2);
             panel1.TabIndex = 23;
-            // 
-            // UserLabel
-            // 
-            UserLabel.AutoSize = true;
-            UserLabel.BackColor = Color.Transparent;
-            UserLabel.Font = new Font("Clash Display Light", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            UserLabel.Location = new Point(126, 935);
-            UserLabel.Name = "UserLabel";
-            UserLabel.Size = new Size(55, 22);
-            UserLabel.TabIndex = 22;
-            UserLabel.Text = "User";
-            // 
-            // pictureBoxUserLogo
-            // 
-            pictureBoxUserLogo.BackColor = Color.Transparent;
-            pictureBoxUserLogo.Image = (Image)resources.GetObject("pictureBoxUserLogo.Image");
-            pictureBoxUserLogo.Location = new Point(42, 912);
-            pictureBoxUserLogo.Name = "pictureBoxUserLogo";
-            pictureBoxUserLogo.Size = new Size(71, 65);
-            pictureBoxUserLogo.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBoxUserLogo.TabIndex = 21;
-            pictureBoxUserLogo.TabStop = false;
-            // 
-            // panel2
-            // 
-            panel2.BackColor = Color.Silver;
-            panel2.Location = new Point(24, 894);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(323, 2);
-            panel2.TabIndex = 20;
             // 
             // BtnNotificaciones
             // 
@@ -250,7 +213,6 @@
             WindowState = FormWindowState.Maximized;
             Menu.ResumeLayout(false);
             Menu.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxUserLogo).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
         }
@@ -274,9 +236,6 @@
         private FontAwesome.Sharp.IconButton BtnUsuarios;
         private FontAwesome.Sharp.IconButton BtnCompras;
         private FontAwesome.Sharp.IconButton BtnNotificaciones;
-        private Label UserLabel;
-        private PictureBox pictureBoxUserLogo;
-        private Panel panel2;
         private Panel panel1;
     }
 }

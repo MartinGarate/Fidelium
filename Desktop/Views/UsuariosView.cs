@@ -15,10 +15,10 @@ namespace Desktop.Views
     public partial class UsuariosView : Form
     {
         readonly GenericService<Usuario> _usuarioService = new(); // Readonly es una practica mas segura para no romper nada, evitando cambiarlo.
-        readonly GenericService<Cliente> _clienteService = new();
+        readonly GenericService<Cliente> _clienteService = new(); // no esta en memoria
 
-        List<Cliente> _clientes = new();
-        List<Usuario> _usuarios = new();
+        List<Cliente> _clientes = new(); 
+        List<Usuario> _usuarios = new();// Si esta En memoria
 
         Cliente? _currentCliente;
         Usuario? _currentUsuario;

@@ -1,4 +1,7 @@
 using Desktop.Views;
+using Service.Models;
+using Service.Models.Login;
+using Service.Services;
 using System;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
@@ -11,9 +14,8 @@ namespace Desktop
         public MenuPrincipalView()
         {
             InitializeComponent();
-             ConfigureMenuButtons();
+            ConfigureMenuButtons();
         }
-
         private void ConfigureMenuButtons()
         {
             // Establecer el Dashboard como botón seleccionado por defecto
@@ -31,7 +33,7 @@ namespace Desktop
             {
                 currentSelectedButton.BackColor = Color.Transparent;
                 currentSelectedButton.ForeColor = Color.FromArgb(4, 5, 4);
-                
+
                 // Cambiar el color del icono del botón deseleccionado
                 if (currentSelectedButton is FontAwesome.Sharp.IconButton previousIconButton)
                 {
@@ -91,5 +93,6 @@ namespace Desktop
             clientesView.MdiParent = this;
             clientesView.Show();
         }
+
     }
 }
