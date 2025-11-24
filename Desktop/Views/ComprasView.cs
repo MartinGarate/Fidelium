@@ -12,19 +12,19 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace Desktop.Views
 {
-    public partial class UsuariosView : Form
+    public partial class ComprasView : Form
     {
         readonly GenericService<Usuario> _usuarioService = new(); // Readonly es una practica mas segura para no romper nada, evitando cambiarlo.
         readonly GenericService<Cliente> _clienteService = new(); // no esta en memoria
 
-        List<Cliente> _clientes = new();
+        List<Cliente> _clientes = new(); 
         List<Usuario> _usuarios = new();// Si esta En memoria
 
         Cliente? _currentCliente;
         Usuario? _currentUsuario;
 
 
-        public UsuariosView()
+        public ComprasView()
         {
             InitializeComponent();
         }
@@ -32,7 +32,6 @@ namespace Desktop.Views
         private async void UsuariosView_Load(object sender, EventArgs e)
         {
             await LoadDataAsync();
-            comboBoxTipoUsuario.DataSource = Enum.GetValues(typeof(TipoUsuarioEnum));
         }
 
 
@@ -125,9 +124,7 @@ namespace Desktop.Views
                     clientes = clientes.Where(c =>
                         (c.Usuario?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
                         (c.Usuario?.DNI?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (c.Usuario?.Email?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (c.Telefono?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (c.Instagram?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
+                        (c.Usuario?.Email?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
                     ).ToList();
 
                     usuarios = usuarios.Where(u =>
@@ -155,25 +152,19 @@ namespace Desktop.Views
             textBoxEmail.Text = usuario.Email ?? "";
 
             // Tipo de usuario (Enum) en el comboBox
-            comboBoxTipoUsuario.SelectedItem = usuario.TipoUsuario;
 
             // Mostrar/ocultar campos según si es cliente
             bool esCliente = usuario.TipoUsuario == TipoUsuarioEnum.Cliente;
 
-            lblInstagram.Visible = esCliente;
-            lblTelefono.Visible = esCliente;
-            textBoxTelefono.Visible = esCliente;
-            textBoxInstagram.Visible = esCliente;
+           
 
             if (cliente != null)
             {
-                textBoxTelefono.Text = cliente.Telefono ?? "";
-                textBoxInstagram.Text = cliente.Instagram ?? "";
+               
             }
             else
             {
-                textBoxTelefono.Text = "";
-                textBoxInstagram.Text = "";
+               
             }
         }
         private void LimpiarControles()
@@ -184,11 +175,7 @@ namespace Desktop.Views
             textBoxNombre.Text = "";
             textBoxDNI.Text = "";
             textBoxEmail.Text = "";
-            textBoxTelefono.Text = "";
-            textBoxInstagram.Text = "";
-            comboBoxTipoUsuario.SelectedIndex = -1;
-            textBoxInstagram.Visible = false;
-            textBoxTelefono.Visible = false;
+           
         }
 
 
@@ -440,89 +427,12 @@ namespace Desktop.Views
         {
             try
             {
-                // Validar formulario - campos obligatorios
-                if (string.IsNullOrWhiteSpace(textBoxNombre.Text) ||
-                    string.IsNullOrWhiteSpace(comboBoxTipoUsuario.Text))
-                {
-                    MessageHelpers.ShowError("Nombre y Tipo de Usuario son obligatorios");
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(textBoxDNI.Text) ||
-                    string.IsNullOrWhiteSpace(textBoxEmail.Text))
-                {
-                    bool confirmado = MessageBox.Show(
-                            "¿Confirmás que querés guardar? Algunos datos están incompletos.",
-                            "Confirmar guardado",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Warning) == DialogResult.Yes;
-
-                    if (!confirmado)
-                        return;
-                }
-
-                // Obtener tipo de usuario
-                Enum.TryParse(comboBoxTipoUsuario.SelectedItem?.ToString(), out TipoUsuarioEnum tipoUsuario);
-
-                // Validación condicional para clientes
-                if (tipoUsuario == TipoUsuarioEnum.Cliente)
-                {
-                    if (string.IsNullOrWhiteSpace(textBoxInstagram.Text) ||
-                        string.IsNullOrWhiteSpace(textBoxTelefono.Text))
-                    {
-                        bool confirmado = MessageBox.Show(
-                            "¿Confirmás que querés guardar? Algunos datos de cliente están incompletos.",
-                            "Confirmar guardado",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Warning) == DialogResult.Yes;
-
-                        if (!confirmado)
-                            return;
-                    }
-                }
-
-                // Determinar si es nuevo o existente
-                bool esNuevo = _currentUsuario == null || _currentUsuario.ID == 0;
-
-                Usuario usuario = esNuevo ? new Usuario() : _currentUsuario;
-
-                // Asignar valores comunes
-                usuario.Nombre = textBoxNombre.Text;
-                usuario.DNI = textBoxDNI.Text;
-                usuario.Email = textBoxEmail.Text;
-                usuario.TipoUsuario = tipoUsuario;
-
-                // Guardar usuario y capturar el retorno con el ID asignado
-                if (esNuevo)
-                {
-                    usuario = await _usuarioService.AddAsync(usuario) ?? usuario;
-                }
-                else
-                {
-                    await _usuarioService.UpdateAsync(usuario);
-                }
-
-                // Manejar cliente si aplica
-                if (tipoUsuario == TipoUsuarioEnum.Cliente)
-                {
-                    Cliente cliente = esNuevo
-                        ? new Cliente { UsuarioID = usuario.ID }
-                        : _currentCliente ?? new Cliente { UsuarioID = usuario.ID };
-
-                    cliente.Telefono = textBoxTelefono.Text;
-                    cliente.Instagram = textBoxInstagram.Text;
-
-                    if (esNuevo || _currentCliente == null)
-                        await _clienteService.AddAsync(cliente);
-                    else
-                        await _clienteService.UpdateAsync(cliente);
-                }
+               
 
                 // Refrescar UI
                 await LoadDataAsync();
                 LimpiarControles();
 
-                MessageHelpers.ShowSuccess(esNuevo ? "Usuario agregado correctamente" : "Usuario actualizado correctamente");
                 tabControl.SelectedTab = Lista_TabPage;
             }
             catch (Exception ex)
@@ -537,23 +447,9 @@ namespace Desktop.Views
         }
         private void comboBoxTipoUsuario_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxTipoUsuario.SelectedItem is TipoUsuarioEnum tipo)
-            {
-                bool esCliente = tipo == TipoUsuarioEnum.Cliente;
-                lblInstagram.Visible = esCliente;
-                lblTelefono.Visible = esCliente;
-                textBoxTelefono.Visible = esCliente;
-                textBoxInstagram.Visible = esCliente;
-            }
+          
         }
 
-        private void textBoxBuscar_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-                e.Handled = true; // Evitar el sonido de "ding"
-                BtnBuscar_Click(sender, e);
-            }
-        }
+
     }
 }

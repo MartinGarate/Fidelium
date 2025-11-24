@@ -1,6 +1,6 @@
 ﻿namespace Desktop.Views
 {
-    partial class UsuariosView
+    partial class ComprasView
     {
         /// <summary>
         /// Required designer variable.
@@ -44,12 +44,12 @@
             BtnCancelar = new FontAwesome.Sharp.IconButton();
             BtnGuardar = new FontAwesome.Sharp.IconButton();
             panel1 = new Panel();
-            lblInstagram = new Label();
-            textBoxInstagram = new TextBox();
-            lblTelefono = new Label();
-            textBoxTelefono = new TextBox();
-            comboBoxTipoUsuario = new ComboBox();
+            label9 = new Label();
+            dateTimePicker2 = new DateTimePicker();
             label8 = new Label();
+            dateTimePicker1 = new DateTimePicker();
+            label2 = new Label();
+            textBox2 = new TextBox();
             label7 = new Label();
             textBoxEmail = new TextBox();
             label6 = new Label();
@@ -72,9 +72,9 @@
             label5.Font = new Font("Clash Display Semibold", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label5.Location = new Point(52, 71);
             label5.Name = "label5";
-            label5.Size = new Size(861, 46);
+            label5.Size = new Size(823, 46);
             label5.TabIndex = 15;
-            label5.Text = "Administrá a todos los usuarios del sistema";
+            label5.Text = "Administrá todas las compras de tu Local";
             // 
             // label1
             // 
@@ -83,9 +83,9 @@
             label1.Font = new Font("Clash Display", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
             label1.Location = new Point(52, 117);
             label1.Name = "label1";
-            label1.Size = new Size(631, 22);
+            label1.Size = new Size(723, 22);
             label1.TabIndex = 16;
-            label1.Text = "Revisá la lista completa de cuentas y gestiona roles, estados y accesos.";
+            label1.Text = "Visualizá, gestioná y controlá cada compra realizada de manera rápida y sencilla.";
             // 
             // dataGridViewUsuarios
             // 
@@ -179,7 +179,7 @@
             BtnEliminar.FlatStyle = FlatStyle.Flat;
             BtnEliminar.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnEliminar.ForeColor = Color.FromArgb(19, 10, 29);
-            BtnEliminar.IconChar = FontAwesome.Sharp.IconChar.UserMinus;
+            BtnEliminar.IconChar = FontAwesome.Sharp.IconChar.CartArrowDown;
             BtnEliminar.IconColor = Color.FromArgb(19, 10, 29);
             BtnEliminar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             BtnEliminar.IconSize = 24;
@@ -201,7 +201,7 @@
             BtnEditar.FlatStyle = FlatStyle.Flat;
             BtnEditar.Font = new Font("Clash Display Medium", 12F);
             BtnEditar.ForeColor = Color.FromArgb(19, 10, 29);
-            BtnEditar.IconChar = FontAwesome.Sharp.IconChar.UserPen;
+            BtnEditar.IconChar = FontAwesome.Sharp.IconChar.Pen;
             BtnEditar.IconColor = Color.FromArgb(19, 10, 29);
             BtnEditar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             BtnEditar.IconSize = 24;
@@ -251,11 +251,10 @@
             textBoxBuscar.Font = new Font("Segoe UI", 14F);
             textBoxBuscar.Location = new Point(52, 221);
             textBoxBuscar.Name = "textBoxBuscar";
-            textBoxBuscar.PlaceholderText = " ¿A quién estás buscando?…";
+            textBoxBuscar.PlaceholderText = " ¿Qué estás buscando?…";
             textBoxBuscar.Size = new Size(1368, 32);
             textBoxBuscar.TabIndex = 19;
             textBoxBuscar.TextChanged += textBoxBuscar_TextChanged;
-            textBoxBuscar.KeyPress += textBoxBuscar_KeyPress;
             // 
             // AgregarEditar_TabPage
             // 
@@ -314,12 +313,12 @@
             // panel1
             // 
             panel1.BackColor = Color.White;
-            panel1.Controls.Add(lblInstagram);
-            panel1.Controls.Add(textBoxInstagram);
-            panel1.Controls.Add(lblTelefono);
-            panel1.Controls.Add(textBoxTelefono);
-            panel1.Controls.Add(comboBoxTipoUsuario);
+            panel1.Controls.Add(label9);
+            panel1.Controls.Add(dateTimePicker2);
             panel1.Controls.Add(label8);
+            panel1.Controls.Add(dateTimePicker1);
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(textBox2);
             panel1.Controls.Add(label7);
             panel1.Controls.Add(textBoxEmail);
             panel1.Controls.Add(label6);
@@ -331,87 +330,81 @@
             panel1.Size = new Size(1180, 661);
             panel1.TabIndex = 19;
             // 
-            // lblInstagram
+            // label9
             // 
-            lblInstagram.AutoSize = true;
-            lblInstagram.BackColor = Color.Transparent;
-            lblInstagram.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblInstagram.Location = new Point(75, 554);
-            lblInstagram.Name = "lblInstagram";
-            lblInstagram.Size = new Size(132, 27);
-            lblInstagram.TabIndex = 30;
-            lblInstagram.Text = "Instagram";
+            label9.AutoSize = true;
+            label9.BackColor = Color.Transparent;
+            label9.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label9.Location = new Point(590, 294);
+            label9.Name = "label9";
+            label9.Size = new Size(371, 27);
+            label9.TabIndex = 37;
+            label9.Text = "Fecha de Solicitud de Feedback";
             // 
-            // textBoxInstagram
+            // dateTimePicker2
             // 
-            textBoxInstagram.BackColor = Color.FromArgb(244, 246, 248);
-            textBoxInstagram.Font = new Font("Segoe UI", 12F);
-            textBoxInstagram.Location = new Point(75, 584);
-            textBoxInstagram.Name = "textBoxInstagram";
-            textBoxInstagram.PlaceholderText = "@user";
-            textBoxInstagram.Size = new Size(1004, 29);
-            textBoxInstagram.TabIndex = 29;
-            // 
-            // lblTelefono
-            // 
-            lblTelefono.AutoSize = true;
-            lblTelefono.BackColor = Color.Transparent;
-            lblTelefono.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblTelefono.Location = new Point(76, 451);
-            lblTelefono.Name = "lblTelefono";
-            lblTelefono.Size = new Size(115, 27);
-            lblTelefono.TabIndex = 28;
-            lblTelefono.Text = "Telefono";
-            // 
-            // textBoxTelefono
-            // 
-            textBoxTelefono.BackColor = Color.FromArgb(244, 246, 248);
-            textBoxTelefono.Font = new Font("Segoe UI", 12F);
-            textBoxTelefono.Location = new Point(76, 481);
-            textBoxTelefono.Name = "textBoxTelefono";
-            textBoxTelefono.PlaceholderText = "+12 3 456 7890";
-            textBoxTelefono.Size = new Size(1004, 29);
-            textBoxTelefono.TabIndex = 27;
-            // 
-            // comboBoxTipoUsuario
-            // 
-            comboBoxTipoUsuario.BackColor = Color.FromArgb(244, 246, 248);
-            comboBoxTipoUsuario.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBoxTipoUsuario.Font = new Font("Segoe UI", 12F);
-            comboBoxTipoUsuario.FormattingEnabled = true;
-            comboBoxTipoUsuario.Location = new Point(76, 373);
-            comboBoxTipoUsuario.Name = "comboBoxTipoUsuario";
-            comboBoxTipoUsuario.Size = new Size(1004, 29);
-            comboBoxTipoUsuario.TabIndex = 26;
-            comboBoxTipoUsuario.SelectedIndexChanged += comboBoxTipoUsuario_SelectedIndexChanged;
+            dateTimePicker2.Font = new Font("Segoe UI", 12F);
+            dateTimePicker2.Location = new Point(590, 324);
+            dateTimePicker2.Name = "dateTimePicker2";
+            dateTimePicker2.Size = new Size(490, 29);
+            dateTimePicker2.TabIndex = 36;
             // 
             // label8
             // 
             label8.AutoSize = true;
             label8.BackColor = Color.Transparent;
             label8.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label8.Location = new Point(76, 343);
+            label8.Location = new Point(75, 294);
             label8.Name = "label8";
-            label8.Size = new Size(191, 27);
-            label8.TabIndex = 25;
-            label8.Text = "Tipo de Usuario";
+            label8.Size = new Size(220, 27);
+            label8.TabIndex = 35;
+            label8.Text = "Fecha de Registro";
+            // 
+            // dateTimePicker1
+            // 
+            dateTimePicker1.Font = new Font("Segoe UI", 12F);
+            dateTimePicker1.Location = new Point(75, 324);
+            dateTimePicker1.Name = "dateTimePicker1";
+            dateTimePicker1.Size = new Size(490, 29);
+            dateTimePicker1.TabIndex = 34;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.BackColor = Color.Transparent;
+            label2.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label2.Location = new Point(590, 40);
+            label2.Name = "label2";
+            label2.Size = new Size(161, 27);
+            label2.TabIndex = 33;
+            label2.Text = "Responsable";
+            // 
+            // textBox2
+            // 
+            textBox2.BackColor = Color.FromArgb(244, 246, 248);
+            textBox2.Font = new Font("Segoe UI", 12F);
+            textBox2.Location = new Point(590, 70);
+            textBox2.Name = "textBox2";
+            textBox2.PlaceholderText = "Ejemplo: Martin Garate";
+            textBox2.Size = new Size(489, 29);
+            textBox2.TabIndex = 32;
             // 
             // label7
             // 
             label7.AutoSize = true;
             label7.BackColor = Color.Transparent;
             label7.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label7.Location = new Point(76, 242);
+            label7.Location = new Point(75, 200);
             label7.Name = "label7";
-            label7.Size = new Size(74, 27);
+            label7.Size = new Size(152, 27);
             label7.TabIndex = 23;
-            label7.Text = "Email";
+            label7.Text = "Descripción";
             // 
             // textBoxEmail
             // 
             textBoxEmail.BackColor = Color.FromArgb(244, 246, 248);
             textBoxEmail.Font = new Font("Segoe UI", 12F);
-            textBoxEmail.Location = new Point(76, 272);
+            textBoxEmail.Location = new Point(75, 230);
             textBoxEmail.Name = "textBoxEmail";
             textBoxEmail.PlaceholderText = "martin@fidelium.com";
             textBoxEmail.Size = new Size(1004, 29);
@@ -422,17 +415,17 @@
             label6.AutoSize = true;
             label6.BackColor = Color.Transparent;
             label6.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label6.Location = new Point(75, 141);
+            label6.Location = new Point(75, 121);
             label6.Name = "label6";
-            label6.Size = new Size(52, 27);
+            label6.Size = new Size(240, 27);
             label6.TabIndex = 21;
-            label6.Text = "DNI";
+            label6.Text = "Producto o Servicio";
             // 
             // textBoxDNI
             // 
             textBoxDNI.BackColor = Color.FromArgb(244, 246, 248);
             textBoxDNI.Font = new Font("Segoe UI", 12F);
-            textBoxDNI.Location = new Point(76, 171);
+            textBoxDNI.Location = new Point(76, 151);
             textBoxDNI.Name = "textBoxDNI";
             textBoxDNI.PlaceholderText = "Ejemplo: 123456789";
             textBoxDNI.Size = new Size(1004, 29);
@@ -445,9 +438,9 @@
             label4.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label4.Location = new Point(75, 40);
             label4.Name = "label4";
-            label4.Size = new Size(225, 27);
+            label4.Size = new Size(229, 27);
             label4.TabIndex = 19;
-            label4.Text = "Nombre Completo";
+            label4.Text = "Nombre del Cliente";
             // 
             // textBoxNombre
             // 
@@ -456,7 +449,7 @@
             textBoxNombre.Location = new Point(76, 70);
             textBoxNombre.Name = "textBoxNombre";
             textBoxNombre.PlaceholderText = "Ejemplo: Martin Garate";
-            textBoxNombre.Size = new Size(1004, 29);
+            textBoxNombre.Size = new Size(489, 29);
             textBoxNombre.TabIndex = 0;
             // 
             // labelAccion
@@ -466,9 +459,9 @@
             labelAccion.Font = new Font("Clash Display Semibold", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
             labelAccion.Location = new Point(164, 86);
             labelAccion.Name = "labelAccion";
-            labelAccion.Size = new Size(782, 46);
+            labelAccion.Size = new Size(820, 46);
             labelAccion.TabIndex = 17;
-            labelAccion.Text = "Incorporá a alguien más a la plataforma\n";
+            labelAccion.Text = "Registrá una nueva compra en el sistema";
             // 
             // label3
             // 
@@ -477,11 +470,11 @@
             label3.Font = new Font("Clash Display", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
             label3.Location = new Point(164, 132);
             label3.Name = "label3";
-            label3.Size = new Size(610, 22);
+            label3.Size = new Size(636, 22);
             label3.TabIndex = 18;
-            label3.Text = "Completá sus datos básicos para darle acceso según sus funciones.";
+            label3.Text = "Completá los datos de la compra para mantener tu control actualizado.";
             // 
-            // UsuariosView
+            // ComprasView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -490,7 +483,7 @@
             Controls.Add(tabControl);
             MaximizeBox = false;
             MinimizeBox = false;
-            Name = "UsuariosView";
+            Name = "ComprasView";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "UsuariosView";
             WindowState = FormWindowState.Maximized;
@@ -522,21 +515,21 @@
         private Panel panel1;
         private Label label4;
         private TextBox textBoxNombre;
-        private ComboBox comboBoxTipoUsuario;
-        private Label label8;
         private Label label7;
         private TextBox textBoxEmail;
         private Label label6;
         private TextBox textBoxDNI;
-        private Label lblInstagram;
-        private TextBox textBoxInstagram;
-        private Label lblTelefono;
-        private TextBox textBoxTelefono;
         private CheckBox checkBoxEliminados;
         private FontAwesome.Sharp.IconButton BtnRestaurar;
         private FontAwesome.Sharp.IconButton BtnEliminar;
         private FontAwesome.Sharp.IconButton BtnEditar;
         private FontAwesome.Sharp.IconButton BtnCancelar;
         private FontAwesome.Sharp.IconButton BtnGuardar;
+        private Label label2;
+        private TextBox textBox2;
+        private Label label9;
+        private DateTimePicker dateTimePicker2;
+        private Label label8;
+        private DateTimePicker dateTimePicker1;
     }
 }

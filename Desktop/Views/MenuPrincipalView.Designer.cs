@@ -40,6 +40,7 @@
             BtnDashboard = new FontAwesome.Sharp.IconButton();
             pictureBox1 = new PictureBox();
             label5 = new Label();
+            iconButton1 = new FontAwesome.Sharp.IconButton();
             Menu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -66,6 +67,7 @@
             // Menu
             // 
             Menu.BackColor = Color.White;
+            Menu.Controls.Add(iconButton1);
             Menu.Controls.Add(panel1);
             Menu.Controls.Add(BtnNotificaciones);
             Menu.Controls.Add(BtnCompras);
@@ -99,7 +101,7 @@
             BtnNotificaciones.IconFont = FontAwesome.Sharp.IconFont.Auto;
             BtnNotificaciones.IconSize = 33;
             BtnNotificaciones.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnNotificaciones.Location = new Point(45, 394);
+            BtnNotificaciones.Location = new Point(45, 391);
             BtnNotificaciones.Name = "BtnNotificaciones";
             BtnNotificaciones.Padding = new Padding(3, 3, 32, 3);
             BtnNotificaciones.Size = new Size(259, 52);
@@ -121,7 +123,7 @@
             BtnCompras.IconFont = FontAwesome.Sharp.IconFont.Auto;
             BtnCompras.IconSize = 33;
             BtnCompras.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnCompras.Location = new Point(45, 319);
+            BtnCompras.Location = new Point(45, 317);
             BtnCompras.Name = "BtnCompras";
             BtnCompras.Padding = new Padding(3, 3, 86, 3);
             BtnCompras.Size = new Size(259, 52);
@@ -143,7 +145,7 @@
             BtnUsuarios.IconFont = FontAwesome.Sharp.IconFont.Auto;
             BtnUsuarios.IconSize = 33;
             BtnUsuarios.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnUsuarios.Location = new Point(45, 244);
+            BtnUsuarios.Location = new Point(45, 243);
             BtnUsuarios.Name = "BtnUsuarios";
             BtnUsuarios.Padding = new Padding(3, 3, 88, 3);
             BtnUsuarios.Size = new Size(259, 52);
@@ -197,6 +199,27 @@
             label5.TabIndex = 14;
             label5.Text = "Fidelium";
             // 
+            // iconButton1
+            // 
+            iconButton1.BackColor = Color.Transparent;
+            iconButton1.FlatAppearance.BorderSize = 0;
+            iconButton1.FlatStyle = FlatStyle.Flat;
+            iconButton1.Font = new Font("Clash Display Medium", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            iconButton1.ForeColor = Color.FromArgb(4, 5, 4);
+            iconButton1.IconChar = FontAwesome.Sharp.IconChar.ThumbsUp;
+            iconButton1.IconColor = Color.FromArgb(4, 5, 4);
+            iconButton1.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconButton1.IconSize = 33;
+            iconButton1.ImageAlign = ContentAlignment.MiddleLeft;
+            iconButton1.Location = new Point(45, 465);
+            iconButton1.Name = "iconButton1";
+            iconButton1.Padding = new Padding(3, 3, 67, 3);
+            iconButton1.Size = new Size(259, 52);
+            iconButton1.TabIndex = 24;
+            iconButton1.Text = "Feedbacks";
+            iconButton1.TextAlign = ContentAlignment.MiddleRight;
+            iconButton1.UseVisualStyleBackColor = false;
+            // 
             // MenuPrincipalView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -237,5 +260,6 @@
         private FontAwesome.Sharp.IconButton BtnCompras;
         private FontAwesome.Sharp.IconButton BtnNotificaciones;
         private Panel panel1;
+        private FontAwesome.Sharp.IconButton iconButton1;
     }
 }

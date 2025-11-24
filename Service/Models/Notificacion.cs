@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Service.Models
 {
@@ -15,7 +16,8 @@ namespace Service.Models
         public int DiasParaRecordatorio { get; set; } = 0; // Días a partir de la fecha generada para el recordatorio
         public EstadoNotificacion Estado { get; set; } = EstadoNotificacion.Pendiente;
         public DateTime FechaGenerada { get; set; } = DateTime.Now;
-        public DateTime? FechaRecordatorio { get; set; } //Fecha calculada
+
+        public DateTime? FechaRecordatorio { get; set; }   //Fecha calculada
         
         public int CompraServicioID { get; set; } // FK
         public CompraServicio? CompraServicio { get; set; }
@@ -30,7 +32,6 @@ namespace Service.Models
 
         public DateTime CreateAt { get; set; } = DateTime.Now; // Fecha de creación del registro
         public DateTime UpdateAt { get; set; } = DateTime.MinValue; // Fecha de última actualización
-
 
     }
 

@@ -10,18 +10,31 @@ namespace Desktop
     public partial class MenuPrincipalView : Form
     {
         private Button? currentSelectedButton;
+        private Form? currentOpenView;
 
         public MenuPrincipalView()
         {
             InitializeComponent();
             ConfigureMenuButtons();
         }
+
         private void ConfigureMenuButtons()
         {
             // Establecer el Dashboard como botón seleccionado por defecto
             currentSelectedButton = BtnDashboard;
             BtnDashboard.BackColor = ColorTranslator.FromHtml("#5801b4");
             BtnDashboard.ForeColor = Color.White;
+        }
+
+        private void CloseCurrentView()
+        {
+            // Cerrar y disponer la vista actual si existe
+            if (currentOpenView != null && !currentOpenView.IsDisposed)
+            {
+                currentOpenView.Close();
+                currentOpenView.Dispose(); // liberar recursos no administrados que un objeto está utilizando
+                currentOpenView = null;
+            }
         }
 
         private void ButtonSeleccionado(object sender, EventArgs e)
@@ -55,44 +68,38 @@ namespace Desktop
             currentSelectedButton = clickedButton;
         }
 
-
         private void BtnDashboard_Click(object sender, EventArgs e)
         {
             ButtonSeleccionado(sender, e);
+            CloseCurrentView();
             // Tu lógica específica del Dashboard aquí
         }
 
         private void BtnUsuarios_Click(object sender, EventArgs e)
         {
             ButtonSeleccionado(sender, e);
+            CloseCurrentView();
             var usuariosView = new UsuariosView();
             usuariosView.MdiParent = this;
             usuariosView.Show();
+            currentOpenView = usuariosView;
         }
 
         private void BtnCompras_Click(object sender, EventArgs e)
         {
             ButtonSeleccionado(sender, e);
-            // Tu lógica específica de Compras aquí
+            CloseCurrentView();
+            var comprasView = new ComprasView();
+            comprasView.MdiParent = this;
+            comprasView.Show();
+            currentOpenView = comprasView;
         }
 
         private void BtnNotificaciones_Click(object sender, EventArgs e)
         {
             ButtonSeleccionado(sender, e);
+            CloseCurrentView();
             // Tu lógica específica de Notificaciones aquí
         }
-
-        private void subMenuSalir_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void subMenu_Capacitaciones_Click(object sender, EventArgs e)
-        {
-            var clientesView = new ClientesView();
-            clientesView.MdiParent = this;
-            clientesView.Show();
-        }
-
     }
 }
