@@ -72,21 +72,19 @@
             // 
             // txtEmail
             // 
-            txtEmail.Font = new Font("Clash Display Light", 10F);
+            txtEmail.Font = new Font("Segoe UI", 12F);
             txtEmail.Location = new Point(122, 167);
             txtEmail.Name = "txtEmail";
-            txtEmail.PlaceholderText = "  usuario@fidelium.com";
-            txtEmail.Size = new Size(247, 24);
+            txtEmail.Size = new Size(247, 29);
             txtEmail.TabIndex = 0;
             // 
             // txtPassword
             // 
-            txtPassword.Font = new Font("Clash Display Light", 10F);
-            txtPassword.Location = new Point(122, 218);
+            txtPassword.Font = new Font("Segoe UI", 12F);
+            txtPassword.Location = new Point(122, 233);
             txtPassword.Name = "txtPassword";
             txtPassword.PasswordChar = '*';
-            txtPassword.PlaceholderText = "  Contraseña";
-            txtPassword.Size = new Size(247, 24);
+            txtPassword.Size = new Size(247, 29);
             txtPassword.TabIndex = 1;
             txtPassword.KeyPress += txtPassword_KeyPress;
             // 
@@ -101,7 +99,7 @@
             ButtonLogIn.IconFont = FontAwesome.Sharp.IconFont.Auto;
             ButtonLogIn.IconSize = 20;
             ButtonLogIn.ImageAlign = ContentAlignment.MiddleRight;
-            ButtonLogIn.Location = new Point(239, 312);
+            ButtonLogIn.Location = new Point(239, 319);
             ButtonLogIn.Name = "ButtonLogIn";
             ButtonLogIn.Padding = new Padding(3);
             ButtonLogIn.Size = new Size(130, 31);
@@ -116,7 +114,7 @@
             checkBoxVerContraseña.AutoSize = true;
             checkBoxVerContraseña.Font = new Font("Clash Display Light", 8F);
             checkBoxVerContraseña.ForeColor = Color.FromArgb(11, 0, 25);
-            checkBoxVerContraseña.Location = new Point(261, 261);
+            checkBoxVerContraseña.Location = new Point(261, 280);
             checkBoxVerContraseña.Name = "checkBoxVerContraseña";
             checkBoxVerContraseña.Size = new Size(108, 17);
             checkBoxVerContraseña.TabIndex = 2;
@@ -127,22 +125,22 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Clash Display Light", 10F);
+            label2.Font = new Font("Clash Display Light", 12F);
             label2.ForeColor = Color.FromArgb(11, 0, 25);
             label2.Location = new Point(120, 148);
             label2.Name = "label2";
-            label2.Size = new Size(130, 16);
+            label2.Size = new Size(154, 18);
             label2.TabIndex = 6;
             label2.Text = "Correo Electronico";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Clash Display Light", 10F);
+            label3.Font = new Font("Clash Display Light", 12F);
             label3.ForeColor = Color.FromArgb(11, 0, 25);
-            label3.Location = new Point(122, 199);
+            label3.Location = new Point(122, 214);
             label3.Name = "label3";
-            label3.Size = new Size(84, 16);
+            label3.Size = new Size(98, 18);
             label3.TabIndex = 7;
             label3.Text = "Contraseña";
             // 
@@ -156,7 +154,7 @@
             iconButton1.IconChar = FontAwesome.Sharp.IconChar.None;
             iconButton1.IconColor = Color.FromArgb(11, 0, 25);
             iconButton1.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconButton1.Location = new Point(122, 312);
+            iconButton1.Location = new Point(122, 319);
             iconButton1.Name = "iconButton1";
             iconButton1.Size = new Size(75, 31);
             iconButton1.TabIndex = 4;
@@ -171,10 +169,10 @@
             iconPictureBox1.IconChar = FontAwesome.Sharp.IconChar.UserAstronaut;
             iconPictureBox1.IconColor = Color.FromArgb(11, 0, 25);
             iconPictureBox1.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconPictureBox1.IconSize = 21;
-            iconPictureBox1.Location = new Point(99, 168);
+            iconPictureBox1.IconSize = 30;
+            iconPictureBox1.Location = new Point(86, 167);
             iconPictureBox1.Name = "iconPictureBox1";
-            iconPictureBox1.Size = new Size(21, 23);
+            iconPictureBox1.Size = new Size(30, 37);
             iconPictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
             iconPictureBox1.TabIndex = 9;
             iconPictureBox1.TabStop = false;
@@ -186,10 +184,10 @@
             iconPictureBox2.IconChar = FontAwesome.Sharp.IconChar.Key;
             iconPictureBox2.IconColor = Color.FromArgb(11, 0, 25);
             iconPictureBox2.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconPictureBox2.IconSize = 21;
-            iconPictureBox2.Location = new Point(99, 219);
+            iconPictureBox2.IconSize = 30;
+            iconPictureBox2.Location = new Point(86, 233);
             iconPictureBox2.Name = "iconPictureBox2";
-            iconPictureBox2.Size = new Size(21, 23);
+            iconPictureBox2.Size = new Size(30, 38);
             iconPictureBox2.SizeMode = PictureBoxSizeMode.CenterImage;
             iconPictureBox2.TabIndex = 10;
             iconPictureBox2.TabStop = false;
@@ -199,7 +197,7 @@
             labelErrorPassword.AutoSize = true;
             labelErrorPassword.Font = new Font("Clash Display Light", 6.5F);
             labelErrorPassword.ForeColor = Color.Brown;
-            labelErrorPassword.Location = new Point(122, 246);
+            labelErrorPassword.Location = new Point(122, 265);
             labelErrorPassword.Name = "labelErrorPassword";
             labelErrorPassword.Size = new Size(238, 10);
             labelErrorPassword.TabIndex = 12;

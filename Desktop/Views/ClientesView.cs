@@ -240,81 +240,81 @@ namespace Desktop.Views
         }
         private async void ButtonEditar_Click(object sender, EventArgs e)
         {
-            try
-            {
-                // Deshabilitar controles mientras carga
-                SetControlsEnabled(false);
+        //    try
+        //    {
+        //        // Deshabilitar controles mientras carga
+        //        SetControlsEnabled(false);
 
-                if (!DataGridHelpers.TryGetSelectedId(dataGridView, "ID", out int idCliente))
-                {
-                    MessageHelpers.ShowError("Debe seleccionar un cliente");
-                    return;
-                }
+        //        if (!DataGridHelpers.TryGetSelectedId(dataGridView, "ID", out int idCliente))
+        //        {
+        //            MessageHelpers.ShowError("Debe seleccionar un cliente");
+        //            return;
+        //        }
 
-                _currentCliente = _clientes.FirstOrDefault(c => c.ID == idCliente);
-                if (_currentCliente == null)
-                {
-                    MessageHelpers.ShowError("Cliente no encontrado");
-                    return;
-                }
+        //        _currentCliente = _clientes.FirstOrDefault(c => c.ID == idCliente);
+        //        if (_currentCliente == null)
+        //        {
+        //            MessageHelpers.ShowError("Cliente no encontrado");
+        //            return;
+        //        }
 
-                // Cargar datos en los controles
-                CargarDatosEnControles(_currentCliente);
+        //        // Cargar datos en los controles
+        //        CargarDatosEnControles(_currentCliente);
 
-                tabControl.SelectedTab = tabPageAgregar_Editar;
-                labelAccion.Text = "Editar Cliente";
-            }
-            catch (Exception ex)
-            {
-                MessageHelpers.ShowError($"Error: {ex.Message}");
-            }
-            finally
-            {
-                // Rehabilitar controles
-                SetControlsEnabled(true);
-            }
+        //        tabControl.SelectedTab = tabPageAgregar_Editar;
+        //        labelAccion.Text = "Editar Cliente";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageHelpers.ShowError($"Error: {ex.Message}");
+        //    }
+        //    finally
+        //    {
+        //        // Rehabilitar controles
+        //        SetControlsEnabled(true);
+        //    }
         }
         private async void ButtonEliminar_Click(object sender, EventArgs e)
         {
-            if (!DataGridHelpers.TryGetSelectedId(dataGridView, "ID", out int idCliente))
-            {
-                MessageHelpers.ShowError("Debe seleccionar un cliente");
-                return;
-            }
+        //    if (!DataGridHelpers.TryGetSelectedId(dataGridView, "ID", out int idCliente))
+        //    {
+        //        MessageHelpers.ShowError("Debe seleccionar un cliente");
+        //        return;
+        //    }
 
-            var cliente = _clientes.FirstOrDefault(c => c.ID == idCliente);
-            if (cliente == null)
-            {
-                MessageHelpers.ShowError("Cliente no encontrado");
-                return;
-            }
+        //    var cliente = _clientes.FirstOrDefault(c => c.ID == idCliente);
+        //    if (cliente == null)
+        //    {
+        //        MessageHelpers.ShowError("Cliente no encontrado");
+        //        return;
+        //    }
 
-            if (await CrudHelpers.DeleteEntity(_clienteService, cliente.ID, cliente.Usuario?.Nombre ?? "Cliente"))
-            {
-                await GetAllData();
-            }
+        //    if (await CrudHelpers.DeleteEntity(_clienteService, cliente.ID, cliente.Usuario?.Nombre ?? "Cliente"))
+        //    {
+        //        await GetAllData();
+        //    }
         }
 
         private async void buttonRestaurar_Click(object sender, EventArgs e)
         {
-            if (!DataGridHelpers.TryGetSelectedId(dataGridView, "ID", out int idCliente))
-            {
-                MessageHelpers.ShowError("Debe seleccionar un cliente");
-                return;
-            }
+        //    if (!DataGridHelpers.TryGetSelectedId(dataGridView, "ID", out int idCliente))
+        //    {
+        //        MessageHelpers.ShowError("Debe seleccionar un cliente");
+        //        return;
+        //    }
 
-            var cliente = _clientes.FirstOrDefault(c => c.ID == idCliente);
-            if (cliente == null)
-            {
-                MessageHelpers.ShowError("Cliente no encontrado");
-                return;
-            }
+        //    var cliente = _clientes.FirstOrDefault(c => c.ID == idCliente);
+        //    if (cliente == null)
+        //    {
+        //        MessageHelpers.ShowError("Cliente no encontrado");
+        //        return;
+        //    }
 
-            if (await CrudHelpers.RestoreEntity(_clienteService, cliente.ID, cliente.Usuario?.Nombre ?? "Cliente"))
-            {
-                textBoxBuscar.Clear(); // Limpiar el texto de búsqueda
-                await GetAllData(); // Recargar todos los datos
-            }
+        //    if (await CrudHelpers.RestoreEntity(_clienteService, cliente.ID, cliente.Usuario?.Nombre ?? "Cliente"))
+        //    {
+        //        textBoxBuscar.Clear(); // Limpiar el texto de búsqueda
+        //        await GetAllData(); // Recargar todos los datos
+        //    }
         }
         private async void ButtonBuscar_Click(object sender, EventArgs e)
         {
