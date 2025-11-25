@@ -17,11 +17,19 @@ namespace Desktop.Views
         readonly GenericService<Usuario> _usuarioService = new(); // Readonly es una practica mas segura para no romper nada, evitando cambiarlo.
         readonly GenericService<Cliente> _clienteService = new(); // no esta en memoria
 
-        List<Cliente> _clientes = new(); 
+        readonly GenericService<CompraServicio> _compraServicioService = new();
+        readonly GenericService<Notificacion> _notificacionService = new();
+
+        List<Cliente> _clientes = new();
         List<Usuario> _usuarios = new();// Si esta En memoria
+
+        List<CompraServicio> _comprasServicios = new();
+        List<Notificacion> _notificaciones = new();
 
         Cliente? _currentCliente;
         Usuario? _currentUsuario;
+        CompraServicio? _currentCompraServicio;
+        Notificacion? _currentNotificacion;
 
 
         public ComprasView()
@@ -35,7 +43,93 @@ namespace Desktop.Views
         }
 
 
-        private async Task<(List<Cliente> clientes, List<Usuario> usuarios)> ObtenerDatosAsync(string? filtro = null)
+        private async Task<List<CompraServicio>> ObtenerDatosComprasAsync(string? filtro = null)
+        {
+            if (checkBoxEliminados.Checked)
+            {
+                return await _compraServicioService.GetAllDeletedsAsync(filtro) ?? new List<CompraServicio>();
+            }
+
+            return await _compraServicioService.GetAllAsync(filtro) ?? new List<CompraServicio>();
+        }
+        private object TransformarDatosParaGridCompras(List<CompraServicio> comprasServicios)
+        {
+            var listaFinalCompra = new List<object>();
+
+            // Agregar Compras
+            foreach (var c in comprasServicios)
+            {
+                listaFinalCompra.Add(new
+                {
+                    c.ID,
+                    ClienteNombre = c.Cliente?.Usuario?.Nombre ?? "N/A",
+                    c.Nombre,
+                    c.Descripcion,
+                    c.FechaCompra,
+                    EmpleadoNombre = c.Empleado?.Nombre ?? "N/A",
+                    c.ComentarioFeedback,
+                    c.IsDeleted
+                });
+
+
+            }
+            return listaFinalCompra;
+        }
+        private async Task LoadDataComprasAsync(string? filtro = null)
+        {
+            try
+            {
+                // Obtener TODOS los datos sin filtro del backend
+                var comprasServicios = await ObtenerDatosComprasAsync();
+
+                _comprasServicios = comprasServicios;
+                // Aplicar filtro EN MEMORIA después de obtener los datos
+                if (!string.IsNullOrEmpty(filtro))
+                {
+                    comprasServicios = comprasServicios.Where(c =>
+                        (c.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (c.Descripcion?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (c.Cliente?.Usuario?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (c.Empleado?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (c.ComentarioFeedback?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
+                    ).ToList();
+
+                }
+
+                var datosParaGrid = TransformarDatosParaGridCompras(comprasServicios);
+
+                UpdateGridCompras(datosParaGrid);
+            }
+            catch (Exception ex)
+            {
+                MessageHelpers.ShowError($"Error al cargar datos: {ex.Message}");
+            }
+        }
+        private void UpdateGridCompras(object datos)
+        {
+            dataGridViewCompras.DataSource = null;
+            dataGridViewCompras.DataSource = datos;
+            DataGridHelpers.HideColumns(dataGridViewCompras, "ID", "ClienteID", "EmpleadoID", "IsDeleted");
+            DataGridHelpers.RenameColumn(dataGridViewCompras, "FechaCompra", "Fecha de Compra");
+            DataGridHelpers.RenameColumn(dataGridViewCompras, "ComentarioFeedback", "Feedback");
+            DataGridHelpers.SetupBasicGrid(dataGridViewCompras);
+        }
+        private void CargarDatosEnControlesCompras(CompraServicio compraServicio, Notificacion notificacion)
+        {
+            textBoxProductoServicio.Text = compraServicio.Nombre;
+            textBoxDescripcion.Text = compraServicio.Descripcion ?? "";
+
+            // Si FechaRecordatorio es null, se usa FechaCompra + 7 días como valor inicial en la UI
+            DateTime fechaRecordatorioInicial = notificacion.FechaRecordatorio.HasValue
+                                        ? notificacion.FechaRecordatorio.Value
+                                        : compraServicio.FechaCompra.AddDays(7);
+            dateTimeFechaCompra.Value = compraServicio.FechaCompra.ToLocalTime();
+            dateTimeSolicitudFeedback.Value = fechaRecordatorioInicial.ToLocalTime();
+
+        }
+
+
+        private async Task<(List<Cliente> clientes, List<Usuario> usuarios)> ObtenerDatosUsuariosAsync(string? filtro = null)
         {
             if (checkBoxEliminados.Checked)
             {
@@ -57,7 +151,7 @@ namespace Desktop.Views
                 cliente.Usuario = usuarios.FirstOrDefault(u => u.ID == cliente.UsuarioID);
             }
         }
-        private object TransformarDatosParaGrid(List<Cliente> clientes, List<Usuario> usuarios)
+        private object TransformarDatosParaGridUsuarios(List<Cliente> clientes, List<Usuario> usuarios)
         {
             var listaFinal = new List<object>();
 
@@ -98,20 +192,12 @@ namespace Desktop.Views
 
             return listaFinal;
         }
-        private void UpdateGrid(object datos)
-        {
-            dataGridViewUsuarios.DataSource = null;
-            dataGridViewUsuarios.DataSource = datos;
-            DataGridHelpers.HideColumns(dataGridViewUsuarios, "ID");
-            DataGridHelpers.RenameColumn(dataGridViewUsuarios, "ClienteTelefono", "Teléfono");
-            DataGridHelpers.SetupBasicGrid(dataGridViewUsuarios);
-        }
-        private async Task LoadDataAsync(string? filtro = null)
+        private async Task LoadDataUsuariosAsync(string? filtro = null)
         {
             try
             {
                 // Obtener TODOS los datos sin filtro del backend
-                var (clientes, usuarios) = await ObtenerDatosAsync();
+                var (clientes, usuarios) = await ObtenerDatosUsuariosAsync();
 
                 _clientes = clientes;
                 _usuarios = usuarios;
@@ -134,48 +220,48 @@ namespace Desktop.Views
                     ).ToList();
                 }
 
-                var datosParaGrid = TransformarDatosParaGrid(clientes, usuarios);
+                var datosParaGrid = TransformarDatosParaGridUsuarios(clientes, usuarios);
 
-                UpdateGrid(datosParaGrid);
+                UpdateGridUsuarios(datosParaGrid);
             }
             catch (Exception ex)
             {
                 MessageHelpers.ShowError($"Error al cargar datos: {ex.Message}");
             }
         }
-
-        private void CargarDatosEnControles(Usuario usuario, Cliente? cliente = null)
+        private void UpdateGridUsuarios(object datos)
+        {
+            dataGridViewCompras.DataSource = null;
+            dataGridViewCompras.DataSource = datos;
+            DataGridHelpers.HideColumns(dataGridViewCompras, "ID");
+            DataGridHelpers.RenameColumn(dataGridViewCompras, "ClienteTelefono", "Teléfono");
+            DataGridHelpers.SetupBasicGrid(dataGridViewCompras);
+        }
+        private void CargarDatosEnControlesUsuarios(Usuario usuario)
         {
             // Datos comunes del usuario
-            textBoxNombre.Text = usuario.Nombre ?? "";
-            textBoxDNI.Text = usuario.DNI ?? "";
-            textBoxEmail.Text = usuario.Email ?? "";
-
-            // Tipo de usuario (Enum) en el comboBox
-
-            // Mostrar/ocultar campos según si es cliente
-            bool esCliente = usuario.TipoUsuario == TipoUsuarioEnum.Cliente;
-
-           
-
-            if (cliente != null)
-            {
-               
-            }
-            else
-            {
-               
-            }
+            textBoxCliente.Text = usuario.Nombre ?? "";
+            textBoxResponsable.Text = usuario.Nombre ?? "";
         }
+
+
         private void LimpiarControles()
         {
+            //limpiamos todos los controles
             _currentUsuario = null;
             _currentCliente = null;
+            _currentCompraServicio = null;
+            _currentNotificacion = null;
 
-            textBoxNombre.Text = "";
-            textBoxDNI.Text = "";
-            textBoxEmail.Text = "";
-           
+            textBoxCliente.Clear();
+            textBoxProductoServicio.Clear();
+            textBoxDescripcion.Clear();
+            textBoxResponsable.Clear();
+            dateTimeFechaCompra.Value = DateTime.Now;
+            dateTimeSolicitudFeedback.Value = DateTime.Now.AddDays(7);
+            textBoxBuscar.Clear();
+            //falta continuar con esto
+
         }
 
 
@@ -189,14 +275,14 @@ namespace Desktop.Views
         private void BtnEditar_Click(object sender, EventArgs e)
         {
             // 1. Validar selección
-            if (dataGridViewUsuarios.RowCount == 0 || dataGridViewUsuarios.SelectedRows.Count == 0)
+            if (dataGridViewCompras.RowCount == 0 || dataGridViewCompras.SelectedRows.Count == 0)
             {
                 MessageHelpers.ShowError("Debe seleccionar un campo.");
                 return;
             }
 
             // 2. Obtener la fila seleccionada
-            DataGridViewRow fila = dataGridViewUsuarios.SelectedRows[0];
+            DataGridViewRow fila = dataGridViewCompras.SelectedRows[0];
 
             // 3. Obtener el ID
             if (!int.TryParse(fila.Cells["ID"].Value?.ToString(), out int idSeleccionado))
@@ -251,13 +337,13 @@ namespace Desktop.Views
         }
         private async void BtnEliminar_Click(object sender, EventArgs e)
         {
-            if (dataGridViewUsuarios.RowCount == 0 || dataGridViewUsuarios.SelectedRows.Count == 0)
+            if (dataGridViewCompras.RowCount == 0 || dataGridViewCompras.SelectedRows.Count == 0)
             {
                 MessageHelpers.ShowError("Debe seleccionar un registro.");
                 return;
             }
 
-            DataGridViewRow fila = dataGridViewUsuarios.SelectedRows[0];
+            DataGridViewRow fila = dataGridViewCompras.SelectedRows[0];
 
             if (!int.TryParse(fila.Cells["ID"].Value?.ToString(), out int idSeleccionado))
             {
@@ -330,13 +416,13 @@ namespace Desktop.Views
         }
         private async void BtnRestaurar_Click(object sender, EventArgs e)
         {
-            if (dataGridViewUsuarios.RowCount == 0 || dataGridViewUsuarios.SelectedRows.Count == 0)
+            if (dataGridViewCompras.RowCount == 0 || dataGridViewCompras.SelectedRows.Count == 0)
             {
                 MessageHelpers.ShowError("Debe seleccionar un registro para restaurar.");
                 return;
             }
 
-            DataGridViewRow fila = dataGridViewUsuarios.SelectedRows[0];
+            DataGridViewRow fila = dataGridViewCompras.SelectedRows[0];
 
             if (!int.TryParse(fila.Cells["ID"].Value?.ToString(), out int idSeleccionado))
             {
@@ -402,7 +488,7 @@ namespace Desktop.Views
                 string filtro = textBoxBuscar.Text.Trim();
                 // Cargar datos con filtro
                 await LoadDataAsync(filtro);
-                if (dataGridViewUsuarios.RowCount == 0)
+                if (dataGridViewCompras.RowCount == 0)
                 {
                     MessageHelpers.ShowWarning("No se encontraron resultados para la búsqueda.");
                 }
@@ -427,7 +513,7 @@ namespace Desktop.Views
         {
             try
             {
-               
+
 
                 // Refrescar UI
                 await LoadDataAsync();
@@ -447,9 +533,21 @@ namespace Desktop.Views
         }
         private void comboBoxTipoUsuario_SelectedIndexChanged(object sender, EventArgs e)
         {
-          
+
         }
 
+        private void dateTimeFechaCompra_ValueChanged(object sender, EventArgs e)
+        {
+            //Obtener la nueva fecha que el usuario seleccionó en el control de compra
+            DateTime nuevaFechaCompraSeleccionada = dateTimeFechaCompra.Value;
 
+            //Calcular la nueva Fecha de Recordatorio (sumarle 7 días)
+            DateTime nuevaFechaRecordatorio = nuevaFechaCompraSeleccionada.AddDays(7);
+
+            // Asignar el resultado al control de feedback, actualizando la UI
+            dateTimeSolicitudFeedback.Value = nuevaFechaRecordatorio;
+
+
+        }
     }
 }

@@ -69,10 +69,10 @@
             // 
             label5.AutoSize = true;
             label5.BackColor = Color.Transparent;
-            label5.Font = new Font("Clash Display Semibold", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.Font = new Font("Microsoft Sans Serif", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label5.Location = new Point(52, 71);
             label5.Name = "label5";
-            label5.Size = new Size(861, 46);
+            label5.Size = new Size(831, 46);
             label5.TabIndex = 15;
             label5.Text = "Administrá a todos los usuarios del sistema";
             // 
@@ -80,10 +80,10 @@
             // 
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Clash Display", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label1.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
             label1.Location = new Point(52, 117);
             label1.Name = "label1";
-            label1.Size = new Size(631, 22);
+            label1.Size = new Size(606, 24);
             label1.TabIndex = 16;
             label1.Text = "Revisá la lista completa de cuentas y gestiona roles, estados y accesos.";
             // 
@@ -101,7 +101,7 @@
             BtnAgregar.BackColor = Color.FromArgb(88, 1, 180);
             BtnAgregar.FlatAppearance.BorderSize = 0;
             BtnAgregar.FlatStyle = FlatStyle.Flat;
-            BtnAgregar.Font = new Font("Clash Display Medium", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            BtnAgregar.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
             BtnAgregar.ForeColor = Color.White;
             BtnAgregar.IconChar = FontAwesome.Sharp.IconChar.CirclePlus;
             BtnAgregar.IconColor = Color.White;
@@ -154,7 +154,7 @@
             BtnRestaurar.BackColor = Color.Transparent;
             BtnRestaurar.FlatAppearance.BorderColor = Color.FromArgb(115, 108, 122);
             BtnRestaurar.FlatStyle = FlatStyle.Flat;
-            BtnRestaurar.Font = new Font("Clash Display Medium", 12F);
+            BtnRestaurar.Font = new Font("Microsoft Sans Serif", 12F);
             BtnRestaurar.ForeColor = Color.FromArgb(19, 10, 29);
             BtnRestaurar.IconChar = FontAwesome.Sharp.IconChar.ChevronCircleLeft;
             BtnRestaurar.IconColor = Color.FromArgb(19, 10, 29);
@@ -199,7 +199,7 @@
             BtnEditar.BackColor = Color.Transparent;
             BtnEditar.FlatAppearance.BorderColor = Color.FromArgb(115, 108, 122);
             BtnEditar.FlatStyle = FlatStyle.Flat;
-            BtnEditar.Font = new Font("Clash Display Medium", 12F);
+            BtnEditar.Font = new Font("Microsoft Sans Serif", 12F);
             BtnEditar.ForeColor = Color.FromArgb(19, 10, 29);
             BtnEditar.IconChar = FontAwesome.Sharp.IconChar.UserPen;
             BtnEditar.IconColor = Color.FromArgb(19, 10, 29);
@@ -218,10 +218,10 @@
             // checkBoxEliminados
             // 
             checkBoxEliminados.AutoSize = true;
-            checkBoxEliminados.Font = new Font("Clash Display", 10F, FontStyle.Italic);
+            checkBoxEliminados.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Italic);
             checkBoxEliminados.Location = new Point(1230, 920);
             checkBoxEliminados.Name = "checkBoxEliminados";
-            checkBoxEliminados.Size = new Size(124, 20);
+            checkBoxEliminados.Size = new Size(120, 21);
             checkBoxEliminados.TabIndex = 21;
             checkBoxEliminados.Text = "Ver eliminados";
             checkBoxEliminados.UseVisualStyleBackColor = true;
@@ -232,7 +232,7 @@
             BtnBuscar.BackColor = Color.FromArgb(11, 0, 25);
             BtnBuscar.FlatAppearance.BorderSize = 0;
             BtnBuscar.FlatStyle = FlatStyle.Flat;
-            BtnBuscar.Font = new Font("Clash Display Medium", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            BtnBuscar.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
             BtnBuscar.ForeColor = Color.White;
             BtnBuscar.IconChar = FontAwesome.Sharp.IconChar.Search;
             BtnBuscar.IconColor = Color.White;
@@ -277,7 +277,7 @@
             BtnCancelar.BackColor = Color.Transparent;
             BtnCancelar.FlatAppearance.BorderSize = 0;
             BtnCancelar.FlatStyle = FlatStyle.Flat;
-            BtnCancelar.Font = new Font("Clash Display Semibold", 9F, FontStyle.Bold);
+            BtnCancelar.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
             BtnCancelar.ForeColor = Color.FromArgb(11, 0, 25);
             BtnCancelar.IconChar = FontAwesome.Sharp.IconChar.None;
             BtnCancelar.IconColor = Color.FromArgb(11, 0, 25);
@@ -294,7 +294,7 @@
             // 
             BtnGuardar.BackColor = Color.FromArgb(68, 0, 154);
             BtnGuardar.FlatStyle = FlatStyle.Flat;
-            BtnGuardar.Font = new Font("Clash Display Semibold", 9F, FontStyle.Bold);
+            BtnGuardar.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
             BtnGuardar.ForeColor = SystemColors.Control;
             BtnGuardar.IconChar = FontAwesome.Sharp.IconChar.ArrowRight;
             BtnGuardar.IconColor = Color.White;
@@ -335,10 +335,10 @@
             // 
             lblInstagram.AutoSize = true;
             lblInstagram.BackColor = Color.Transparent;
-            lblInstagram.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblInstagram.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblInstagram.Location = new Point(75, 554);
             lblInstagram.Name = "lblInstagram";
-            lblInstagram.Size = new Size(132, 27);
+            lblInstagram.Size = new Size(118, 29);
             lblInstagram.TabIndex = 30;
             lblInstagram.Text = "Instagram";
             // 
@@ -356,10 +356,10 @@
             // 
             lblTelefono.AutoSize = true;
             lblTelefono.BackColor = Color.Transparent;
-            lblTelefono.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblTelefono.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblTelefono.Location = new Point(76, 451);
             lblTelefono.Name = "lblTelefono";
-            lblTelefono.Size = new Size(115, 27);
+            lblTelefono.Size = new Size(110, 29);
             lblTelefono.TabIndex = 28;
             lblTelefono.Text = "Telefono";
             // 
@@ -389,10 +389,10 @@
             // 
             label8.AutoSize = true;
             label8.BackColor = Color.Transparent;
-            label8.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label8.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label8.Location = new Point(76, 343);
             label8.Name = "label8";
-            label8.Size = new Size(191, 27);
+            label8.Size = new Size(186, 29);
             label8.TabIndex = 25;
             label8.Text = "Tipo de Usuario";
             // 
@@ -400,10 +400,10 @@
             // 
             label7.AutoSize = true;
             label7.BackColor = Color.Transparent;
-            label7.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label7.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label7.Location = new Point(76, 242);
             label7.Name = "label7";
-            label7.Size = new Size(74, 27);
+            label7.Size = new Size(74, 29);
             label7.TabIndex = 23;
             label7.Text = "Email";
             // 
@@ -421,10 +421,10 @@
             // 
             label6.AutoSize = true;
             label6.BackColor = Color.Transparent;
-            label6.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label6.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label6.Location = new Point(75, 141);
             label6.Name = "label6";
-            label6.Size = new Size(52, 27);
+            label6.Size = new Size(54, 29);
             label6.TabIndex = 21;
             label6.Text = "DNI";
             // 
@@ -442,10 +442,10 @@
             // 
             label4.AutoSize = true;
             label4.BackColor = Color.Transparent;
-            label4.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label4.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label4.Location = new Point(75, 40);
             label4.Name = "label4";
-            label4.Size = new Size(225, 27);
+            label4.Size = new Size(212, 29);
             label4.TabIndex = 19;
             label4.Text = "Nombre Completo";
             // 
@@ -463,10 +463,10 @@
             // 
             labelAccion.AutoSize = true;
             labelAccion.BackColor = Color.Transparent;
-            labelAccion.Font = new Font("Clash Display Semibold", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelAccion.Font = new Font("Microsoft Sans Serif", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
             labelAccion.Location = new Point(164, 86);
             labelAccion.Name = "labelAccion";
-            labelAccion.Size = new Size(782, 46);
+            labelAccion.Size = new Size(760, 46);
             labelAccion.TabIndex = 17;
             labelAccion.Text = "Incorporá a alguien más a la plataforma\n";
             // 
@@ -474,10 +474,10 @@
             // 
             label3.AutoSize = true;
             label3.BackColor = Color.Transparent;
-            label3.Font = new Font("Clash Display", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label3.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
             label3.Location = new Point(164, 132);
             label3.Name = "label3";
-            label3.Size = new Size(610, 22);
+            label3.Size = new Size(582, 24);
             label3.TabIndex = 18;
             label3.Text = "Completá sus datos básicos para darle acceso según sus funciones.";
             // 
@@ -487,12 +487,12 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(244, 246, 248);
             ClientSize = new Size(1534, 1041);
+            ControlBox = false;
             Controls.Add(tabControl);
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "UsuariosView";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "UsuariosView";
             WindowState = FormWindowState.Maximized;
             Load += UsuariosView_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridViewUsuarios).EndInit();

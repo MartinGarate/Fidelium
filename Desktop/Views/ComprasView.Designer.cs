@@ -30,7 +30,7 @@
         {
             label5 = new Label();
             label1 = new Label();
-            dataGridViewUsuarios = new DataGridView();
+            dataGridViewCompras = new DataGridView();
             BtnAgregar = new FontAwesome.Sharp.IconButton();
             tabControl = new TabControl();
             Lista_TabPage = new TabPage();
@@ -45,34 +45,43 @@
             BtnGuardar = new FontAwesome.Sharp.IconButton();
             panel1 = new Panel();
             label9 = new Label();
-            dateTimePicker2 = new DateTimePicker();
+            dateTimeSolicitudFeedback = new DateTimePicker();
             label8 = new Label();
-            dateTimePicker1 = new DateTimePicker();
+            dateTimeFechaCompra = new DateTimePicker();
             label2 = new Label();
-            textBox2 = new TextBox();
+            textBoxResponsable = new TextBox();
             label7 = new Label();
-            textBoxEmail = new TextBox();
+            textBoxDescripcion = new TextBox();
             label6 = new Label();
-            textBoxDNI = new TextBox();
+            textBoxProductoServicio = new TextBox();
             label4 = new Label();
-            textBoxNombre = new TextBox();
+            textBoxCliente = new TextBox();
             labelAccion = new Label();
             label3 = new Label();
-            ((System.ComponentModel.ISupportInitialize)dataGridViewUsuarios).BeginInit();
+            SeleccionarClienteResponsable_TabPage = new TabPage();
+            iconButton1 = new FontAwesome.Sharp.IconButton();
+            textBoxBuscarUsuario = new TextBox();
+            label10 = new Label();
+            iconButton2 = new FontAwesome.Sharp.IconButton();
+            label11 = new Label();
+            dataGridViewUsuarios = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewCompras).BeginInit();
             tabControl.SuspendLayout();
             Lista_TabPage.SuspendLayout();
             AgregarEditar_TabPage.SuspendLayout();
             panel1.SuspendLayout();
+            SeleccionarClienteResponsable_TabPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewUsuarios).BeginInit();
             SuspendLayout();
             // 
             // label5
             // 
             label5.AutoSize = true;
             label5.BackColor = Color.Transparent;
-            label5.Font = new Font("Clash Display Semibold", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.Font = new Font("Microsoft Sans Serif", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label5.Location = new Point(52, 71);
             label5.Name = "label5";
-            label5.Size = new Size(823, 46);
+            label5.Size = new Size(791, 46);
             label5.TabIndex = 15;
             label5.Text = "Administrá todas las compras de tu Local";
             // 
@@ -80,28 +89,28 @@
             // 
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Clash Display", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label1.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
             label1.Location = new Point(52, 117);
             label1.Name = "label1";
-            label1.Size = new Size(723, 22);
+            label1.Size = new Size(686, 24);
             label1.TabIndex = 16;
             label1.Text = "Visualizá, gestioná y controlá cada compra realizada de manera rápida y sencilla.";
             // 
-            // dataGridViewUsuarios
+            // dataGridViewCompras
             // 
-            dataGridViewUsuarios.BackgroundColor = Color.White;
-            dataGridViewUsuarios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewUsuarios.Location = new Point(52, 260);
-            dataGridViewUsuarios.Name = "dataGridViewUsuarios";
-            dataGridViewUsuarios.Size = new Size(1415, 649);
-            dataGridViewUsuarios.TabIndex = 17;
+            dataGridViewCompras.BackgroundColor = Color.White;
+            dataGridViewCompras.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCompras.Location = new Point(52, 260);
+            dataGridViewCompras.Name = "dataGridViewCompras";
+            dataGridViewCompras.Size = new Size(1415, 649);
+            dataGridViewCompras.TabIndex = 17;
             // 
             // BtnAgregar
             // 
             BtnAgregar.BackColor = Color.FromArgb(88, 1, 180);
             BtnAgregar.FlatAppearance.BorderSize = 0;
             BtnAgregar.FlatStyle = FlatStyle.Flat;
-            BtnAgregar.Font = new Font("Clash Display Medium", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            BtnAgregar.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
             BtnAgregar.ForeColor = Color.White;
             BtnAgregar.IconChar = FontAwesome.Sharp.IconChar.CirclePlus;
             BtnAgregar.IconColor = Color.White;
@@ -122,7 +131,8 @@
             // 
             tabControl.Controls.Add(Lista_TabPage);
             tabControl.Controls.Add(AgregarEditar_TabPage);
-            tabControl.Location = new Point(11, -4);
+            tabControl.Controls.Add(SeleccionarClienteResponsable_TabPage);
+            tabControl.Location = new Point(1, -8);
             tabControl.Name = "tabControl";
             tabControl.SelectedIndex = 0;
             tabControl.Size = new Size(1528, 1048);
@@ -140,7 +150,7 @@
             Lista_TabPage.Controls.Add(label5);
             Lista_TabPage.Controls.Add(BtnAgregar);
             Lista_TabPage.Controls.Add(label1);
-            Lista_TabPage.Controls.Add(dataGridViewUsuarios);
+            Lista_TabPage.Controls.Add(dataGridViewCompras);
             Lista_TabPage.Location = new Point(4, 24);
             Lista_TabPage.Name = "Lista_TabPage";
             Lista_TabPage.Padding = new Padding(3);
@@ -154,7 +164,7 @@
             BtnRestaurar.BackColor = Color.Transparent;
             BtnRestaurar.FlatAppearance.BorderColor = Color.FromArgb(115, 108, 122);
             BtnRestaurar.FlatStyle = FlatStyle.Flat;
-            BtnRestaurar.Font = new Font("Clash Display Medium", 12F);
+            BtnRestaurar.Font = new Font("Microsoft Sans Serif", 12F);
             BtnRestaurar.ForeColor = Color.FromArgb(19, 10, 29);
             BtnRestaurar.IconChar = FontAwesome.Sharp.IconChar.ChevronCircleLeft;
             BtnRestaurar.IconColor = Color.FromArgb(19, 10, 29);
@@ -199,7 +209,7 @@
             BtnEditar.BackColor = Color.Transparent;
             BtnEditar.FlatAppearance.BorderColor = Color.FromArgb(115, 108, 122);
             BtnEditar.FlatStyle = FlatStyle.Flat;
-            BtnEditar.Font = new Font("Clash Display Medium", 12F);
+            BtnEditar.Font = new Font("Microsoft Sans Serif", 12F);
             BtnEditar.ForeColor = Color.FromArgb(19, 10, 29);
             BtnEditar.IconChar = FontAwesome.Sharp.IconChar.Pen;
             BtnEditar.IconColor = Color.FromArgb(19, 10, 29);
@@ -218,10 +228,10 @@
             // checkBoxEliminados
             // 
             checkBoxEliminados.AutoSize = true;
-            checkBoxEliminados.Font = new Font("Clash Display", 10F, FontStyle.Italic);
+            checkBoxEliminados.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Italic);
             checkBoxEliminados.Location = new Point(1230, 920);
             checkBoxEliminados.Name = "checkBoxEliminados";
-            checkBoxEliminados.Size = new Size(124, 20);
+            checkBoxEliminados.Size = new Size(120, 21);
             checkBoxEliminados.TabIndex = 21;
             checkBoxEliminados.Text = "Ver eliminados";
             checkBoxEliminados.UseVisualStyleBackColor = true;
@@ -232,7 +242,7 @@
             BtnBuscar.BackColor = Color.FromArgb(11, 0, 25);
             BtnBuscar.FlatAppearance.BorderSize = 0;
             BtnBuscar.FlatStyle = FlatStyle.Flat;
-            BtnBuscar.Font = new Font("Clash Display Medium", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            BtnBuscar.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
             BtnBuscar.ForeColor = Color.White;
             BtnBuscar.IconChar = FontAwesome.Sharp.IconChar.Search;
             BtnBuscar.IconColor = Color.White;
@@ -276,7 +286,7 @@
             BtnCancelar.BackColor = Color.Transparent;
             BtnCancelar.FlatAppearance.BorderSize = 0;
             BtnCancelar.FlatStyle = FlatStyle.Flat;
-            BtnCancelar.Font = new Font("Clash Display Semibold", 9F, FontStyle.Bold);
+            BtnCancelar.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
             BtnCancelar.ForeColor = Color.FromArgb(11, 0, 25);
             BtnCancelar.IconChar = FontAwesome.Sharp.IconChar.None;
             BtnCancelar.IconColor = Color.FromArgb(11, 0, 25);
@@ -293,7 +303,7 @@
             // 
             BtnGuardar.BackColor = Color.FromArgb(68, 0, 154);
             BtnGuardar.FlatStyle = FlatStyle.Flat;
-            BtnGuardar.Font = new Font("Clash Display Semibold", 9F, FontStyle.Bold);
+            BtnGuardar.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
             BtnGuardar.ForeColor = SystemColors.Control;
             BtnGuardar.IconChar = FontAwesome.Sharp.IconChar.ArrowRight;
             BtnGuardar.IconColor = Color.White;
@@ -314,17 +324,17 @@
             // 
             panel1.BackColor = Color.White;
             panel1.Controls.Add(label9);
-            panel1.Controls.Add(dateTimePicker2);
+            panel1.Controls.Add(dateTimeSolicitudFeedback);
             panel1.Controls.Add(label8);
-            panel1.Controls.Add(dateTimePicker1);
+            panel1.Controls.Add(dateTimeFechaCompra);
             panel1.Controls.Add(label2);
-            panel1.Controls.Add(textBox2);
+            panel1.Controls.Add(textBoxResponsable);
             panel1.Controls.Add(label7);
-            panel1.Controls.Add(textBoxEmail);
+            panel1.Controls.Add(textBoxDescripcion);
             panel1.Controls.Add(label6);
-            panel1.Controls.Add(textBoxDNI);
+            panel1.Controls.Add(textBoxProductoServicio);
             panel1.Controls.Add(label4);
-            panel1.Controls.Add(textBoxNombre);
+            panel1.Controls.Add(textBoxCliente);
             panel1.Location = new Point(164, 185);
             panel1.Name = "panel1";
             panel1.Size = new Size(1180, 661);
@@ -334,132 +344,133 @@
             // 
             label9.AutoSize = true;
             label9.BackColor = Color.Transparent;
-            label9.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label9.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label9.Location = new Point(590, 294);
             label9.Name = "label9";
-            label9.Size = new Size(371, 27);
+            label9.Size = new Size(361, 29);
             label9.TabIndex = 37;
             label9.Text = "Fecha de Solicitud de Feedback";
             // 
-            // dateTimePicker2
+            // dateTimeSolicitudFeedback
             // 
-            dateTimePicker2.Font = new Font("Segoe UI", 12F);
-            dateTimePicker2.Location = new Point(590, 324);
-            dateTimePicker2.Name = "dateTimePicker2";
-            dateTimePicker2.Size = new Size(490, 29);
-            dateTimePicker2.TabIndex = 36;
+            dateTimeSolicitudFeedback.Font = new Font("Segoe UI", 12F);
+            dateTimeSolicitudFeedback.Location = new Point(590, 324);
+            dateTimeSolicitudFeedback.Name = "dateTimeSolicitudFeedback";
+            dateTimeSolicitudFeedback.Size = new Size(490, 29);
+            dateTimeSolicitudFeedback.TabIndex = 36;
             // 
             // label8
             // 
             label8.AutoSize = true;
             label8.BackColor = Color.Transparent;
-            label8.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label8.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label8.Location = new Point(75, 294);
             label8.Name = "label8";
-            label8.Size = new Size(220, 27);
+            label8.Size = new Size(211, 29);
             label8.TabIndex = 35;
             label8.Text = "Fecha de Registro";
             // 
-            // dateTimePicker1
+            // dateTimeFechaCompra
             // 
-            dateTimePicker1.Font = new Font("Segoe UI", 12F);
-            dateTimePicker1.Location = new Point(75, 324);
-            dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(490, 29);
-            dateTimePicker1.TabIndex = 34;
+            dateTimeFechaCompra.Font = new Font("Segoe UI", 12F);
+            dateTimeFechaCompra.Location = new Point(75, 324);
+            dateTimeFechaCompra.Name = "dateTimeFechaCompra";
+            dateTimeFechaCompra.Size = new Size(490, 29);
+            dateTimeFechaCompra.TabIndex = 34;
+            dateTimeFechaCompra.ValueChanged += dateTimeFechaCompra_ValueChanged;
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.BackColor = Color.Transparent;
-            label2.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label2.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.Location = new Point(590, 40);
             label2.Name = "label2";
-            label2.Size = new Size(161, 27);
+            label2.Size = new Size(156, 29);
             label2.TabIndex = 33;
             label2.Text = "Responsable";
             // 
-            // textBox2
+            // textBoxResponsable
             // 
-            textBox2.BackColor = Color.FromArgb(244, 246, 248);
-            textBox2.Font = new Font("Segoe UI", 12F);
-            textBox2.Location = new Point(590, 70);
-            textBox2.Name = "textBox2";
-            textBox2.PlaceholderText = "Ejemplo: Martin Garate";
-            textBox2.Size = new Size(489, 29);
-            textBox2.TabIndex = 32;
+            textBoxResponsable.BackColor = Color.FromArgb(244, 246, 248);
+            textBoxResponsable.Font = new Font("Segoe UI", 12F);
+            textBoxResponsable.Location = new Point(590, 70);
+            textBoxResponsable.Name = "textBoxResponsable";
+            textBoxResponsable.PlaceholderText = "Ejemplo: Martin Garate";
+            textBoxResponsable.Size = new Size(489, 29);
+            textBoxResponsable.TabIndex = 32;
             // 
             // label7
             // 
             label7.AutoSize = true;
             label7.BackColor = Color.Transparent;
-            label7.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label7.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label7.Location = new Point(75, 200);
             label7.Name = "label7";
-            label7.Size = new Size(152, 27);
+            label7.Size = new Size(141, 29);
             label7.TabIndex = 23;
             label7.Text = "Descripción";
             // 
-            // textBoxEmail
+            // textBoxDescripcion
             // 
-            textBoxEmail.BackColor = Color.FromArgb(244, 246, 248);
-            textBoxEmail.Font = new Font("Segoe UI", 12F);
-            textBoxEmail.Location = new Point(75, 230);
-            textBoxEmail.Name = "textBoxEmail";
-            textBoxEmail.PlaceholderText = "martin@fidelium.com";
-            textBoxEmail.Size = new Size(1004, 29);
-            textBoxEmail.TabIndex = 22;
+            textBoxDescripcion.BackColor = Color.FromArgb(244, 246, 248);
+            textBoxDescripcion.Font = new Font("Segoe UI", 12F);
+            textBoxDescripcion.Location = new Point(75, 230);
+            textBoxDescripcion.Name = "textBoxDescripcion";
+            textBoxDescripcion.PlaceholderText = "martin@fidelium.com";
+            textBoxDescripcion.Size = new Size(1004, 29);
+            textBoxDescripcion.TabIndex = 22;
             // 
             // label6
             // 
             label6.AutoSize = true;
             label6.BackColor = Color.Transparent;
-            label6.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label6.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label6.Location = new Point(75, 121);
             label6.Name = "label6";
-            label6.Size = new Size(240, 27);
+            label6.Size = new Size(223, 29);
             label6.TabIndex = 21;
             label6.Text = "Producto o Servicio";
             // 
-            // textBoxDNI
+            // textBoxProductoServicio
             // 
-            textBoxDNI.BackColor = Color.FromArgb(244, 246, 248);
-            textBoxDNI.Font = new Font("Segoe UI", 12F);
-            textBoxDNI.Location = new Point(76, 151);
-            textBoxDNI.Name = "textBoxDNI";
-            textBoxDNI.PlaceholderText = "Ejemplo: 123456789";
-            textBoxDNI.Size = new Size(1004, 29);
-            textBoxDNI.TabIndex = 20;
+            textBoxProductoServicio.BackColor = Color.FromArgb(244, 246, 248);
+            textBoxProductoServicio.Font = new Font("Segoe UI", 12F);
+            textBoxProductoServicio.Location = new Point(76, 151);
+            textBoxProductoServicio.Name = "textBoxProductoServicio";
+            textBoxProductoServicio.PlaceholderText = "Ejemplo: 123456789";
+            textBoxProductoServicio.Size = new Size(1004, 29);
+            textBoxProductoServicio.TabIndex = 20;
             // 
             // label4
             // 
             label4.AutoSize = true;
             label4.BackColor = Color.Transparent;
-            label4.Font = new Font("Clash Display Medium", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label4.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label4.Location = new Point(75, 40);
             label4.Name = "label4";
-            label4.Size = new Size(229, 27);
+            label4.Size = new Size(223, 29);
             label4.TabIndex = 19;
             label4.Text = "Nombre del Cliente";
             // 
-            // textBoxNombre
+            // textBoxCliente
             // 
-            textBoxNombre.BackColor = Color.FromArgb(244, 246, 248);
-            textBoxNombre.Font = new Font("Segoe UI", 12F);
-            textBoxNombre.Location = new Point(76, 70);
-            textBoxNombre.Name = "textBoxNombre";
-            textBoxNombre.PlaceholderText = "Ejemplo: Martin Garate";
-            textBoxNombre.Size = new Size(489, 29);
-            textBoxNombre.TabIndex = 0;
+            textBoxCliente.BackColor = Color.FromArgb(244, 246, 248);
+            textBoxCliente.Font = new Font("Segoe UI", 12F);
+            textBoxCliente.Location = new Point(76, 70);
+            textBoxCliente.Name = "textBoxCliente";
+            textBoxCliente.PlaceholderText = "Ejemplo: Martin Garate";
+            textBoxCliente.Size = new Size(489, 29);
+            textBoxCliente.TabIndex = 0;
             // 
             // labelAccion
             // 
             labelAccion.AutoSize = true;
             labelAccion.BackColor = Color.Transparent;
-            labelAccion.Font = new Font("Clash Display Semibold", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelAccion.Font = new Font("Microsoft Sans Serif", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
             labelAccion.Location = new Point(164, 86);
             labelAccion.Name = "labelAccion";
-            labelAccion.Size = new Size(820, 46);
+            labelAccion.Size = new Size(792, 46);
             labelAccion.TabIndex = 17;
             labelAccion.Text = "Registrá una nueva compra en el sistema";
             // 
@@ -467,12 +478,107 @@
             // 
             label3.AutoSize = true;
             label3.BackColor = Color.Transparent;
-            label3.Font = new Font("Clash Display", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label3.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
             label3.Location = new Point(164, 132);
             label3.Name = "label3";
-            label3.Size = new Size(636, 22);
+            label3.Size = new Size(597, 24);
             label3.TabIndex = 18;
             label3.Text = "Completá los datos de la compra para mantener tu control actualizado.";
+            // 
+            // SeleccionarClienteResponsable_TabPage
+            // 
+            SeleccionarClienteResponsable_TabPage.Controls.Add(iconButton1);
+            SeleccionarClienteResponsable_TabPage.Controls.Add(textBoxBuscarUsuario);
+            SeleccionarClienteResponsable_TabPage.Controls.Add(label10);
+            SeleccionarClienteResponsable_TabPage.Controls.Add(iconButton2);
+            SeleccionarClienteResponsable_TabPage.Controls.Add(label11);
+            SeleccionarClienteResponsable_TabPage.Controls.Add(dataGridViewUsuarios);
+            SeleccionarClienteResponsable_TabPage.Location = new Point(4, 24);
+            SeleccionarClienteResponsable_TabPage.Name = "SeleccionarClienteResponsable_TabPage";
+            SeleccionarClienteResponsable_TabPage.Padding = new Padding(3);
+            SeleccionarClienteResponsable_TabPage.Size = new Size(1520, 1020);
+            SeleccionarClienteResponsable_TabPage.TabIndex = 2;
+            SeleccionarClienteResponsable_TabPage.Text = "Seleccionar Usuario";
+            SeleccionarClienteResponsable_TabPage.UseVisualStyleBackColor = true;
+            // 
+            // iconButton1
+            // 
+            iconButton1.BackColor = Color.FromArgb(11, 0, 25);
+            iconButton1.FlatAppearance.BorderSize = 0;
+            iconButton1.FlatStyle = FlatStyle.Flat;
+            iconButton1.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            iconButton1.ForeColor = Color.White;
+            iconButton1.IconChar = FontAwesome.Sharp.IconChar.Search;
+            iconButton1.IconColor = Color.White;
+            iconButton1.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconButton1.IconSize = 28;
+            iconButton1.Location = new Point(1424, 224);
+            iconButton1.Name = "iconButton1";
+            iconButton1.Size = new Size(47, 33);
+            iconButton1.TabIndex = 26;
+            iconButton1.TextAlign = ContentAlignment.MiddleRight;
+            iconButton1.UseVisualStyleBackColor = false;
+            // 
+            // textBoxBuscarUsuario
+            // 
+            textBoxBuscarUsuario.Font = new Font("Segoe UI", 14F);
+            textBoxBuscarUsuario.Location = new Point(56, 224);
+            textBoxBuscarUsuario.Name = "textBoxBuscarUsuario";
+            textBoxBuscarUsuario.PlaceholderText = " ¿Qué estás buscando?…";
+            textBoxBuscarUsuario.Size = new Size(1368, 32);
+            textBoxBuscarUsuario.TabIndex = 25;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.BackColor = Color.Transparent;
+            label10.Font = new Font("Microsoft Sans Serif", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label10.Location = new Point(56, 74);
+            label10.Name = "label10";
+            label10.Size = new Size(791, 46);
+            label10.TabIndex = 21;
+            label10.Text = "Administrá todas las compras de tu Local";
+            // 
+            // iconButton2
+            // 
+            iconButton2.BackColor = Color.FromArgb(88, 1, 180);
+            iconButton2.FlatAppearance.BorderSize = 0;
+            iconButton2.FlatStyle = FlatStyle.Flat;
+            iconButton2.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            iconButton2.ForeColor = Color.White;
+            iconButton2.IconChar = FontAwesome.Sharp.IconChar.CirclePlus;
+            iconButton2.IconColor = Color.White;
+            iconButton2.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconButton2.IconSize = 33;
+            iconButton2.ImageAlign = ContentAlignment.MiddleLeft;
+            iconButton2.Location = new Point(1266, 90);
+            iconButton2.Name = "iconButton2";
+            iconButton2.Padding = new Padding(12, 6, 12, 6);
+            iconButton2.Size = new Size(205, 52);
+            iconButton2.TabIndex = 24;
+            iconButton2.Text = "Seleccionar";
+            iconButton2.TextAlign = ContentAlignment.MiddleRight;
+            iconButton2.UseVisualStyleBackColor = false;
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.BackColor = Color.Transparent;
+            label11.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label11.Location = new Point(56, 120);
+            label11.Name = "label11";
+            label11.Size = new Size(686, 24);
+            label11.TabIndex = 22;
+            label11.Text = "Visualizá, gestioná y controlá cada compra realizada de manera rápida y sencilla.";
+            // 
+            // dataGridViewUsuarios
+            // 
+            dataGridViewUsuarios.BackgroundColor = Color.White;
+            dataGridViewUsuarios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewUsuarios.Location = new Point(56, 263);
+            dataGridViewUsuarios.Name = "dataGridViewUsuarios";
+            dataGridViewUsuarios.Size = new Size(1415, 649);
+            dataGridViewUsuarios.TabIndex = 23;
             // 
             // ComprasView
             // 
@@ -480,15 +586,15 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(244, 246, 248);
             ClientSize = new Size(1534, 1041);
+            ControlBox = false;
             Controls.Add(tabControl);
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "ComprasView";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "UsuariosView";
             WindowState = FormWindowState.Maximized;
             Load += UsuariosView_Load;
-            ((System.ComponentModel.ISupportInitialize)dataGridViewUsuarios).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewCompras).EndInit();
             tabControl.ResumeLayout(false);
             Lista_TabPage.ResumeLayout(false);
             Lista_TabPage.PerformLayout();
@@ -496,6 +602,9 @@
             AgregarEditar_TabPage.PerformLayout();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            SeleccionarClienteResponsable_TabPage.ResumeLayout(false);
+            SeleccionarClienteResponsable_TabPage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewUsuarios).EndInit();
             ResumeLayout(false);
         }
 
@@ -503,7 +612,7 @@
 
         private Label label5;
         private Label label1;
-        private DataGridView dataGridViewUsuarios;
+        private DataGridView dataGridViewCompras;
         private FontAwesome.Sharp.IconButton BtnAgregar;
         private TabControl tabControl;
         private TabPage AgregarEditar_TabPage;
@@ -514,11 +623,11 @@
         private FontAwesome.Sharp.IconButton BtnBuscar;
         private Panel panel1;
         private Label label4;
-        private TextBox textBoxNombre;
+        private TextBox textBoxCliente;
         private Label label7;
-        private TextBox textBoxEmail;
+        private TextBox textBoxDescripcion;
         private Label label6;
-        private TextBox textBoxDNI;
+        private TextBox textBoxProductoServicio;
         private CheckBox checkBoxEliminados;
         private FontAwesome.Sharp.IconButton BtnRestaurar;
         private FontAwesome.Sharp.IconButton BtnEliminar;
@@ -526,10 +635,17 @@
         private FontAwesome.Sharp.IconButton BtnCancelar;
         private FontAwesome.Sharp.IconButton BtnGuardar;
         private Label label2;
-        private TextBox textBox2;
+        private TextBox textBoxResponsable;
         private Label label9;
-        private DateTimePicker dateTimePicker2;
+        private DateTimePicker dateTimeSolicitudFeedback;
         private Label label8;
-        private DateTimePicker dateTimePicker1;
+        private DateTimePicker dateTimeFechaCompra;
+        private TabPage SeleccionarClienteResponsable_TabPage;
+        private FontAwesome.Sharp.IconButton iconButton1;
+        private TextBox textBoxBuscarUsuario;
+        private Label label10;
+        private FontAwesome.Sharp.IconButton iconButton2;
+        private Label label11;
+        private DataGridView dataGridViewUsuarios;
     }
 }

@@ -17,7 +17,7 @@ namespace Service.Models
         public EstadoNotificacion Estado { get; set; } = EstadoNotificacion.Pendiente;
         public DateTime FechaGenerada { get; set; } = DateTime.Now;
 
-        public DateTime? FechaRecordatorio { get; set; }   //Fecha calculada
+        public DateTime? FechaRecordatorio { get; set; }    //Fecha calculada
         
         public int CompraServicioID { get; set; } // FK
         public CompraServicio? CompraServicio { get; set; }
