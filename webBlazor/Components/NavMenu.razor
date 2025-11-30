@@ -1,0 +1,51 @@
+﻿@inject FirebaseAuthService _firebaseAuthService
+
+<nav class="fidelium-nav" id="mainNav" aria-label="Navegación principal">
+
+    <div class="nav-wrapper">
+
+        <!-- Logo izquierda -->
+        <div class="nav-logo-section">
+            <NavLink href="/" class="fidelium-logo" aria-label="Ir al inicio">
+                <img src="images/Fidelium.png" alt="Fidelium Logo" class="logo-img" />
+            </NavLink>
+        </div>
+
+      
+        <!-- Menú central -->
+        <ul class="fidelium-list" role="menubar">
+            <li role="none"><NavLink role="menuitem" href="/">Inicio</NavLink></li>
+            <li role="none"><NavLink role="menuitem" href="/opinions">Mis Opiniones</NavLink></li>
+        </ul>
+
+        <!-- Botones a la derecha -->
+        <div class="nav-actions">
+            <NavLink class="btn-login" href="/login">Iniciar Sesión</NavLink>
+            <NavLink class="btn-register" href="/register">Registrarse</NavLink>
+        </div>
+
+    </div>
+
+</nav>
+
+
+@code {
+    private bool isAuthenticated = false;
+    private string textBtnLogin => isAuthenticated ? "Cerrar Sesión" : "Iniciar Sesión";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        isAuthenticated = await _firebaseAuthService.IsUserAuthenticated();
+        _firebaseAuthService.OnChangeLogin += LoginHasChanged;
+    }
+
+    private async void LoginHasChanged()
+    {
+        isAuthenticated = await _firebaseAuthService.IsUserAuthenticated();
+        StateHasChanged();
+    }
+
+}
+
+

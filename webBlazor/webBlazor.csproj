@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\images\Fidelium %282%29.png" />
+    <None Include="wwwroot\images\fidelium.ico" />
+    <None Include="wwwroot\images\Fidelium.png" />
+    <None Include="wwwroot\images\fideliumPng.ico" />
     <None Include="wwwroot\index.html" />
   </ItemGroup>
 

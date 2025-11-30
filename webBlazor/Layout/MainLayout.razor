@@ -1,28 +1,19 @@
-﻿@inherits LayoutComponentBase
-@inject NavigationManager navigationManager
+﻿@inherits LayoutComponentBase // Sirve para que razor entienda como comportarse como un layout
 
-<PageTitle>Fidelium</PageTitle>
+
 
 <div class="page">
-    <NavMenu />
-    <main class="@ObtenerClaseContenidoPrincipal()">
-        @Body
+
+    <div class="top-row px-4">
+        <NavMenu />
+    </div>
+
+    <main>
+
+        <article class="content px-4">
+            @Body
+        </article>
+
     </main>
+
 </div>
-
-@code {
-    /// Determina si la página actual es la página de inicio.
-    /// Se considera página de inicio si la URL termina en "/" o en "/home".
-    private bool EsPaginaInicio =>
-        navigationManager.Uri.EndsWith("/", StringComparison.OrdinalIgnoreCase) ||
-        navigationManager.Uri.ToLower().EndsWith("/home", StringComparison.OrdinalIgnoreCase);
-
-
-    /// Devuelve la clase CSS que se aplicará al contenido principal.
-    /// Si es la página de inicio, retorna "main-content-home", de lo contrario "main-content".
-
-    private string ObtenerClaseContenidoPrincipal()
-    {
-        return EsPaginaInicio ? "main-content-home" : "main-content";
-    }
-}
