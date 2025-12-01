@@ -179,10 +179,26 @@
 
 /* ==================== RESPONSIVE ==================== */
 
-@media (max-width: 768px) {
+/* Tablets y pantallas medianas (1024px - 1440px) */
+@media (max-width: 1440px) {
     .hero-section {
-        min-height: 300px;
-        padding: 40px 20px;
+        padding: 70px 50px;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.05rem;
+    }
+}
+
+/* Tablets (768px - 1024px) */
+@media (max-width: 1024px) {
+    .hero-section {
+        min-height: 350px;
+        padding: 60px 40px;
     }
 
     .hero-title {
@@ -191,24 +207,143 @@
 
     .hero-subtitle {
         font-size: 1rem;
+        max-width: 100%;
     }
 
-    .hero-badge {
-        font-size: 0.75rem;
+    .hero-actions {
+        flex-wrap: wrap;
+    }
+
+    .btn-primary-hero,
+    .btn-secondary-hero {
+        padding: 10px 24px;
+        font-size: 0.95rem;
     }
 }
 
-@media (max-width: 480px) {
+/* Tablets pequenas (640px - 768px) */
+@media (max-width: 768px) {
     .hero-section {
-        min-height: 250px;
-        padding: 30px 15px;
+        min-height: 320px;
+        padding: 50px 32px;
+        margin-top: 60px;
     }
 
     .hero-title {
-        font-size: 1.8rem;
+        font-size: 2rem;
+        margin: 16px 0;
+    }
+
+    .hero-subtitle {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin: 14px 0 36px 0;
+    }
+
+    .hero-badge {
+        font-size: 0.7rem;
+        margin-bottom: 12px;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        width: 100%;
+    }
+
+    .btn-primary-hero,
+    .btn-secondary-hero {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        width: 100%;
+        justify-content: center;
+        border-radius: 6px;
+    }
+}
+
+/* Telefonos grandes (480px - 640px) */
+@media (max-width: 640px) {
+    .hero-section {
+        min-height: 300px;
+        padding: 40px 24px;
+        margin-top: 60px;
+    }
+
+    .hero-title {
+        font-size: 1.75rem;
+        margin: 12px 0;
+        line-height: 1.25;
     }
 
     .hero-subtitle {
         font-size: 0.9rem;
+        margin: 14px 0 32px 0;
+        line-height: 1.5;
+    }
+
+    .hero-badge {
+        font-size: 0.65rem;
+        margin-bottom: 12px;
+    }
+
+    .hero-actions {
+        margin-top: 20px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .btn-primary-hero,
+    .btn-secondary-hero {
+        padding: 11px 18px;
+        font-size: 0.85rem;
+        width: 100%;
+        border-radius: 6px;
+    }
+}
+
+/* Telefonos pequenos (320px - 480px) */
+@media (max-width: 480px) {
+    .hero-section {
+        min-height: 280px;
+        padding: 28px 18px;
+        margin-top: 60px;
+    }
+
+    .hero-title {
+        font-size: 1.5rem;
+        margin: 10px 0;
+        line-height: 1.2;
+        font-weight: 700;
+    }
+
+    .hero-subtitle {
+        font-size: 0.85rem;
+        margin: 12px 0 28px 0;
+        line-height: 1.4;
+        max-width: 100%;
+    }
+
+    .hero-badge {
+        font-size: 0.6rem;
+        margin-bottom: 10px;
+        display: inline-block;
+    }
+
+    .hero-actions {
+        margin-top: 18px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 9px;
+    }
+
+    .btn-primary-hero,
+    .btn-secondary-hero {
+        padding: 10px 16px;
+        font-size: 0.8rem;
+        width: 100%;
+        border-radius: 6px;
+        font-weight: 600;
     }
 }

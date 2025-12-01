@@ -1,5 +1,6 @@
 ﻿using Microsoft.JSInterop;
 using Service.Models.Login;
+using System.Text.Json;
 
 namespace webBlazor.Services
 {
@@ -21,7 +22,9 @@ namespace webBlazor.Services
             {
                 CurrentUser = user;
                 if (user.EmailVerified)
+                {
                     OnChangeLogin?.Invoke();
+                }
             }
             return user;
         }
@@ -54,7 +57,6 @@ namespace webBlazor.Services
         {
             var user = await GetUserFirebase();
             return user != null && user.EmailVerified;
-
         }
 
         public async Task<FirebaseUser?> LoginWithGoogle()
@@ -78,5 +80,36 @@ namespace webBlazor.Services
             var user = await GetUserFirebase();
             return user?.DisplayName ?? "Usuario";
         }
+
+        /// <summary>
+        /// Envía un email de recuperación de contraseña al email especificado.
+        /// </summary>
+        public async Task<(bool success, string message)> SendPasswordResetEmail(string email)
+        {
+            try
+            {
+                var result = await _jsRuntime.InvokeAsync<JsonElement>("firebaseAuth.sendPasswordResetEmail", email);
+
+                if (result.TryGetProperty("success", out var successProp) && successProp.GetBoolean())
+                {
+                    var message = result.TryGetProperty("message", out var msgProp)
+                        ? msgProp.GetString()
+                        : "Email enviado correctamente";
+                    return (true, message);
+                }
+                else
+                {
+                    var errorMsg = result.TryGetProperty("message", out var errorProp)
+                        ? errorProp.GetString()
+                        : "Error al enviar el email";
+                    return (false, errorMsg ?? "Error desconocido");
+                }
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error: {ex.Message}");
+            }
+        }
+
     }
 }

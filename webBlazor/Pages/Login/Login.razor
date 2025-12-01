@@ -1,0 +1,688 @@
+﻿@page "/login"
+
+@inject FirebaseAuthService authService
+@inject NavigationManager navigationManager
+@inject HttpClient Http
+
+
+@if (!isAuthenticated)
+{
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Header -->
+            <div class="login-header">
+                <h1 class="login-title">Bienvenido</h1>
+                <p class="login-subtitle">Inicia sesión en tu cuenta</p>
+            </div>
+
+            <!-- Recuperar Contraseña - Modal State -->
+            @if (showPasswordRecovery)
+            {
+                <div class="recovery-overlay" @onclick="ClosePasswordRecovery">
+                    <div class="recovery-modal" @onclick:stopPropagation="true">
+                        <button class="recovery-close" @onclick="ClosePasswordRecovery">✕</button>
+
+                        <h2 class="recovery-title">Recuperar Contraseña</h2>
+                        <p class="recovery-subtitle">Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña</p>
+
+                        @if (!string.IsNullOrEmpty(recoveryMessage))
+                        {
+                            <div class="@(recoverySuccess ? "success-alert" : "error-alert")">
+                                <span class="@(recoverySuccess ? "success-icon" : "error-icon")">@(recoverySuccess ? "✓" : "⚠️")</span>
+                                <span>@recoveryMessage</span>
+                            </div>
+                        }
+
+                        <form @onsubmit="HandlePasswordRecovery" class="recovery-form">
+                            <div class="form-group">
+                                <label for="recovery-email" class="form-label">Correo Electrónico</label>
+                                <input id="recovery-email"
+                                       type="email"
+                                       class="form-input"
+                                       @bind="recoveryEmail"
+                                       placeholder="tu@email.com"
+                                       required
+                                       disabled="@recoveryLoading" />
+                            </div>
+
+                            <div class="recovery-actions">
+                                <button type="button" class="btn-recovery-cancel" @onclick="ClosePasswordRecovery" disabled="@recoveryLoading">
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="btn-recovery-submit" disabled="@recoveryLoading">
+                                    @if (recoveryLoading)
+                                    {
+                                        <span class="spinner"></span>
+                                        <span>Enviando...</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Enviar Email</span>
+                                    }
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+            <!-- Tabs Navigation -->
+            <div class="login-tabs">
+                <button class="tab-button @(isLoginTab ? "active" : "")" @onclick="() => isLoginTab = true">
+                    Iniciar Sesión
+                </button>
+                <button class="tab-button @(!isLoginTab ? "active" : "")" @onclick="() => isLoginTab = false">
+                    Registrarse
+                </button>
+            </div>
+
+            <!-- Error Message -->
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="error-alert">
+                    <span class="error-icon">⚠️</span>
+                    <span>@errorMessage</span>
+                </div>
+            }
+
+            <!-- Success Message -->
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="success-alert">
+                    <span class="success-icon">✓</span>
+                    <span>@successMessage</span>
+                </div>
+            }
+
+            <!-- Login Form -->
+            @if (isLoginTab)
+            {
+                <form @onsubmit="Loguear" class="login-form">
+                    <div class="form-group">
+                        <label for="login-email" class="form-label">Correo Electrónico</label>
+                        <input id="login-email"
+                               type="email"
+                               class="form-input"
+                               @bind="email"
+                               placeholder="tu@email.com"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-password" class="form-label">Contraseña</label>
+                        <input id="login-password"
+                               type="password"
+                               class="form-input"
+                               @bind="password"
+                               placeholder="••••••••"
+                               required />
+                    </div>
+
+                    <div class="form-remember">
+                        <label class="checkbox-label">
+                            <input type="checkbox" @bind="rememberPassword" />
+                            <span>Recuérdame</span>
+                        </label>
+                        <button type="button" class="forgot-link" @onclick="() => showPasswordRecovery = true">¿Olvidaste tu contraseña?</button>
+                    </div>
+
+                    <button type="submit" class="btn-login-submit" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span class="spinner"></span>
+                            <span>Iniciando sesión...</span>
+                        }
+                        else
+                        {
+                            <span>Iniciar Sesión</span>
+                        }
+                    </button>
+                </form>
+
+                <!-- Google Login -->
+                <div class="divider">
+                    <span>O continúa con</span>
+                </div>
+                <button class="btn-google" @onclick="LoginWithGoogle" disabled="@isLoading">
+                    <svg class="google-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                    </svg>
+                    Google
+                </button>
+            }
+
+            <!-- Register Form -->
+            @if (!isLoginTab)
+            {
+                <form @onsubmit="RegisterMe" class="login-form">
+                    <div class="form-group">
+                        <label for="register-name" class="form-label">Nombre Completo</label>
+                        <input id="register-name"
+                               type="text"
+                               class="form-input"
+                               @bind="registerName"
+                               placeholder="Tu nombre"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-email" class="form-label">Correo Electrónico</label>
+                        <input id="register-email"
+                               type="email"
+                               class="form-input"
+                               @bind="registerEmail"
+                               placeholder="tu@email.com"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-password" class="form-label">Contraseña</label>
+                        <input id="register-password"
+                               type="password"
+                               class="form-input"
+                               @bind="registerPassword"
+                               placeholder="Mínimo 6 caracteres"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-confirm" class="form-label">Confirmar Contraseña</label>
+                        <input id="register-confirm"
+                               type="password"
+                               class="form-input"
+                               @bind="registerConfirmPassword"
+                               placeholder="Confirma tu contraseña"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-phone" class="form-label">Teléfono (Opcional)</label>
+                        <input id="register-phone"
+                               type="tel"
+                               class="form-input"
+                               @bind="registerPhone"
+                               placeholder="+34 123 456 789" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-instagram" class="form-label">Instagram (Opcional)</label>
+                        <input id="register-instagram"
+                               type="text"
+                               class="form-input"
+                               @bind="registerInstagram"
+                               placeholder="tu_usuario" />
+                    </div>
+
+                    <label class="checkbox-label full-width">
+                        <input type="checkbox" @bind="agreeTerms" required />
+                        <span>Acepto los términos y condiciones</span>
+                    </label>
+
+                    <button type="submit" class="btn-login-submit" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span class="spinner"></span>
+                            <span>Registrando...</span>
+                        }
+                        else
+                        {
+                            <span>Crear Cuenta</span>
+                        }
+                    </button>
+                </form>
+
+                <!-- Google Register -->
+                <div class="divider">
+                    <span>O regístrate con</span>
+                </div>
+                <button class="btn-google" @onclick="LoginWithGoogle" disabled="@isLoading">
+                    <svg class="google-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                    </svg>
+                    Google
+                </button>
+            }
+
+            <!-- Footer -->
+            <div class="login-footer">
+                @if (isLoginTab)
+                {
+                    <p>¿No tienes cuenta? <button type="button" class="link-button" @onclick="() => isLoginTab = false">Regístrate aquí</button></p>
+                }
+                else
+                {
+                    <p>¿Ya tienes cuenta? <button type="button" class="link-button" @onclick="() => isLoginTab = true">Inicia sesión</button></p>
+                }
+            </div>
+        </div>
+
+        <!-- Background Decoration -->
+        <div class="login-bg-decoration"></div>
+    </div>
+}
+else
+{
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1 class="login-title">Cerrar sesión</h1>
+                <p class="login-subtitle">Eres @userDisplayName</p>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <p style="color: #a8a8a8; margin-bottom: 20px;">¿Deseas cerrar sesión?</p>
+                <button class="btn-login-submit" @onclick="Desloguear">
+                    Cerrar Sesión
+                </button>
+            </div>
+        </div>
+        <div class="login-bg-decoration"></div>
+    </div>
+}
+
+@code {
+    private readonly string _apiBaseUrl = "https://apifidelium.azurewebsites.net";
+    private readonly System.Text.Json.JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    private bool isAuthenticated = false;
+    private string userDisplayName = "Usuario";
+    private bool isLoginTab = true;
+    private bool isLoading = false;
+    private string errorMessage = "";
+    private string successMessage = "";
+
+    // Login fields
+    private string email = "";
+    private string password = "";
+    private bool rememberPassword = false;
+
+    // Register fields
+    private string registerName = "";
+    private string registerEmail = "";
+    private string registerPassword = "";
+    private string registerConfirmPassword = "";
+    private string registerPhone = "";
+    private string registerInstagram = "";
+    private bool agreeTerms = false;
+
+    // Password Recovery fields
+    private bool showPasswordRecovery = false;
+    private string recoveryEmail = "";
+    private bool recoveryLoading = false;
+    private string recoveryMessage = "";
+    private bool recoverySuccess = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isAuthenticated = await authService.IsUserAuthenticated();
+        if (isAuthenticated)
+        {
+            userDisplayName = await authService.GetUserDisplayName() ?? "Usuario";
+        }
+    }
+
+    private async Task Loguear()
+    {
+        errorMessage = "";
+        successMessage = "";
+
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
+            errorMessage = "Por favor completa todos los campos";
+            return;
+        }
+
+        isLoading = true;
+
+        try
+        {
+            var user = await authService.SignInWithEmailPassword(email, password, rememberPassword);
+
+            if (user != null)
+            {
+                if (!user.EmailVerified)
+                {
+                    errorMessage = "Por favor, verifica tu correo electrónico antes de iniciar sesión.";
+                    isLoading = false;
+                    return;
+                }
+
+                isAuthenticated = true;
+                userDisplayName = user.DisplayName ?? "Usuario";
+                successMessage = "¡Iniciaste sesión correctamente!";
+
+                // Esperar un poco para que el evento se propague
+                await Task.Delay(500);
+                navigationManager.NavigateTo("/");
+            }
+            else
+            {
+                errorMessage = "Correo o contraseña incorrectos.";
+                isLoading = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Error al iniciar sesión: " + ex.Message;
+            isLoading = false;
+        }
+    }
+
+    private async Task RegisterMe()
+    {
+        errorMessage = "";
+        successMessage = "";
+
+        if (string.IsNullOrWhiteSpace(registerEmail) ||
+            string.IsNullOrWhiteSpace(registerPassword) ||
+            string.IsNullOrWhiteSpace(registerName))
+        {
+            errorMessage = "Por favor completa todos los campos";
+            return;
+        }
+
+        if (registerPassword != registerConfirmPassword)
+        {
+            errorMessage = "Las contraseñas no coinciden";
+            return;
+        }
+
+        if (registerPassword.Length < 6)
+        {
+            errorMessage = "La contraseña debe tener mínimo 6 caracteres";
+            return;
+        }
+
+        if (!agreeTerms)
+        {
+            errorMessage = "Debes aceptar los términos y condiciones";
+            return;
+        }
+
+        isLoading = true;
+
+        try
+        {
+            // 1. Crear usuario en Firebase
+            var userId = await authService.createUserWithEmailAndPassword(registerEmail, registerPassword, registerName);
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                // 2. Crear usuario en la BD SQL
+                var usuarioResponse = await CreateUsuarioInDatabase(registerName, registerEmail);
+
+                if (usuarioResponse != null && usuarioResponse.ID > 0)
+                {
+                    // 3. Crear cliente en la BD SQL asociado al usuario
+                    await CreateClienteInDatabase(usuarioResponse.ID);
+
+                    successMessage = "¡Cuenta creada correctamente! Inicia sesión con tus credenciales";
+                    isLoginTab = true;
+                    // Limpiar campos del formulario
+                    registerName = "";
+                    registerEmail = "";
+                    registerPassword = "";
+                    registerConfirmPassword = "";
+                    registerPhone = "";
+                    registerInstagram = "";
+                    agreeTerms = false;
+                    await Task.Delay(2000);
+                    StateHasChanged();
+                }
+                else
+                {
+                    errorMessage = "Error al registrar en la base de datos";
+                }
+            }
+            else
+            {
+                errorMessage = "Error al crear la cuenta en Firebase";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Error al registrarse: " + ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task<Usuario?> CreateUsuarioInDatabase(string nombre, string email)
+    {
+        try
+        {
+            var usuario = new Usuario
+            {
+                Nombre = nombre,
+                Email = email,
+                TipoUsuario = 0  // TipoUsuarioEnum.Cliente
+            };
+
+            var response = await Http.PostAsJsonAsync($"{_apiBaseUrl}/api/usuarios", usuario);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var usuarioJson = await response.Content.ReadAsStringAsync();
+                return System.Text.Json.JsonSerializer.Deserialize<Usuario>(usuarioJson, _jsonOptions);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al crear usuario: {ex.Message}");
+        }
+
+        return null;
+    }
+
+    private async Task CreateClienteInDatabase(int usuarioID)
+    {
+        try
+        {
+            var cliente = new Cliente
+            {
+                UsuarioID = usuarioID,
+                Telefono = string.IsNullOrWhiteSpace(registerPhone) ? string.Empty : registerPhone,
+                Instagram = string.IsNullOrWhiteSpace(registerInstagram) ? string.Empty : registerInstagram
+            };
+
+            var response = await Http.PostAsJsonAsync($"{_apiBaseUrl}/api/clientes", cliente);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Error al crear cliente: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al crear cliente: {ex.Message}");
+        }
+    }
+
+    private async Task LoginWithGoogle()
+    {
+        errorMessage = "";
+        isLoading = true;
+
+        try
+        {
+            var user = await authService.LoginWithGoogle();
+
+            if (user != null)
+            {
+                // Verificar si existe usuario en BD, si no, crear uno
+                await EnsureUserExistsInDatabase(user.Email, user.DisplayName);
+
+                isAuthenticated = true;
+                userDisplayName = user.DisplayName ?? "Usuario";
+                successMessage = "¡Iniciaste sesión con Google!";
+
+                // Esperar un poco para que el evento se propague
+                await Task.Delay(500);
+                navigationManager.NavigateTo("/");
+            }
+            else
+            {
+                errorMessage = "No se pudo iniciar sesión con Google.";
+                isLoading = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Error al iniciar sesión con Google: " + ex.Message;
+            isLoading = false;
+        }
+    }
+
+    private async Task EnsureUserExistsInDatabase(string email, string displayName)
+    {
+        try
+        {
+            // Buscar si el usuario ya existe
+            var usuarios = await Http.GetFromJsonAsync<List<Usuario>>(
+                $"{_apiBaseUrl}/api/usuarios",
+                _jsonOptions);
+
+            var usuarioExistente = usuarios?.FirstOrDefault(u => u.Email == email);
+
+            if (usuarioExistente == null)
+            {
+                // Crear nuevo usuario
+                var nuevoUsuario = new Usuario
+                {
+                    Nombre = displayName ?? "Usuario",
+                    Email = email,
+                    TipoUsuario = 0  // TipoUsuarioEnum.Cliente
+                };
+
+                var usuarioCreado = await Http.PostAsJsonAsync($"{_apiBaseUrl}/api/usuarios", nuevoUsuario);
+
+                if (usuarioCreado.IsSuccessStatusCode)
+                {
+                    var usuarioJson = await usuarioCreado.Content.ReadAsStringAsync();
+                    var usuario = System.Text.Json.JsonSerializer.Deserialize<Usuario>(usuarioJson, _jsonOptions);
+
+                    // Crear cliente para el nuevo usuario
+                    if (usuario?.ID > 0)
+                    {
+                        var nuevoCliente = new Cliente
+                        {
+                            UsuarioID = usuario.ID,
+                            Telefono = string.Empty,
+                            Instagram = string.Empty
+                        };
+
+                        await Http.PostAsJsonAsync($"{_apiBaseUrl}/api/clientes", nuevoCliente);
+                    }
+                }
+            }
+            else
+            {
+                // Verificar si tiene cliente asociado
+                try
+                {
+                    var cliente = await Http.GetFromJsonAsync<Cliente>(
+                        $"{_apiBaseUrl}/api/clientes/usuario/{usuarioExistente.ID}",
+                        _jsonOptions);
+
+                    if (cliente == null)
+                    {
+                        // Crear cliente si no existe
+                        var nuevoCliente = new Cliente
+                        {
+                            UsuarioID = usuarioExistente.ID,
+                            Telefono = string.Empty,
+                            Instagram = string.Empty
+                        };
+
+                        await Http.PostAsJsonAsync($"{_apiBaseUrl}/api/clientes", nuevoCliente);
+                    }
+                }
+                catch
+                {
+                    // Si no existe el cliente, crear uno
+                    var nuevoCliente = new Cliente
+                    {
+                        UsuarioID = usuarioExistente.ID,
+                        Telefono = string.Empty,
+                        Instagram = string.Empty
+                    };
+
+                    await Http.PostAsJsonAsync($"{_apiBaseUrl}/api/clientes", nuevoCliente);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al asegurar usuario en BD: {ex.Message}");
+        }
+    }
+
+    private async Task Desloguear()
+    {
+        isLoading = true;
+        try
+        {
+            email = string.Empty;
+            password = string.Empty;
+            isAuthenticated = false;
+            userDisplayName = "Usuario";
+            await authService.SignOut();
+            StateHasChanged();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task HandlePasswordRecovery()
+    {
+        recoveryMessage = "";
+        recoverySuccess = false;
+
+        if (string.IsNullOrWhiteSpace(recoveryEmail))
+        {
+            recoveryMessage = "Por favor ingresa tu correo electrónico";
+            return;
+        }
+
+        recoveryLoading = true;
+
+        try
+        {
+            var (success, message) = await authService.SendPasswordResetEmail(recoveryEmail);
+            recoverySuccess = success;
+            recoveryMessage = message;
+
+            if (success)
+            {
+                await Task.Delay(3000);
+                ClosePasswordRecovery();
+            }
+        }
+        catch (Exception ex)
+        {
+            recoverySuccess = false;
+            recoveryMessage = "Error: " + ex.Message;
+        }
+        finally
+        {
+            recoveryLoading = false;
+        }
+    }
+
+    private void ClosePasswordRecovery()
+    {
+        showPasswordRecovery = false;
+        recoveryEmail = "";
+        recoveryMessage = "";
+        recoverySuccess = false;
+        recoveryLoading = false;
+    }
+}
+

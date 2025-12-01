@@ -1,4 +1,5 @@
 ﻿@inject FirebaseAuthService _firebaseAuthService
+@inject NavigationManager _navigationManager
 
 <nav class="fidelium-nav" id="mainNav" aria-label="Navegación principal">
     <div class="nav-wrapper">
@@ -30,16 +31,40 @@
                 <NavLink class="btn-login" href="/login" aria-label="Iniciar sesión">
                     Iniciar Sesión
                 </NavLink>
-                <NavLink class="btn-register" href="/register" aria-label="Crear nueva cuenta">
+                <NavLink class="btn-register" href="/login" aria-label="Crear nueva cuenta">
                     Registrarse
                 </NavLink>
             }
             else
             {
-                <span class="user-greeting">Hola, @userDisplayName</span>
-                <button class="btn-logout" @onclick="HandleLogout" aria-label="Cerrar sesión">
-                    Cerrar Sesión
-                </button>
+                <div class="user-dropdown-container">
+                    <button class="user-menu-button @(showUserDropdown ? "open" : "")" @onclick="ToggleUserDropdown" aria-label="Menú de usuario">
+                        <span class="user-avatar">👤</span>
+                        <span class="user-name">@userDisplayName</span>
+                        <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+
+                    @if (showUserDropdown)
+                    {
+                        <div class="user-dropdown-menu">
+                            <button class="dropdown-item" @onclick="NavigateToProfile">
+                                <span class="icon">👤</span>
+                                <span>Mi Perfil</span>
+                            </button>
+                            <button class="dropdown-item" @onclick="NavigateToSettings">
+                                <span class="icon">⚙️</span>
+                                <span>Configuración</span>
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item logout" @onclick="HandleLogout">
+                                <span class="icon">🚪</span>
+                                <span>Cerrar Sesión</span>
+                            </button>
+                        </div>
+                    }
+                </div>
             }
         </div>
     </div>
@@ -48,31 +73,57 @@
 @code {
     private bool isAuthenticated = false;
     private string userDisplayName = "Usuario";
+    private bool showUserDropdown = false;
 
     protected override async Task OnInitializedAsync()
+    {
+        await CheckAuthenticationState();
+        _firebaseAuthService.OnChangeLogin += LoginHasChanged;
+    }
+
+    private async Task CheckAuthenticationState()
     {
         isAuthenticated = await _firebaseAuthService.IsUserAuthenticated();
         if (isAuthenticated)
         {
             userDisplayName = await _firebaseAuthService.GetUserDisplayName() ?? "Usuario";
         }
-        _firebaseAuthService.OnChangeLogin += LoginHasChanged;
+        else
+        {
+            userDisplayName = "Usuario";
+        }
     }
 
     private async void LoginHasChanged()
     {
-        isAuthenticated = await _firebaseAuthService.IsUserAuthenticated();
-        if (isAuthenticated)
-        {
-            userDisplayName = await _firebaseAuthService.GetUserDisplayName() ?? "Usuario";
-        }
+        await CheckAuthenticationState();
+        showUserDropdown = false;
         StateHasChanged();
+    }
+
+    private void ToggleUserDropdown()
+    {
+        showUserDropdown = !showUserDropdown;
+    }
+
+    private void NavigateToProfile()
+    {
+        showUserDropdown = false;
+        _navigationManager.NavigateTo("/profile");
+    }
+
+    private void NavigateToSettings()
+    {
+        showUserDropdown = false;
+        _navigationManager.NavigateTo("/settings");
     }
 
     private async Task HandleLogout()
     {
+        showUserDropdown = false;
         await _firebaseAuthService.SignOut();
         isAuthenticated = false;
+        userDisplayName = "Usuario";
         StateHasChanged();
     }
 

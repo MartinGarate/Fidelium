@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,11 +10,11 @@
     <link href="WebBlazor.styles.css" rel="stylesheet" />
     <link href="_content/Radzen.Blazor/css/default-base.css" rel="stylesheet" />
     <link href="_content/Radzen.Blazor/css/default.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
 
 <body>
-
     <div id="app">
         <svg class="loading-progress">
             <circle r="40%" cx="50%" cy="50%" />
@@ -31,23 +30,20 @@
         </div>
     </div>
 
-
     <div id="blazor-error-ui">
-        <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
+        <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem"></i>
         Ha ocurrido un error no controlado.
         <a href="" class="reload">Recargar</a>
         <a class="dismiss">🗙</a>
     </div>
 
-
-
     <!-- Scripts de Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <!-- Configuración Firebase y funciones auxiliares -->
     <script>
-        console.log('🔥 Inicializando Firebase...');
+        console.log("🔥 Inicializando Firebase...");
 
         const firebaseConfig = {
             apiKey: "AIzaSyBCPRTKbCRp-OpZIym7mMADGDr705lnMck",
@@ -55,51 +51,68 @@
             projectId: "fidelium-1e400",
             storageBucket: "fidelium-1e400.firebasestorage.app",
             messagingSenderId: "300056033532",
-            appId: "1:300056033532:web:322c3e9089a6cbed2c3f79"
+            appId: "1:300056033532:web:322c3e9089a6cbed2c3f79",
         };
         firebase.initializeApp(firebaseConfig);
         console.log(firebase);
         window.firebaseAuth = {
-            signInWithEmailPassword: async function (email, password, rememberPassword) {
+            signInWithEmailPassword: async function (
+                email,
+                password,
+                rememberPassword
+            ) {
                 try {
                     if (rememberPassword) {
-                        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+                        await firebase
+                            .auth()
+                            .setPersistence(firebase.auth.Auth.Persistence.LOCAL);
                     } else {
-                        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+                        await firebase
+                            .auth()
+                            .setPersistence(firebase.auth.Auth.Persistence.SESSION);
                     }
 
-                    const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
-                    console.log(userCredential);
+                    const userCredential = await firebase
+                        .auth()
+                        .signInWithEmailAndPassword(email, password);
+
+                    console.log("User logged in:", userCredential.user);
+                    console.log("Email verified:", userCredential.user.emailVerified);
+
                     return userCredential.user;
                 } catch (error) {
                     console.error("Error en autenticación:", error.message);
                     return null;
                 }
             },
-            createUserWithEmailAndPassword: async function (email, password, displayName) {
+            createUserWithEmailAndPassword: async function (
+                email,
+                password,
+                displayName
+            ) {
                 try {
-                    //imprimo por consola los parametros que llegan
-                    console.log(`email${email} password=${password},name=${name}`)
-                    const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-                    // El usuario se ha creado correctamente
+                    console.log(
+                        `email: ${email}, password: ${password}, name: ${displayName}`
+                    );
+                    const userCredential = await firebase
+                        .auth()
+                        .createUserWithEmailAndPassword(email, password);
+
                     const user = userCredential.user;
 
                     // Actualizar el perfil del usuario
                     user.updateProfile({
-                        displayName: displayName
+                        displayName: displayName,
                     });
 
                     // Enviar correo de verificación
                     user.sendEmailVerification();
 
                     return userCredential.user.uid;
-
-
                 } catch (error) {
                     console.error("Error en autenticación:", error.message);
                     return null;
                 }
-
             },
 
             signOut: async function () {
@@ -125,16 +138,35 @@
             loginWithGoogle: async function () {
                 var provider = new firebase.auth.GoogleAuthProvider();
                 try {
-                    //const result = await firebase.auth().signInWithRedirect(provider);
+                    console.log("Intentando login con Google...");
                     const result = await firebase.auth().signInWithPopup(provider);
+                    console.log("Login con Google exitoso:", result.user);
                     return result.user;
                 } catch (error) {
-                    console.error("Error durante el inicio de sesión:", error.code, error.message);
+                    console.error(
+                        "Error durante el inicio de sesión con Google:",
+                        error.code,
+                        error.message
+                    );
                     return null;
                 }
-            }
+            },
+            sendPasswordResetEmail: async function (email) {
+                try {
+                    await firebase.auth().sendPasswordResetEmail(email);
+                    return {
+                        success: true,
+                        message: "Email de recuperación enviado correctamente",
+                    };
+                } catch (error) {
+                    console.error(
+                        "Error al enviar email de recuperación:",
+                        error.message
+                    );
+                    return { success: false, message: error.message };
+                }
+            },
         };
-
     </script>
     <script src="_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
