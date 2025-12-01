@@ -23,16 +23,17 @@ namespace Backend.Controllers
 
         // GET: api/Clientes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes([FromQuery] string filter="")
+        public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes([FromQuery] string filter = "")
         {
             return await _context.Clientes
                 .Include(c => c.Usuario)
-                .Where(c=>c.Usuario.Nombre.Contains(filter))// Incluye los datos del usuario asociado
+                .Where(c => c.Usuario != null && c.Usuario.Nombre.Contains(filter) && !c.IsDeleted) // Validar que Usuario no sea nulo
                 .ToListAsync();
-
         }
 
-        // GET: api/Cliente/5
+        
+
+        // GET: api/Clientes/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Cliente>> GetCliente(int id)
         {

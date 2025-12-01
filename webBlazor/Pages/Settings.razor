@@ -1,7 +1,5 @@
 ﻿@page "/settings"
-@using webBlazor.Services
-@using Service.Models
-@using System.Net.Http.Json
+
 @inject FirebaseAuthService authService
 @inject NavigationManager navigationManager
 
@@ -47,7 +45,7 @@ else
                     <p>Cargando datos...</p>
                 </div>
             }
-            else if (cliente != null)
+            else if (usuario != null && cliente != null)
             {
                 <form @onsubmit="SaveSettings" class="settings-form">
                     <div class="form-section">
@@ -74,17 +72,14 @@ else
                             <small class="form-helper">El email no puede ser modificado</small>
                         </div>
 
-                        @if (!string.IsNullOrEmpty(usuario.DNI))
-                        {
-                            <div class="form-group">
-                                <label for="user-dni" class="form-label">DNI</label>
-                                <input id="user-dni"
-                                       type="text"
-                                       class="form-input"
-                                       @bind="usuario.DNI"
-                                       placeholder="Tu DNI" />
-                            </div>
-                        }
+                        <div class="form-group">
+                            <label for="user-dni" class="form-label">DNI</label>
+                            <input id="user-dni"
+                                   type="text"
+                                   class="form-input"
+                                   @bind="usuario.DNI"
+                                   placeholder="Tu DNI" />
+                        </div>
                     </div>
 
                     <div class="form-section">
@@ -133,7 +128,7 @@ else
             {
                 <div class="error-alert">
                     <span class="error-icon">⚠️</span>
-                    <span>No se pudieron cargar tus datos. Por favor recarga la página.</span>
+                    <span>@(errorMessage ?? "No se pudieron cargar tus datos. Por favor recarga la página.")</span>
                 </div>
             }
         </div>
@@ -144,15 +139,18 @@ else
     private bool isAuthenticated = false;
     private bool isLoading = true;
     private bool isSaving = false;
-    private string errorMessage = "";
-    private string successMessage = "";
+    private string? errorMessage = null;
+    private string? successMessage = null;
 
-    private Usuario usuario = new();
-    private Cliente cliente = new();
+    private Usuario? usuario = null;
+    private Cliente? cliente = null;
     private int usuarioID = 0;
 
     private readonly string _apiBaseUrl = "https://apifidelium.azurewebsites.net";
     private readonly System.Text.Json.JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
+    
+    [Inject]
+    private HttpClient? Http { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -172,64 +170,140 @@ else
         try
         {
             isLoading = true;
+            errorMessage = null;
 
             // Obtener datos del usuario autenticado desde Firebase
             var firebaseUser = await authService.GetUserFirebase();
             if (firebaseUser == null || string.IsNullOrEmpty(firebaseUser.Email))
             {
                 errorMessage = "No se pudo obtener tus datos de autenticación";
+                Console.WriteLine("[Settings] Error: Firebase user is null or email is empty");
                 isLoading = false;
                 return;
             }
 
-            // Obtener datos del usuario desde la BD
-            using (var httpClient = new HttpClient())
+            Console.WriteLine($"[Settings] Firebase User Email: {firebaseUser.Email}");
+
+            try
             {
-                try
+                // Validar HttpClient
+                if (Http == null)
                 {
-                    // Buscar usuario por email - Usando GetFromJsonAsync
-                    var usuarios = await httpClient.GetFromJsonAsync<List<Usuario>>(
-                        $"{_apiBaseUrl}/api/usuarios",
-                        _jsonOptions);
+                    errorMessage = "Error: HttpClient no está configurado";
+                    Console.WriteLine("[Settings] Error: HttpClient is null");
+                    isLoading = false;
+                    return;
+                }
 
-                    usuario = usuarios?.FirstOrDefault(u => u.Email == firebaseUser.Email) ?? new Usuario();
+                // 1. Obtener TODOS los usuarios
+                var usuariosUrl = $"{_apiBaseUrl}/api/usuarios";
+                Console.WriteLine($"[Settings] Calling: {usuariosUrl}");
 
-                    if (usuario?.ID > 0)
+                var usuariosResponse = await Http.GetAsync(usuariosUrl);
+
+                if (!usuariosResponse.IsSuccessStatusCode)
+                {
+                    errorMessage = $"Error al obtener usuarios del servidor: {usuariosResponse.StatusCode}";
+                    Console.WriteLine($"[Settings] Error response: {usuariosResponse.StatusCode}");
+                    isLoading = false;
+                    return;
+                }
+
+                var usuariosJson = await usuariosResponse.Content.ReadAsStringAsync();
+                Console.WriteLine($"[Settings] Usuarios response length: {usuariosJson.Length}");
+
+                var usuariosList = System.Text.Json.JsonSerializer.Deserialize<List<Usuario>>(usuariosJson, _jsonOptions);
+
+                if (usuariosList == null || usuariosList.Count == 0)
+                {
+                    errorMessage = "No se encontraron usuarios en la base de datos";
+                    Console.WriteLine("[Settings] No users found in database");
+                    isLoading = false;
+                    return;
+                }
+
+                Console.WriteLine($"[Settings] Total users found: {usuariosList.Count}");
+
+                // 2. Buscar el usuario que coincida con el email de Firebase
+                usuario = usuariosList.FirstOrDefault(u => u.Email?.Equals(firebaseUser.Email, StringComparison.OrdinalIgnoreCase) == true);
+
+                if (usuario == null)
+                {
+                    var availableEmails = string.Join(", ", usuariosList.Select(u => u.Email ?? "null"));
+                    errorMessage = $"No se encontró perfil para el email: {firebaseUser.Email}";
+                    Console.WriteLine($"[Settings] User not found for email: {firebaseUser.Email}. Available: {availableEmails}");
+                    isLoading = false;
+                    return;
+                }
+
+                Console.WriteLine($"[Settings] Usuario encontrado: ID={usuario.ID}, Nombre={usuario.Nombre}, Email={usuario.Email}");
+
+                if (usuario.ID <= 0)
+                {
+                    errorMessage = "ID de usuario inválido";
+                    isLoading = false;
+                    return;
+                }
+
+                usuarioID = usuario.ID;
+
+                // 3. Obtener TODOS los clientes
+                var clientesUrl = $"{_apiBaseUrl}/api/clientes";
+                Console.WriteLine($"[Settings] Calling: {clientesUrl}");
+
+                var clientesResponse = await Http.GetAsync(clientesUrl);
+
+                if (!clientesResponse.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"[Settings] Error al obtener clientes: {clientesResponse.StatusCode}");
+                    cliente = new Cliente { UsuarioID = usuarioID };
+                }
+                else
+                {
+                    var clientesJson = await clientesResponse.Content.ReadAsStringAsync();
+                    Console.WriteLine($"[Settings] Clientes response length: {clientesJson.Length}");
+
+                    var clientesList = System.Text.Json.JsonSerializer.Deserialize<List<Cliente>>(clientesJson, _jsonOptions);
+
+                    if (clientesList != null && clientesList.Count > 0)
                     {
-                        usuarioID = usuario.ID;
+                        // 4. Buscar el cliente asociado al usuario actual (como en UsuariosView)
+                        cliente = clientesList.FirstOrDefault(c => c.UsuarioID == usuarioID && !c.IsDeleted);
 
-                        // Obtener datos del cliente por UsuarioID - Usando GetFromJsonAsync
-                        try
+                        if (cliente != null)
                         {
-                            cliente = await httpClient.GetFromJsonAsync<Cliente>(
-                                $"{_apiBaseUrl}/api/clientes/usuario/{usuarioID}",
-                                _jsonOptions) ?? new Cliente { UsuarioID = usuarioID };
+                            Console.WriteLine($"[Settings] Cliente cargado: ID={cliente.ID}, Telefono={cliente.Telefono}, Instagram={cliente.Instagram}");
                         }
-                        catch (HttpRequestException)
+                        else
                         {
-                            // Si no existe cliente, crear uno vacío
+                            Console.WriteLine($"[Settings] No cliente found for usuario {usuarioID}, creating empty");
                             cliente = new Cliente { UsuarioID = usuarioID };
                         }
                     }
                     else
                     {
-                        errorMessage = "No se encontró tu perfil de usuario";
+                        Console.WriteLine("[Settings] No clientes in database, creating empty");
+                        cliente = new Cliente { UsuarioID = usuarioID };
                     }
                 }
-                catch (HttpRequestException ex)
-                {
-                    errorMessage = $"Error de conexión: {ex.Message}";
-                }
-                catch (System.Text.Json.JsonException ex)
-                {
-                    errorMessage = $"Error al procesar datos: {ex.Message}";
-                }
+
+                Console.WriteLine("[Settings] Data loaded successfully");
             }
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"Error al cargar datos: {ex.Message}";
-            Console.WriteLine($"Error: {ex}");
+            catch (HttpRequestException ex)
+            {
+                errorMessage = $"Error de conexión: {ex.Message}";
+                Console.WriteLine($"[Settings] HttpRequestException: {ex.Message}");
+            }
+            catch (System.Text.Json.JsonException ex)
+            {
+                errorMessage = $"Error al procesar datos: {ex.Message}";
+                Console.WriteLine($"[Settings] JsonException: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Error inesperado: {ex.Message}";
+                Console.WriteLine($"[Settings] Exception: {ex.Message}");
+            }
         }
         finally
         {
@@ -239,12 +313,24 @@ else
 
     private async Task SaveSettings()
     {
-        errorMessage = "";
-        successMessage = "";
+        errorMessage = null;
+        successMessage = null;
 
-        if (string.IsNullOrWhiteSpace(usuario?.Nombre))
+        if (usuario == null || string.IsNullOrWhiteSpace(usuario.Nombre))
         {
             errorMessage = "El nombre es requerido";
+            return;
+        }
+
+        if (usuario.ID <= 0)
+        {
+            errorMessage = "ID de usuario inválido";
+            return;
+        }
+
+        if (cliente == null)
+        {
+            errorMessage = "Error: No hay datos de cliente";
             return;
         }
 
@@ -252,81 +338,95 @@ else
 
         try
         {
-            using (var httpClient = new HttpClient())
+            if (Http == null)
             {
-                // Actualizar usuario - Usando PutAsJsonAsync
-                try
-                {
-                    var usuarioResponse = await httpClient.PutAsJsonAsync(
-                        $"{_apiBaseUrl}/api/usuarios/{usuario!.ID}",
-                        usuario);
+                errorMessage = "Error: HttpClient no está configurado";
+                isSaving = false;
+                return;
+            }
 
-                    if (!usuarioResponse.IsSuccessStatusCode)
-                    {
-                        var errorContent = await usuarioResponse.Content.ReadAsStringAsync();
-                        errorMessage = $"Error al actualizar usuario: {usuarioResponse.StatusCode}";
-                        isSaving = false;
-                        return;
-                    }
-                }
-                catch (HttpRequestException ex)
+            // Actualizar usuario
+            try
+            {
+                var usuarioUrl = $"{_apiBaseUrl}/api/usuarios/{usuario.ID}";
+                Console.WriteLine($"[Settings Save] Actualizando usuario en: {usuarioUrl}");
+
+                var usuarioResponse = await Http.PutAsJsonAsync(usuarioUrl, usuario);
+
+                if (!usuarioResponse.IsSuccessStatusCode)
                 {
-                    errorMessage = $"Error de conexión al actualizar usuario: {ex.Message}";
+                    var errorContent = await usuarioResponse.Content.ReadAsStringAsync();
+                    errorMessage = $"Error al actualizar usuario: {usuarioResponse.StatusCode}";
+                    Console.WriteLine($"[Settings Save] Error: {errorContent}");
                     isSaving = false;
                     return;
                 }
 
-                // Actualizar cliente - Usando PutAsJsonAsync o PostAsJsonAsync
-                try
+                Console.WriteLine("[Settings Save] Usuario actualizado correctamente");
+            }
+            catch (HttpRequestException ex)
+            {
+                errorMessage = $"Error de conexión al actualizar usuario: {ex.Message}";
+                Console.WriteLine($"[Settings Save] HttpRequestException: {ex.Message}");
+                isSaving = false;
+                return;
+            }
+
+            // Actualizar cliente
+            try
+            {
+                cliente.UsuarioID = usuarioID;
+                HttpResponseMessage clienteResponse;
+
+                if (cliente.ID > 0)
                 {
-                    cliente.UsuarioID = usuarioID;
-
-                    HttpResponseMessage clienteResponse;
-
-                    if (cliente.ID > 0)
-                    {
-                        // Actualizar cliente existente
-                        clienteResponse = await httpClient.PutAsJsonAsync(
-                            $"{_apiBaseUrl}/api/clientes/{cliente.ID}",
-                            cliente);
-                    }
-                    else
-                    {
-                        // Crear cliente nuevo
-                        clienteResponse = await httpClient.PostAsJsonAsync(
-                            $"{_apiBaseUrl}/api/clientes",
-                            cliente);
-                    }
-
-                    if (!clienteResponse.IsSuccessStatusCode)
-                    {
-                        var errorContent = await clienteResponse.Content.ReadAsStringAsync();
-                        errorMessage = $"Error al guardar datos de contacto: {clienteResponse.StatusCode}";
-                        return;
-                    }
-
-                    // Deserializar la respuesta
-                    var clienteJson = await clienteResponse.Content.ReadAsStringAsync();
-                    var clienteActualizado = System.Text.Json.JsonSerializer.Deserialize<Cliente>(clienteJson, _jsonOptions);
-                    if (clienteActualizado != null)
-                    {
-                        cliente = clienteActualizado;
-                    }
-
-                    successMessage = "¡Cambios guardados correctamente!";
-                    await Task.Delay(2000);
-                    StateHasChanged();
+                    // Actualizar cliente existente
+                    var clienteUrl = $"{_apiBaseUrl}/api/clientes/{cliente.ID}";
+                    Console.WriteLine($"[Settings Save] Actualizando cliente en: {clienteUrl}");
+                    clienteResponse = await Http.PutAsJsonAsync(clienteUrl, cliente);
                 }
-                catch (HttpRequestException ex)
+                else
                 {
-                    errorMessage = $"Error de conexión al guardar contacto: {ex.Message}";
+                    // Crear cliente nuevo
+                    var clienteUrl = $"{_apiBaseUrl}/api/clientes";
+                    Console.WriteLine($"[Settings Save] Creando cliente en: {clienteUrl}");
+                    clienteResponse = await Http.PostAsJsonAsync(clienteUrl, cliente);
+
+                    if (clienteResponse.IsSuccessStatusCode)
+                    {
+                        // Obtener el nuevo cliente con el ID asignado
+                        var clienteJson = await clienteResponse.Content.ReadAsStringAsync();
+                        var clienteActualizado = System.Text.Json.JsonSerializer.Deserialize<Cliente>(clienteJson, _jsonOptions);
+                        if (clienteActualizado != null)
+                        {
+                            cliente = clienteActualizado;
+                            Console.WriteLine($"[Settings Save] Cliente creado con ID: {cliente.ID}");
+                        }
+                    }
                 }
+
+                if (!clienteResponse.IsSuccessStatusCode)
+                {
+                    var errorContent = await clienteResponse.Content.ReadAsStringAsync();
+                    errorMessage = $"Error al guardar datos de contacto: {clienteResponse.StatusCode}";
+                    Console.WriteLine($"[Settings Save] Error: {errorContent}");
+                    return;
+                }
+
+                successMessage = "¡Cambios guardados correctamente!";
+                Console.WriteLine("[Settings Save] All changes saved successfully");
+                await Task.Delay(2000);
+            }
+            catch (HttpRequestException ex)
+            {
+                errorMessage = $"Error de conexión al guardar contacto: {ex.Message}";
+                Console.WriteLine($"[Settings Save] HttpRequestException: {ex.Message}");
             }
         }
         catch (Exception ex)
         {
             errorMessage = $"Error al guardar: {ex.Message}";
-            Console.WriteLine($"Error: {ex}");
+            Console.WriteLine($"[Settings Save] Exception: {ex.Message}");
         }
         finally
         {
