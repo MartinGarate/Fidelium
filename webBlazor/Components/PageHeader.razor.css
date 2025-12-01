@@ -1,0 +1,214 @@
+﻿/* Hero Section - Fidelium Style with Linear Structure */
+.hero-section {
+    position: relative;
+    overflow: hidden;
+    background: #0d0617;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 80px 60px;
+    color: #e4e4e4;
+}
+
+    /* Subtle gradient overlay */
+    .hero-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient( ellipse at 50% 0%, rgba(122, 45, 190, 0.08) 0%, transparent 70% );
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Ambient glow effect - Fidelium Neon */
+    .hero-section::after {
+        content: "";
+        position: absolute;
+        top: 30%;
+        left: 50%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient( circle, rgba(122, 45, 190, 0.12) 0%, transparent 70% );
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+/* Hero Content Container */
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: left;
+    max-width: 700px;
+    animation: fadeInUp 2s ease-out;
+}
+
+/* Hero Badge */
+.hero-badge {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #d1c4ff;
+    margin-bottom: 16px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    animation: fadeInUp 2s ease-out 0.1s both;
+}
+
+/* Hero Title */
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin: 16px 0;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+    text-shadow: none;
+    max-width: 900px;
+    animation: fadeInUp 2s ease-out 0.2s both;
+}
+
+/* Title Underline */
+.title-underline {
+    display: none;
+}
+
+/* Hero Subtitle */
+.hero-subtitle {
+    font-size: 1.15rem;
+    font-weight: 400;
+    margin: 16px 0 40px 0;
+    color: #b0b8d4;
+    max-width: 700px;
+    line-height: 1.7;
+    letter-spacing: 0.3px;
+    animation: fadeInUp 2s ease-out 0.3s both;
+}
+
+/* Decorative Top Line */
+.hero-top-line {
+    display: none;
+}
+
+/* Decorative Bottom Line */
+.hero-bottom-line {
+    display: none;
+}
+
+/* Hero Actions Container */
+.hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 32px;
+    animation: fadeInUp 2s ease-out 0.4s both;
+    flex-wrap: wrap;
+}
+
+/* Botón Primario - Fidelium Gradient */
+.btn-primary-hero {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #7a3cff, #bf4dff) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 8px;
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(191, 77, 255, 0.3) !important;
+}
+
+    .btn-primary-hero:hover {
+        filter: brightness(1.15);
+        box-shadow: 0 0 18px rgba(191, 77, 255, 0.7) !important;
+        transform: translateY(-2px);
+    }
+
+/* Botón Secundario - Outline */
+.btn-secondary-hero {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: rgba(40, 25, 60, 0.5) !important;
+    color: #d1c4ff !important;
+    border: 1px solid #7b6bb8 !important;
+    border-radius: 8px;
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .btn-secondary-hero:hover {
+        background: rgba(123, 107, 184, 0.15) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 15px rgba(123, 107, 184, 0.8) !important;
+    }
+
+/* ==================== ANIMATIONS ==================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        filter: blur(10px);
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0);
+    }
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 300px;
+        padding: 40px 20px;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .hero-badge {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section {
+        min-height: 250px;
+        padding: 30px 15px;
+    }
+
+    .hero-title {
+        font-size: 1.8rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.9rem;
+    }
+}

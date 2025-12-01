@@ -1,53 +1,82 @@
-﻿/* ========================================================= */
+﻿@charset "UTF-8";
+
+/* ========================================================= */
 /* === 0. A. CSS RESET UNIVERSAL (MEJOR PRÁCTICA) === */
 /* ========================================================= */
 
 /* 1. Box Sizing: Hace que el padding y el border no aumenten el tamaño total del elemento. CRUCIAL. */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
 /* 2. Reset de Márgenes/Rellenos en elementos principales */
-body, h1, h2, h3, h4, h5, h6, p, figure, blockquote, ul, ol, dl {
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+blockquote,
+ul,
+ol,
+dl {
     margin: 0;
     padding: 0;
 }
 
 /* 3. Eliminar estilos de lista por defecto */
-ul, ol {
+ul,
+ol {
     list-style: none;
 }
 
 /* 4. Imagenes y Medios: Asegura que no desborden y sean responsivos */
-img, picture, video, canvas, svg {
+img,
+picture,
+video,
+canvas,
+svg {
     display: block;
     max-width: 100%;
     height: auto; /* Evita que las imágenes se estiren */
 }
 
 /* 5. Formulario: Hereda la fuente para unificar el diseño */
-input, button, textarea, select {
+input,
+button,
+textarea,
+select {
     font: inherit;
 }
 
 /* 6. Enlaces: Neutraliza el color azul y el subrayado del navegador/framework */
-a, a:link, a:visited, a:hover, a:active {
+a,
+a:link,
+a:visited,
+a:hover,
+a:active {
     color: inherit !important; /* Forzamos color para sobreescribir frameworks */
     text-decoration: none !important; /* Elimina el subrayado en todos los estados (FORZADO) */
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
-
 /* ========================================================= */
 /* === 0. B. TIPOGRAFÍA Y ESTILOS BASE FIDELIUM === */
 /* ========================================================= */
-html, body {
+html,
+body {
     /* La regla margin: 0; padding: 0; ya fue aplicada arriba, aquí se definen los colores/fuentes */
-    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Recomendado 'Inter' para diseños modernos */
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", sans-serif; /* Stack moderno y eficiente */
     background-color: #0d0617 !important; /* Fondo oscuro para que resalte el neón (FORZADO) */
     color: #e4e4e4; /* Color de texto base claro */
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
     overflow-x: hidden; /* Evita la barra de desplazamiento horizontal */
 }
@@ -70,21 +99,24 @@ h1:focus {
     border-color: #1861ac;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus,
-.form-control:focus, .form-check-input:focus {
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {
     /* COMPENSACIÓN: Padding superior para evitar que el contenido se oculte bajo la navbar fija. */
-    padding-top: 6rem;
+    padding-top: 0;
+    margin-top: 60px;
 }
-
 
 /* ========================================================= */
 /* === 2. VALIDACIONES Y BLAZOR (Tus estilos originales) === */
 /* ========================================================= */
-.valid.modified:not([type=checkbox]) {
+.valid.modified:not([type="checkbox"]) {
     outline: 1px solid #26b050;
 }
 
@@ -97,7 +129,7 @@ h1:focus {
 }
 
 #blazor-error-ui {
-    background: lightyellow;
+    background: #b32121;
     bottom: 0;
     box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
     display: none;
@@ -156,7 +188,7 @@ h1:focus {
 }
 
     .loading-progress-text:after {
-        content: var(--blazor-load-percentage-text, "Loading");
+        content: var(--blazor-load-percentage-text, "Cargando");
     }
 
 code {
@@ -179,29 +211,59 @@ code {
 /* Efectos neon */
 .neon-glow-primary {
     box-shadow: 0 0 5px #7a2dbe, 0 0 10px #7a2dbe, 0 0 15px #7a2dbe;
+    animation: neonPulse 2s ease-in-out infinite;
 }
 
 .neon-glow-secondary {
-    box-shadow: 0 0 3px #9D4EDD, 0 0 6px #9D4EDD;
+    box-shadow: 0 0 3px #9d4edd, 0 0 6px #9d4edd;
+    animation: neonPulseSecondary 2.5s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+    0%, 100% {
+        box-shadow: 0 0 5px #7a2dbe, 0 0 10px #7a2dbe, 0 0 15px #7a2dbe;
+    }
+
+    50% {
+        box-shadow: 0 0 8px #7a2dbe, 0 0 15px #7a2dbe, 0 0 25px #7a2dbe, 0 0 35px #7a2dbe;
+    }
+}
+
+@keyframes neonPulseSecondary {
+    0%, 100% {
+        box-shadow: 0 0 3px #9d4edd, 0 0 6px #9d4edd;
+    }
+
+    50% {
+        box-shadow: 0 0 6px #9d4edd, 0 0 12px #9d4edd, 0 0 18px #9d4edd;
+    }
 }
 
 /* Estrellas — rating */
 .star-icon {
-    transition: color 0.3s ease, text-shadow 0.3s ease;
+    transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
 }
 
     .star-icon.active {
-        color: #E43F9B;
-        text-shadow: 0 0 7px #E43F9B, 0 0 10px #E43F9B;
+        color: #e43f9b;
+        text-shadow: 0 0 7px #e43f9b, 0 0 10px #e43f9b, 0 0 15px #e43f9b;
+        animation: starBurst 0.4s ease-out;
     }
 
+@keyframes starBurst {
+    0% {
+        transform: scale(0.8) rotate(-10deg);
+    }
 
+    50% {
+        transform: scale(1.2);
+    }
 
-
-
-
-
-
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}
 
 /* ========================================================= */
 /* === NAV FIDELIUM: DISEÑO COMPLETO DE BARRA DE NAVEGACIÓN === */
@@ -218,15 +280,28 @@ code {
     left: 0;
     z-index: 1000;
     /* Glassmorphism y Fondo Oscuro - FORZADO */
-    /* Este es el color base de fondo que viste en las imágenes */
     background: rgba(14, 8, 24, 0.9) !important;
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     padding: 16px 24px;
-    /* Sombra Neón ligera en el borde inferior */
+    /* Sombra Neón elegante en el borde inferior */
     border: none;
-    box-shadow: 0 4px 15px rgba(130, 40, 255, 0.2);
+    border-bottom: 1px solid rgba(122, 45, 190, 0.3);
+    box-shadow: 0 2px 12px rgba(122, 45, 190, 0.15);
     border-radius: 0;
+    animation: slideDownNav 0.6s ease-out;
+}
+
+@keyframes slideDownNav {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 /* 2. Wrapper Interno (Centra y organiza el contenido) */
@@ -247,15 +322,27 @@ code {
 }
 
 .fidelium-logo .logo-img {
-    max-width: 32px;
-    transition: transform .25s ease, filter .25s ease;
+    max-width: 64px;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s ease;
+    animation: slideInLeft 0.6s ease-out;
 }
 
 .fidelium-logo:hover .logo-img {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 6px #b17dff);
+    transform: scale(1.15) rotate(2deg);
+    filter: drop-shadow(0 0 12px #7a3cff) brightness(1.1);
 }
 
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
 
 /* === 4. LISTA DE LINKS (Menú Central) === */
 .fidelium-list {
@@ -271,20 +358,35 @@ code {
     .fidelium-list a {
         font-size: 15px;
         font-weight: 500;
-        color: #d6caff !important; /* Color de texto neón claro */
-        padding: 8px 12px;
-        border-radius: 6px;
+        padding: 10px 20px;
         text-decoration: none !important;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
+        position: relative;
+        display: inline-block;
     }
+
+        .fidelium-list a::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #7a3cff, #bf4dff);
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+
+        .fidelium-list a:hover::after,
+        .fidelium-list a.active::after {
+            width: 80%;
+        }
 
         .fidelium-list a:hover,
         .fidelium-list a.active {
-            color: #ffffff !important;
-            text-shadow: 0 0 8px #a05bff;
-            background-color: rgba(180, 110, 255, 0.08);
+            text-shadow: 0 0 10px #a05bff, 0 0 20px rgba(160, 91, 255, 0.3);
+            color: #e0d5ff;
         }
-
 
 /* === 5. CONTENEDOR DE BOTONES DE ACCIÓN (Derecha) === */
 .nav-actions {
@@ -293,49 +395,96 @@ code {
     gap: 12px;
 }
 
+/* Usuario autenticado - saludo */
+.user-greeting {
+    font-size: 14px;
+    color: #d1c4ff;
+    padding: 10px 16px;
+    animation: fadeInRight 0.5s ease-out;
+}
 
-    /* === 6. ESTILOS DE LOS BOTONES DE ACCIÓN (FIX INCLUIDO) === */
+/* Botón Logout */
+.btn-logout {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px !important;
+    font-size: 14px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #e43f9b, #c91e8f) !important;
+    border: none !important;
+    color: #ffffff !important;
+    border-radius: 20px !important;
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(228, 63, 155, 0.3) !important;
+    animation: fadeInRight 0.5s ease-out 0.1s both;
+}
 
-    /* Estilos de píldora base para ambos botones (MAXIMA ESPECIFICIDAD) */
-    .nav-actions a.btn-login,
-    .nav-actions a.btn-register {
-        /* **PROPIEDADES CRÍTICAS PARA QUE SE VEAN COMO BOTONES** */
-        display: inline-block !important;
-        padding: 10px 20px !important;
-        font-size: 14px;
-        font-weight: 600;
-        border-radius: 20px !important; /* Forma de píldora */
-        text-decoration: none !important;
-        white-space: nowrap;
-        line-height: normal;
-        color: white !important;
-        transition: all 0.3s ease;
+    .btn-logout:hover {
+        filter: brightness(1.2) saturate(1.1);
+        box-shadow: 0 0 25px rgba(228, 63, 155, 0.8), 0 4px 20px rgba(228, 63, 155, 0.4) !important;
+        transform: translateY(-3px);
     }
 
-
-    /* Botón 1: Iniciar Sesión (Outline Neón) */
-    .nav-actions a.btn-login {
-        border: 1px solid #7b6bb8 !important; /* Borde Morado */
-        background: rgba(40, 25, 60, 0.5) !important; /* Fondo semitransparente oscuro */
-        color: #d1c4ff !important;
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
     }
 
-        .nav-actions a.btn-login:hover {
-            background: rgba(123, 107, 184, 0.15) !important;
-            color: #ffffff !important;
-            box-shadow: 0 0 15px rgba(123, 107, 184, 0.8) !important; /* Sombra al hacer hover */
-        }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
 
-    /* Botón 2: Registrarse (Gradient Neón) */
-    .nav-actions a.btn-register {
-        /* Degradado púrpura/magenta */
-        background: linear-gradient(135deg, #7a3cff, #bf4dff) !important;
-        border: none !important;
-        box-shadow: 0 4px 15px rgba(191, 77, 255, 0.3) !important;
+/* === 6. ESTILOS DE LOS BOTONES DE ACCIÓN (FIX INCLUIDO) === */
+
+/* Estilos de píldora base para ambos botones (MAXIMA ESPECIFICIDAD) */
+.nav-actions a.btn-login,
+.nav-actions a.btn-register {
+    /* **PROPIEDADES CRÍTICAS PARA QUE SE VEAN COMO BOTONES** */
+    display: inline-block !important;
+    padding: 10px 20px !important;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 20px !important; /* Forma de píldora */
+    text-decoration: none !important;
+    white-space: nowrap;
+    line-height: normal;
+    color: white !important;
+    transition: all 0.3s ease;
+}
+
+/* Botón 1: Iniciar Sesión (Outline Neón) */
+.nav-actions a.btn-login {
+    border: 1.5px solid #7b6bb8 !important; /* Borde Morado */
+    background: rgba( 40, 25, 60, 0.5 ) !important; /* Fondo semitransparente oscuro */
+    color: #d1c4ff !important;
+    position: relative;
+    overflow: hidden;
+}
+
+    .nav-actions a.btn-login:hover {
+        background: rgba(123, 107, 184, 0.25) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 20px rgba(123, 107, 184, 0.9), inset 0 0 15px rgba(123, 107, 184, 0.1) !important;
+        border-color: #a05bff !important;
     }
 
-        .nav-actions a.btn-register:hover {
-            filter: brightness(1.15);
-            box-shadow: 0 0 18px rgba(191, 77, 255, 0.7) !important;
-            transform: translateY(-1px);
-        }
+/* Botón 2: Registrarse (Gradient Neón) */
+.nav-actions a.btn-register {
+    /* Degradado púrpura/magenta */
+    background: linear-gradient(135deg, #7a3cff, #bf4dff) !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(191, 77, 255, 0.3) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+    .nav-actions a.btn-register:hover {
+        filter: brightness(1.2) saturate(1.1);
+        box-shadow: 0 0 25px rgba(191, 77, 255, 0.8), 0 4px 20px rgba(191, 77, 255, 0.4) !important;
+        transform: translateY(-3px);
+    }

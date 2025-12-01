@@ -1,0 +1,56 @@
+﻿
+<section class="hero-section">
+    <div class="hero-content">
+        <!-- Badge pequeño superior -->
+        <span class="hero-badge">@Badge</span>
+
+        <!-- Título principal -->
+        <h1 class="hero-title">
+            @Titulo
+        </h1>
+
+        <!-- Subtítulo -->
+        <p class="hero-subtitle">
+            @SubTitulo
+        </p>
+
+        <!-- Botones de acción -->
+        <div class="hero-actions">
+            @if (!string.IsNullOrEmpty(BotonPrimarioUrl))
+            {
+                <a href="@BotonPrimarioUrl" class="btn-primary-hero">
+                    @BotonPrimarioTexto
+                </a>
+            }
+            @if (!string.IsNullOrEmpty(BotonSecundarioUrl))
+            {
+                <a href="@BotonSecundarioUrl" class="btn-secondary-hero">
+                    @BotonSecundarioTexto
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+@code {
+    [Parameter]
+    public string Badge { get; set; } = "Fidelium";
+
+    [Parameter]
+    public string Titulo { get; set; } = string.Empty;
+
+    [Parameter]
+    public string SubTitulo { get; set; } = string.Empty;
+
+    [Parameter]
+    public string BotonPrimarioTexto { get; set; } = string.Empty;
+
+    [Parameter]
+    public string BotonPrimarioUrl { get; set; } = string.Empty;
+
+    [Parameter]
+    public string BotonSecundarioTexto { get; set; } = string.Empty;
+
+    [Parameter]
+    public string BotonSecundarioUrl { get; set; } = string.Empty;
+}

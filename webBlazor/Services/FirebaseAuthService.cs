@@ -64,5 +64,19 @@ namespace webBlazor.Services
             OnChangeLogin?.Invoke();
             return userFirebase;
         }
+
+        /// <summary>
+        /// Obtiene el nombre de usuario actual. Si no está cacheado, lo obtiene de Firebase.
+        /// </summary>
+        public async Task<string> GetUserDisplayName()
+        {
+            // Si ya tenemos el usuario en caché, usamos su DisplayName
+            if (CurrentUser != null)
+                return CurrentUser.DisplayName ?? "Usuario";
+
+            // Si no está cacheado, lo obtenemos de Firebase
+            var user = await GetUserFirebase();
+            return user?.DisplayName ?? "Usuario";
+        }
     }
 }
