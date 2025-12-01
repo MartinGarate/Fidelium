@@ -81,30 +81,125 @@ body {
     overflow-x: hidden; /* Evita la barra de desplazamiento horizontal */
 }
 
+/* Scrollbar styling para navegadores webkit */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(122, 60, 255, 0.05);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #7a3cff, #bf4dff);
+    border-radius: 6px;
+    border: 2px solid rgba(122, 60, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 0 8px rgba(122, 60, 255, 0.2);
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #8a4cff, #cf5dff);
+        box-shadow: 0 0 12px rgba(122, 60, 255, 0.4);
+        border-color: rgba(122, 60, 255, 0.3);
+    }
+
+    ::-webkit-scrollbar-thumb:active {
+        background: linear-gradient(180deg, #9a5cff, #df6dff);
+        box-shadow: 0 0 16px rgba(122, 60, 255, 0.5);
+    }
+
 h1:focus {
     outline: none;
 }
 
 /* --------------------
-   LINKS Y BOTONES BASE BLAZOR/BOOTSTRAP
+   LINKS Y BOTONES BASE FIDELIUM (OVERRIDE DE BOOTSTRAP)
    -------------------- */
-/* Se mantiene el color base de los botones de Blazor que USAN esta clase */
+/* Neutralizar estilos de Bootstrap - usar Fidelium en su lugar */
 .btn-link {
-    color: #0071c1;
+    color: #7a3cff !important;
+    background: transparent !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
 }
 
+    .btn-link:hover {
+        color: #bf4dff !important;
+        text-shadow: 0 0 10px rgba(191, 77, 255, 0.3) !important;
+    }
+
+/* ELIMINAR estilos azules de Bootstrap */
 .btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    background: linear-gradient(135deg, #7a3cff, #bf4dff) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 15px rgba(191, 77, 255, 0.3) !important;
+    padding: 12px 20px !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-decoration: none !important;
+    min-height: 44px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    text-align: center !important;
 }
+
+    .btn-primary:hover:not(:disabled) {
+        background: linear-gradient(135deg, #8a4cff, #cf5dff) !important;
+        box-shadow: 0 6px 20px rgba(191, 77, 255, 0.4) !important;
+        transform: translateY(-2px) !important;
+        color: #ffffff !important;
+    }
+
+    .btn-primary:active:not(:disabled) {
+        transform: translateY(0) !important;
+    }
+
+    .btn-primary:disabled {
+        opacity: 0.6 !important;
+        cursor: not-allowed !important;
+    }
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #e4e4e4 !important;
+    border: 1px solid rgba(122, 60, 255, 0.3) !important;
+    padding: 12px 20px !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-decoration: none !important;
+    min-height: 44px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    text-align: center !important;
+}
+
+    .btn-secondary:hover {
+        background: rgba(122, 60, 255, 0.15) !important;
+        border-color: #7a3cff !important;
+        color: #ffffff !important;
+        transform: translateY(-2px) !important;
+    }
 
 .btn:focus,
 .btn:active:focus,
 .btn-link.nav-link:focus,
 .form-control:focus,
 .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 3px rgba(122, 60, 255, 0.15) !important;
+    outline: none !important;
 }
 
 .content {
@@ -964,3 +1059,287 @@ code {
         padding: 4px 2px;
     }
 }
+
+/* ========================================================= */
+/* === GLOBAL FORM ELEMENTS ENHANCEMENTS === */
+/* ========================================================= */
+
+/* Global input styling override */
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not( [type="button"] ):not([type="reset"]) {
+    appearance: none;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1.5px solid rgba(122, 60, 255, 0.3) !important;
+    border-radius: 8px !important;
+    color: #e4e4e4 !important;
+    padding: 12px 14px !important;
+    font-family: inherit !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
+}
+
+    input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not( [type="button"] ):not([type="reset"]):focus {
+        outline: none !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-color: #7a3cff !important;
+        box-shadow: 0 0 0 3px rgba(122, 60, 255, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+    }
+
+/* Global select styling */
+select {
+    appearance: none !important;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a8a8a8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 10px center !important;
+    background-size: 18px !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1.5px solid rgba(122, 60, 255, 0.3) !important;
+    border-radius: 8px !important;
+    color: #e4e4e4 !important;
+    padding: 12px 14px !important;
+    padding-right: 40px !important;
+    font-family: inherit !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+    select option {
+        background: #0d0617 !important;
+        color: #e4e4e4 !important;
+        padding: 8px !important;
+        border: none !important;
+    }
+
+        select option:hover {
+            background: rgba(122, 60, 255, 0.3) !important;
+            color: #ffffff !important;
+        }
+
+        select option:checked {
+            background: linear-gradient(#7a3cff, #7a3cff) !important;
+            color: #ffffff !important;
+        }
+
+    select:focus {
+        outline: none !important;
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        border-color: #7a3cff !important;
+        box-shadow: 0 0 0 3px rgba(122, 60, 255, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a3cff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+    }
+
+/* Global textarea styling */
+textarea {
+    appearance: none !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1.5px solid rgba(122, 60, 255, 0.3) !important;
+    border-radius: 8px !important;
+    color: #e4e4e4 !important;
+    padding: 14px 16px !important;
+    font-family: inherit !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+    transition: all 0.3s ease !important;
+    resize: vertical !important;
+}
+
+    textarea:focus {
+        outline: none !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-color: #7a3cff !important;
+        box-shadow: 0 0 0 3px rgba(122, 60, 255, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+    }
+
+/* Global checkbox and radio styling */
+input[type="checkbox"],
+input[type="radio"] {
+    width: 18px !important;
+    height: 18px !important;
+    cursor: pointer !important;
+    accent-color: #7a3cff !important;
+    transition: all 0.2s ease !important;
+}
+
+    input[type="checkbox"]:hover,
+    input[type="radio"]:hover {
+        accent-color: #bf4dff !important;
+    }
+
+    input[type="checkbox"]:focus,
+    input[type="radio"]:focus {
+        outline: 2px solid #7a3cff !important;
+        outline-offset: 2px !important;
+    }
+
+/* ========================================================= */
+/* === UNIVERSAL BUTTON & LINK STYLING === */
+/* ========================================================= */
+
+/* TODOS los botones deben ser Fidelium */
+button:not(.user-menu-button),
+a.btn-primary,
+a.btn-secondary,
+a.btn-create-compra,
+a.btn-create-review,
+a.btn-review,
+a.btn-delete,
+a.btn-edit,
+button.btn-primary,
+button.btn-secondary,
+button.btn-create-compra,
+button.btn-create-review,
+button.btn-review,
+button.btn-delete,
+button.btn-edit {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    font-family: inherit !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-decoration: none !important;
+    padding: 12px 20px !important;
+    word-break: break-word;
+    white-space: normal !important;
+    text-align: center !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+}
+
+/* Estilos específicos para diferentes tipos de botones */
+
+/* Botones de acción primaria */
+button.btn-primary,
+a.btn-primary {
+    background: linear-gradient(135deg, #7a3cff, #bf4dff) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(191, 77, 255, 0.3) !important;
+}
+
+    button.btn-primary:hover,
+    a.btn-primary:hover {
+        background: linear-gradient(135deg, #8a4cff, #cf5dff) !important;
+        box-shadow: 0 6px 20px rgba(191, 77, 255, 0.4) !important;
+        transform: translateY(-2px) !important;
+    }
+
+/* Botones secundarios */
+button.btn-secondary,
+a.btn-secondary {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #e4e4e4 !important;
+    border: 1px solid rgba(122, 60, 255, 0.3) !important;
+}
+
+    button.btn-secondary:hover,
+    a.btn-secondary:hover {
+        background: rgba(122, 60, 255, 0.15) !important;
+        border-color: #7a3cff !important;
+        color: #ffffff !important;
+    }
+
+/* Botones de crear/agregar */
+button.btn-create-compra,
+a.btn-create-compra,
+button.btn-create-review,
+a.btn-create-review {
+    background: linear-gradient(135deg, #7a3cff, #bf4dff) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(191, 77, 255, 0.3) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
+    font-size: 0.9rem !important;
+}
+
+    button.btn-create-compra:hover,
+    a.btn-create-compra:hover,
+    button.btn-create-review:hover,
+    a.btn-create-review:hover {
+        background: linear-gradient(135deg, #8a4cff, #cf5dff) !important;
+        box-shadow: 0 6px 20px rgba(191, 77, 255, 0.4) !important;
+        transform: translateY(-2px) !important;
+    }
+
+/* Botones de revisar/editar */
+button.btn-review,
+a.btn-review,
+button.btn-edit,
+a.btn-edit {
+    background: linear-gradient( 135deg, rgba(122, 60, 255, 0.25), rgba(191, 77, 255, 0.15) ) !important;
+    color: #e4e4e4 !important;
+    border: 1.5px solid rgba(122, 60, 255, 0.5) !important;
+    box-shadow: 0 2px 8px rgba(122, 60, 255, 0.15) !important;
+}
+
+    button.btn-review:hover,
+    a.btn-review:hover,
+    button.btn-edit:hover,
+    a.btn-edit:hover {
+        background: linear-gradient( 135deg, rgba(122, 60, 255, 0.4), rgba(191, 77, 255, 0.3) ) !important;
+        border-color: #7a3cff !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 16px rgba(122, 60, 255, 0.35) !important;
+        transform: translateY(-2px) !important;
+    }
+
+/* Botones de eliminar */
+button.btn-delete,
+a.btn-delete {
+    background: linear-gradient( 135deg, rgba(220, 38, 38, 0.25), rgba(255, 107, 107, 0.15) ) !important;
+    color: #ff8787 !important;
+    border: 1.5px solid rgba(220, 38, 38, 0.6) !important;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.15) !important;
+}
+
+    button.btn-delete:hover,
+    a.btn-delete:hover {
+        background: linear-gradient( 135deg, rgba(220, 38, 38, 0.4), rgba(255, 107, 107, 0.3) ) !important;
+        border-color: #ff6b6b !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 16px rgba(220, 38, 38, 0.35) !important;
+        transform: translateY(-2px) !important;
+    }
+
+/* Estado deshabilitado universal */
+button:disabled,
+button[disabled],
+a.btn-primary:disabled,
+a.btn-secondary:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+/* Botones especiales de acción */
+.btn-action,
+.action-btn {
+    background: linear-gradient(135deg, #7a3cff, #bf4dff) !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 10px 18px !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    min-height: 40px !important;
+    box-shadow: 0 4px 15px rgba(191, 77, 255, 0.3) !important;
+}
+
+    .btn-action:hover,
+    .action-btn:hover {
+        background: linear-gradient(135deg, #8a4cff, #cf5dff) !important;
+        box-shadow: 0 6px 20px rgba(191, 77, 255, 0.4) !important;
+        transform: translateY(-2px) !important;
+    }
