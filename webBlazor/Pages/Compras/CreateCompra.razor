@@ -1,0 +1,372 @@
+@page "/compras/crear"
+@page "/compras/editar/{id:int}"
+@inject FirebaseAuthService authService
+@inject NavigationManager navigationManager
+@inject IGenericService<Usuario> usuarioService
+@inject IGenericService<Cliente> clienteService
+@inject IGenericService<CompraServicio> compraService
+
+@if (!isAuthenticated)
+{
+    <div class="compras-container">
+        <div class="compras-card">
+            <h2>Acceso Denegado</h2>
+            <p>Debes iniciar sesión para @(isEditing ? "editar" : "registrar") una compra o servicio.</p>
+            <NavLink href="/login" class="btn-primary">Ir a Login</NavLink>
+        </div>
+    </div>
+}
+else
+{
+    <div class="compras-container">
+        <div class="compras-card">
+            <div class="compras-header">
+                <h1>@(isEditing ? "Editar" : "Registrar") Compra/Servicio</h1>
+                <p class="compras-subtitle">@(isEditing ? "Actualiza el registro de tu compra o servicio" : "Crea un nuevo registro de compra o servicio")</p>
+            </div>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="error-alert">
+                    <span class="error-icon">⚠️</span>
+                    <span>@errorMessage</span>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="success-alert">
+                    <span class="success-icon">✓</span>
+                    <span>@successMessage</span>
+                </div>
+            }
+
+            @if (isLoading)
+            {
+                <div class="loading-container">
+                    <div class="spinner"></div>
+                    <p>Cargando @(isEditing ? "compra" : "información")...</p>
+                </div>
+            }
+
+            @if (isEditing && compra == null)
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">❌</div>
+                    <h3>Compra no encontrada</h3>
+                    <p>La compra que intentas editar no existe o no tienes permiso para editarla.</p>
+                    <NavLink href="/compras" class="btn-secondary">
+                        Volver a Mis Compras
+                    </NavLink>
+                </div>
+            }
+
+            @if (!isLoading && compra != null)
+            {
+                <form @onsubmit="SubmitCompra" class="compras-form">
+                    <div class="form-section">
+                        <h2 class="section-title">Información de la Compra/Servicio</h2>
+
+                        <div class="form-group">
+                            <label for="nombre" class="form-label">Nombre del Producto/Servicio</label>
+                            <input id="nombre"
+                                   type="text"
+                                   class="form-input"
+                                   @bind="compra.Nombre"
+                                   placeholder="Ej: Reparación de computadora, Software X"
+                                   required
+                                   maxlength="100" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descripcion" class="form-label">Descripción (Opcional)</label>
+                            <textarea id="descripcion"
+                                      class="form-textarea"
+                                      @bind="compra.Descripcion"
+                                      placeholder="Detalles adicionales sobre la compra o servicio..."
+                                      rows="4"
+                                      maxlength="300"></textarea>
+                            <small class="form-helper">@((compra.Descripcion ?? "").Length) / 300 caracteres</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fecha-compra" class="form-label">Fecha de Compra/Servicio</label>
+                            <input id="fecha-compra"
+                                   type="date"
+                                   class="form-input"
+                                   @bind="fechaCompra"
+                                   required />
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2 class="section-title">Información del Vendedor/Empleado</h2>
+
+                        <div class="form-group">
+                            <label for="empleado-select" class="form-label">Selecciona el Vendedor/Empleado (Opcional)</label>
+                            <select id="empleado-select"
+                                    class="form-input"
+                                    @bind="selectedEmpleadoID">
+                                <option value="0">-- Sin asignar --</option>
+                                @foreach (var empleado in empleados)
+                                {
+                                    <option value="@empleado.ID">@empleado.Nombre (@empleado.Email)</option>
+                                }
+                            </select>
+                            <small class="form-helper">Si no seleccionas ninguno, la compra no tendrá vendedor asignado</small>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2 class="section-title">Información Adicional</h2>
+
+                        <div class="form-group">
+                            <label for="comentario" class="form-label">Comentarios Adicionales (Opcional)</label>
+                            <textarea id="comentario"
+                                      class="form-textarea"
+                                      @bind="compra.ComentarioFeedback"
+                                      placeholder="Notas adicionales sobre esta compra o servicio..."
+                                      rows="3"
+                                      maxlength="200"></textarea>
+                            <small class="form-helper">@((compra.ComentarioFeedback ?? "").Length) / 200 caracteres</small>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" @onclick="CancelCompra">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn-primary" disabled="@(isSaving || string.IsNullOrWhiteSpace(compra.Nombre))">
+                            @if (isSaving)
+                            {
+                                <span class="spinner"></span>
+                                <span>@(isEditing ? "Actualizando" : "Registrando")...</span>
+                            }
+                            else
+                            {
+                                <span>@(isEditing ? "Actualizar" : "Registrar") Compra</span>
+                            }
+                        </button>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private bool isAuthenticated = false;
+    private bool isLoading = true;
+    private bool isSaving = false;
+    private string errorMessage = "";
+    private string successMessage = "";
+
+    private CompraServicio compra = new();
+    private List<CompraServicio> comprasServicios = new();
+    private List<Usuario> empleados = new();
+    private int selectedEmpleadoID = 0;
+    private DateTime fechaCompra = DateTime.Now;
+    private int clienteID = 0;
+
+    private bool isEditing => id > 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isAuthenticated = await authService.IsUserAuthenticated();
+
+            if (!isAuthenticated)
+            {
+                navigationManager.NavigateTo("/login");
+                return;
+            }
+
+            await LoadInitialData();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error en inicialización: {ex.Message}";
+            Console.WriteLine($"OnInitialized Error: {ex}");
+        }
+    }
+
+    private async Task LoadInitialData()
+    {
+        errorMessage = "";
+
+        try
+        {
+            isLoading = true;
+
+            // Obtener datos del usuario autenticado desde Firebase
+            var firebaseUser = await authService.GetUserFirebase();
+            if (firebaseUser == null || string.IsNullOrEmpty(firebaseUser.Email))
+            {
+                errorMessage = "No se pudo obtener tus datos de autenticación";
+                return;
+            }
+
+            try
+            {
+                // Buscar usuario por email usando GenericService
+                var usuarios = await usuarioService.GetAllAsync("");
+
+                if (usuarios == null || usuarios.Count == 0)
+                {
+                    errorMessage = "No se encontraron usuarios en el sistema";
+                    return;
+                }
+
+                var usuario = usuarios.FirstOrDefault(u => u.Email == firebaseUser.Email);
+                if (usuario == null || usuario.ID <= 0)
+                {
+                    errorMessage = "No se encontró tu perfil de usuario";
+                    return;
+                }
+
+                // Obtener cliente por UsuarioID
+                var clientes = await clienteService.GetAllAsync("");
+                var cliente = clientes?.FirstOrDefault(c => c.UsuarioID == usuario.ID);
+
+                if (cliente == null || cliente.ID <= 0)
+                {
+                    errorMessage = "No se encontró tu perfil de cliente";
+                    return;
+                }
+
+                clienteID = cliente.ID;
+
+                // Asignar lista de empleados
+                empleados = usuarios
+                    .Where(u => u.TipoUsuario == TipoUsuarioEnum.Administrador || 
+                               u.TipoUsuario == TipoUsuarioEnum.Empleado)
+                    .OrderBy(u => u.Nombre)
+                    .ToList();
+
+                if (isEditing)
+                {
+                    // Modo edición: cargar compra específica
+                    compra = await compraService.GetByIdAsync(id);
+
+                    if (compra == null)
+                    {
+                        errorMessage = "La compra no fue encontrada";
+                        return;
+                    }
+
+                    // Verificar permisos
+                    if (compra.ClienteID != clienteID)
+                    {
+                        errorMessage = "No tienes permiso para editar esta compra";
+                        compra = null;
+                        return;
+                    }
+
+                    fechaCompra = compra.FechaCompra;
+                    selectedEmpleadoID = compra.EmpleadoID > 0 ? compra.EmpleadoID : 0;
+                }
+                else
+                {
+                    // Modo creación: inicializar con valores por defecto
+                    compra = new CompraServicio();
+                    fechaCompra = DateTime.Now;
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                errorMessage = $"Error de conexión: {ex.Message}";
+                Console.WriteLine($"HttpRequestException: {ex}");
+            }
+            catch (System.Text.Json.JsonException ex)
+            {
+                errorMessage = $"Error al procesar datos: {ex.Message}";
+                Console.WriteLine($"JsonException: {ex}");
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Error al obtener datos del servidor: {ex.Message}";
+                Console.WriteLine($"Service Error: {ex}");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar datos: {ex.Message}";
+            Console.WriteLine($"Error: {ex}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task SubmitCompra()
+    {
+        errorMessage = "";
+        successMessage = "";
+
+        // Validaciones
+        if (string.IsNullOrWhiteSpace(compra.Nombre))
+        {
+            errorMessage = "El nombre del producto/servicio es requerido";
+            return;
+        }
+
+        if (fechaCompra == DateTime.MinValue)
+        {
+            errorMessage = "La fecha de compra es requerida";
+            return;
+        }
+
+        isSaving = true;
+
+        try
+        {
+            // Preparar datos
+            compra.Nombre = compra.Nombre.Trim();
+            compra.Descripcion = compra.Descripcion?.Trim() ?? string.Empty;
+            compra.FechaCompra = fechaCompra;
+            compra.ComentarioFeedback = compra.ComentarioFeedback?.Trim() ?? string.Empty;
+            compra.EmpleadoID = selectedEmpleadoID > 0 ? selectedEmpleadoID : 0;
+            compra.UpdateAt = DateTime.Now;
+
+            if (isEditing)
+            {
+                // Actualizar compra existente
+                await compraService.UpdateAsync(compra);
+                successMessage = "¡Compra/Servicio actualizado correctamente!";
+            }
+            else
+            {
+                // Crear nueva compra
+                compra.ClienteID = clienteID;
+                compra.IsDeleted = false;
+                compra.CreatedAt = DateTime.Now;
+                
+                await compraService.AddAsync(compra);
+                successMessage = "¡Compra/Servicio registrado correctamente!";
+            }
+
+            await Task.Delay(2000);
+            navigationManager.NavigateTo("/compras");
+        }
+        catch (Exception ex)
+        {
+            var action = isEditing ? "actualizar" : "registrar";
+            errorMessage = $"Error al {action} compra: {ex.Message}";
+            Console.WriteLine($"Submit Error: {ex}");
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+    private void CancelCompra()
+    {
+        navigationManager.NavigateTo("/compras");
+    }
+}

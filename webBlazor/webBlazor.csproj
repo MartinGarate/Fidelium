@@ -6,8 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\images\Fidelium %282%29.png" />

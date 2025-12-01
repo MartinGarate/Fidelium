@@ -7,6 +7,7 @@
     <base href="/" />
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/loading-spinner.css" />
     <link href="WebBlazor.styles.css" rel="stylesheet" />
     <link href="_content/Radzen.Blazor/css/default-base.css" rel="stylesheet" />
     <link href="_content/Radzen.Blazor/css/default.css" rel="stylesheet" />
@@ -16,17 +17,35 @@
 
 <body>
     <div id="app">
-        <svg class="loading-progress">
-            <circle r="40%" cx="50%" cy="50%" />
-            <circle r="40%" cx="50%" cy="50%" />
-        </svg>
-        <div class="loading-progress-text"></div>
+        <!-- Spinner personalizado de Fidelium (igual que LoadingSpinner.razor) -->
+        <div class="loading-overlay" style="display: flex;">
+            <div class="loading-container">
+                <div class="spinner-wrapper">
+                    <!-- Efecto de brillo de fondo -->
+                    <div class="spinner-glow"></div>
 
-        <!-- Información adicional durante la carga -->
-        <div class="loading-info">
-            <h2>Fidelium</h2>
-            <p>Cargando tu plataforma de gestión...</p>
-            <p><small>Esto puede tomar unos momentos</small></p>
+                    <!-- Líneas decorativas -->
+                    <div class="loading-lines">
+                        <div class="line line-horizontal"></div>
+                        <div class="line line-vertical"></div>
+                    </div>
+
+                    <!-- Anillos de rotación -->
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-ring spinner-ring-delayed"></div>
+                    <div class="spinner-ring spinner-ring-inner"></div>
+
+                    <!-- Logo central -->
+                    <img src="images/Fidelium.png" alt="Fidelium" class="spinner-logo" />
+
+                    <!-- Partículas orbitales -->
+                    <div class="spinner-particle particle-1"></div>
+                    <div class="spinner-particle particle-2"></div>
+                    <div class="spinner-particle particle-3"></div>
+                    <div class="spinner-particle particle-4"></div>
+                </div>
+                <p class="loading-text">Cargando tu plataforma de gestión...</p>
+            </div>
         </div>
     </div>
 
@@ -170,5 +189,37 @@
     </script>
     <script src="_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
+    
+    <!-- Script para manejar el spinner inicial -->
+    <script>
+        // Variable para rastrear si es la primera carga
+        let isInitialLoad = true;
+
+        // Cuando Blazor se carga completamente
+        document.addEventListener('blazor:start', function () {
+            console.log('🔄 Blazor iniciando...');
+        });
+
+        document.addEventListener('blazor:load', function () {
+            console.log('✅ Blazor cargado completamente');
+            // NO ocultar aquí - dejar que MainLayout controle esto
+        });
+
+        // Exponer función para que LoadingService pueda controlar el spinner
+        window.loadingSpinnerControl = {
+            hide: function () {
+                const spinner = document.querySelector('.loading-overlay');
+                if (spinner) {
+                    spinner.classList.add('hidden');
+                }
+            },
+            show: function () {
+                const spinner = document.querySelector('.loading-overlay');
+                if (spinner) {
+                    spinner.classList.remove('hidden');
+                }
+            }
+        };
+    </script>
 </body>
 </html>

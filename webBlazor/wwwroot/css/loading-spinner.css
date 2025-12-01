@@ -1,0 +1,361 @@
+/* Spinner Global - Disponible antes de que Blazor cargue */
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0d0617;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    animation: fadeInOverlay 0.4s ease-out forwards;
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+}
+
+    .loading-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+@keyframes fadeInOverlay {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOutOverlay {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    animation: slideUpContainer 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes slideUpContainer {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.spinner-wrapper {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    filter: drop-shadow(0 20px 50px rgba(191, 77, 255, 0.3));
+}
+
+.spinner-logo {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    z-index: 10;
+    animation: logoSpin 4s linear infinite, logoPulse 4s ease-in-out infinite, logoFloat 3s ease-in-out infinite;
+}
+
+@keyframes logoSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes logoPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+@keyframes logoFloat {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.spinner-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid rgba(122, 60, 255, 0.1);
+    border-top: 3px solid #bf4dff;
+    border-right: 2px solid rgba(191, 77, 255, 0.4);
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+    box-shadow: 0 0 20px rgba(191, 77, 255, 0.3), inset 0 0 20px rgba(191, 77, 255, 0.1);
+}
+
+.spinner-ring-delayed {
+    position: absolute;
+    width: 85%;
+    height: 85%;
+    border: 2px solid rgba(209, 196, 255, 0.15);
+    border-bottom: 2px solid rgba(191, 77, 255, 0.8);
+    border-left: 2px solid transparent;
+    border-radius: 50%;
+    animation: spinReverse 2.5s linear infinite;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.spinner-ring-inner {
+    position: absolute;
+    width: 70%;
+    height: 70%;
+    border: 2px solid rgba(209, 196, 255, 0.2);
+    border-top: 2px solid rgba(191, 77, 255, 0.6);
+    border-right: 2px solid rgba(122, 60, 255, 0.3);
+    border-radius: 50%;
+    animation: spin 3s linear infinite;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spinReverse {
+    from {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+}
+
+.spinner-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7a3cff, #bf4dff);
+    box-shadow: 0 0 10px rgba(191, 77, 255, 0.6);
+}
+
+.particle-1 {
+    top: 10%;
+    left: 50%;
+    animation: orbitParticle 4s linear infinite;
+}
+
+.particle-2 {
+    top: 50%;
+    right: 10%;
+    animation: orbitParticle 4s linear infinite 1.3s;
+}
+
+.particle-3 {
+    bottom: 10%;
+    left: 50%;
+    animation: orbitParticle 4s linear infinite 2.6s;
+}
+
+.particle-4 {
+    top: 50%;
+    left: 10%;
+    animation: orbitParticle 4s linear infinite 0.65s;
+}
+
+@keyframes orbitParticle {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0);
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(0, -120px) scale(1);
+    }
+}
+
+.spinner-glow {
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    border-radius: 50%;
+    background: radial-gradient( circle, rgba(191, 77, 255, 0.2) 0%, rgba(191, 77, 255, 0.05) 70%, transparent 100% );
+    animation: glowPulse 3s ease-in-out infinite;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+
+.loading-text {
+    color: #d1c4ff;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    margin: 0;
+    animation: pulseText 1.8s ease-in-out infinite, textGlow 3s ease-in-out infinite;
+    text-shadow: 0 0 20px rgba(191, 77, 255, 0.5);
+}
+
+@keyframes pulseText {
+    0%, 100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes textGlow {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(191, 77, 255, 0.3);
+    }
+
+    50% {
+        text-shadow: 0 0 30px rgba(191, 77, 255, 0.8);
+    }
+}
+
+.loading-lines {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.line {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, #bf4dff, transparent);
+    opacity: 0.3;
+}
+
+.line-horizontal {
+    width: 120%;
+    height: 1px;
+    animation: lineGlow 2s ease-in-out infinite;
+}
+
+.line-vertical {
+    width: 1px;
+    height: 120%;
+    animation: lineGlow 2.5s ease-in-out infinite 0.5s;
+}
+
+@keyframes lineGlow {
+    0%, 100% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@media (max-width: 768px) {
+    .spinner-wrapper {
+        width: 140px;
+        height: 140px;
+    }
+
+    .spinner-logo {
+        width: 75px;
+        height: 75px;
+    }
+
+    .loading-text {
+        font-size: 16px;
+        letter-spacing: 1px;
+    }
+
+    .loading-container {
+        gap: 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    .spinner-wrapper {
+        width: 120px;
+        height: 120px;
+    }
+
+    .spinner-logo {
+        width: 65px;
+        height: 65px;
+    }
+
+    .loading-text {
+        font-size: 14px;
+        letter-spacing: 1px;
+    }
+
+    .loading-container {
+        gap: 20px;
+    }
+}

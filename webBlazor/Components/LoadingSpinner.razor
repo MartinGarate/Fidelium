@@ -1,0 +1,43 @@
+@if (IsVisible)
+{
+    <div class="loading-overlay @(IsInitialLoad ? "initial-load" : "")">
+        <div class="loading-container">
+            <div class="spinner-wrapper">
+                <!-- Efecto de brillo de fondo -->
+                <div class="spinner-glow"></div>
+
+                <!-- Líneas decorativas -->
+                <div class="loading-lines">
+                    <div class="line line-horizontal"></div>
+                    <div class="line line-vertical"></div>
+                </div>
+
+                <!-- Anillos de rotación -->
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring spinner-ring-delayed"></div>
+                <div class="spinner-ring spinner-ring-inner"></div>
+
+                <!-- Logo central -->
+                <img src="images/Fidelium.png" alt="Fidelium" class="spinner-logo" />
+
+                <!-- Partículas orbitales -->
+                <div class="spinner-particle particle-1"></div>
+                <div class="spinner-particle particle-2"></div>
+                <div class="spinner-particle particle-3"></div>
+                <div class="spinner-particle particle-4"></div>
+            </div>
+            <p class="loading-text">@LoadingText</p>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool IsVisible { get; set; } = false;
+
+    [Parameter]
+    public string LoadingText { get; set; } = "Cargando...";
+
+    [Parameter]
+    public bool IsInitialLoad { get; set; } = false;
+}

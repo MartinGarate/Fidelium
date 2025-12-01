@@ -1,5 +1,7 @@
-﻿@inherits LayoutComponentBase // Sirve para que razor entienda como comportarse como un layout
-
+﻿@inherits LayoutComponentBase
+@inject LoadingService LoadingService
+@inject NavigationManager NavigationManager
+@implements IAsyncDisposable
 
 
 <div class="page">
@@ -17,3 +19,50 @@
     </main>
 
 </div>
+
+<LoadingSpinner IsVisible="@_isLoading" LoadingText="@_loadingText" IsInitialLoad="false" />
+
+@code {
+    private bool _isLoading = false;
+    private string _loadingText = "Cargando...";
+    private bool _isFirstLoad = true;
+
+    protected override void OnInitialized()
+    {
+        LoadingService.OnLoadingChanged += UpdateLoadingState;
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _isFirstLoad)
+        {
+            _isFirstLoad = false;
+            // Ocultar spinner inicial después de 2 segundos
+            await Task.Delay(2000);
+            LoadingService.Hide();
+        }
+    }
+
+    private void UpdateLoadingState()
+    {
+        _isLoading = LoadingService.IsLoading;
+        _loadingText = LoadingService.LoadingText;
+        StateHasChanged();
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        // Mostrar spinner cuando se navega
+        LoadingService.Show("Cargando página...");
+        // Ocultar automáticamente después de 4 segundos
+        _ = Task.Delay(4000).ContinueWith(_ => LoadingService.Hide());
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        LoadingService.OnLoadingChanged -= UpdateLoadingState;
+        NavigationManager.LocationChanged -= OnLocationChanged;
+        await ValueTask.CompletedTask;
+    }
+}

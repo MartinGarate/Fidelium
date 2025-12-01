@@ -1,0 +1,247 @@
+﻿@page "/reviews"
+@inject FirebaseAuthService authService
+@inject NavigationManager navigationManager
+@inject IGenericService<Usuario> usuarioService
+@inject IGenericService<Cliente> clienteService
+@inject IGenericService<CompraServicio> compraService
+@inject LoadingService loadingService
+
+@if (!isAuthenticated)
+{
+    <div class="reviews-container">
+        <div class="reviews-card">
+            <h2>Acceso Denegado</h2>
+            <p>Debes iniciar sesión para ver tus opiniones.</p>
+            <NavLink href="/login" class="btn-primary">Ir a Login</NavLink>
+        </div>
+    </div>
+}
+
+@if (isAuthenticated)
+{
+    <div class="reviews-container">
+        <div class="reviews-card">
+            <div class="reviews-header">
+                <div class="header-content">
+                    <h1>Mis Opiniones</h1>
+                    <p class="reviews-subtitle">Historial de tus opiniones sobre compras y servicios</p>
+                </div>
+                <NavLink href="/reviews/create" class="btn-create-review">
+                    + Nueva Opinión
+                </NavLink>
+            </div>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="error-alert">
+                    <span class="error-icon">⚠️</span>
+                    <span>@errorMessage</span>
+                </div>
+                <div class="empty-state">
+                    <div class="empty-icon">🔄</div>
+                    <h3>Parece que hay un problema</h3>
+                    <p>Intenta recargar la página</p>
+                    <button type="button" class="btn-primary" @onclick="@(async () => await LoadUserOpiniones())">
+                        Reintentar
+                    </button>
+                </div>
+            }
+
+            @if (opiniones.Count > 0)
+            {
+                <div class="opinions-grid">
+                    @foreach (var opinion in opiniones)
+                    {
+                        <div class="opinion-card">
+                            <div class="opinion-header">
+                                <h3>@opinion.Nombre</h3>
+                            </div>
+
+                            <div class="opinion-meta">
+                                <span class="date">📅 @opinion.FechaCompra.ToString("dd/MM/yyyy")</span>
+                                <span class="created-date">📝 @opinion.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+
+                            <div class="opinion-feedback">
+                                <p>@opinion.ComentarioFeedback</p>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(opinion.Descripcion))
+                            {
+                                <div class="opinion-description">
+                                    <small>@opinion.Descripcion</small>
+                                </div>
+                            }
+
+                            <div class="opinion-actions">
+                                <NavLink href="@($"/reviews/edit/{opinion.ID}")" class="btn-edit">
+                                    ✎ Editar
+                                </NavLink>
+                                <button type="button" class="btn-delete" @onclick="@(() => DeleteOpinion(opinion.ID))">
+                                    🗑️ Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">💭</div>
+                    <h3>Aún no tienes opiniones</h3>
+                    <p>Comparte tu experiencia sobre tus compras y servicios</p>
+                    <NavLink href="/reviews/create" class="btn-primary">
+                        Crear tu Primera Opinión
+                    </NavLink>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private bool isAuthenticated = false;
+    private string errorMessage = "";
+
+    private List<CompraServicio> opiniones = new();
+    private int clienteID = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isAuthenticated = await authService.IsUserAuthenticated();
+
+            if (!isAuthenticated)
+            {
+                navigationManager.NavigateTo("/login");
+                return;
+            }
+
+            await LoadUserOpiniones();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error en inicialización: {ex.Message}";
+            Console.WriteLine($"OnInitialized Error: {ex}");
+        }
+    }
+
+    private async Task LoadUserOpiniones()
+    {
+        errorMessage = "";
+
+        try
+        {
+            await loadingService.ShowDuring(async () =>
+            {
+                var firebaseUser = await authService.GetUserFirebase();
+                if (firebaseUser == null || string.IsNullOrEmpty(firebaseUser.Email))
+                {
+                    errorMessage = "No se pudo obtener tus datos de autenticación";
+                    return;
+                }
+
+                try
+                {
+                    var usuarios = await usuarioService.GetAllAsync("");
+                    if (usuarios == null || usuarios.Count == 0)
+                    {
+                        errorMessage = "No se encontraron usuarios en el sistema";
+                        return;
+                    }
+
+                    var usuario = usuarios.FirstOrDefault(u => u.Email == firebaseUser.Email);
+                    if (usuario == null || usuario.ID <= 0)
+                    {
+                        errorMessage = "No se encontró tu perfil de usuario";
+                        return;
+                    }
+
+                    var clientes = await clienteService.GetAllAsync("");
+                    var cliente = clientes?.FirstOrDefault(c => c.UsuarioID == usuario.ID);
+
+                    if (cliente == null || cliente.ID <= 0)
+                    {
+                        errorMessage = "No se encontró tu perfil de cliente";
+                        return;
+                    }
+
+                    clienteID = cliente.ID;
+
+                    var todasLasCompras = await compraService.GetAllAsync("");
+                    opiniones = todasLasCompras?
+                        .Where(c => c.ClienteID == clienteID &&
+                                   !c.IsDeleted &&
+                                   !string.IsNullOrEmpty(c.ComentarioFeedback))
+                        .OrderByDescending(c => c.FechaCompra)
+                        .ToList() ?? new();
+
+                    if (opiniones.Count == 0)
+                    {
+                        Console.WriteLine($"Cliente {clienteID} no tiene opiniones registradas");
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    errorMessage = $"Error de conexión: {ex.Message}";
+                    Console.WriteLine($"HttpRequestException: {ex}");
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    errorMessage = $"Error al procesar datos: {ex.Message}";
+                    Console.WriteLine($"JsonException: {ex}");
+                }
+                catch (Exception ex)
+                {
+                    errorMessage = $"Error al obtener datos: {ex.Message}";
+                    Console.WriteLine($"Service Error: {ex}");
+                }
+            }, "Cargando tus opiniones...");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error inesperado: {ex.Message}";
+            Console.WriteLine($"Error: {ex}");
+        }
+    }
+
+    private async Task DeleteOpinion(int compraId)
+    {
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", "¿Estás seguro de que deseas eliminar esta opinión?"))
+        {
+            return;
+        }
+
+        try
+        {
+            await loadingService.ShowDuring(async () =>
+            {
+                var compra = opiniones.FirstOrDefault(o => o.ID == compraId);
+                if (compra == null)
+                {
+                    errorMessage = "La opinión no fue encontrada";
+                    return;
+                }
+
+                // Solo limpiar el feedback, no eliminar la compra completa
+                compra.ComentarioFeedback = string.Empty;
+                compra.UpdateAt = DateTime.Now;
+
+                await compraService.UpdateAsync(compra);
+                opiniones.RemoveAll(o => o.ID == compraId);
+                StateHasChanged();
+            }, "Eliminando opinión...");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al eliminar opinión: {ex.Message}";
+            Console.WriteLine($"Delete Error: {ex}");
+        }
+    }
+
+    [Inject]
+    private IJSRuntime? JSRuntime { get; set; }
+}

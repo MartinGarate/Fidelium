@@ -1,5 +1,6 @@
 ﻿@inject FirebaseAuthService _firebaseAuthService
 @inject NavigationManager _navigationManager
+@inject LoadingService _loadingService
 
 <nav class="fidelium-nav" id="mainNav" aria-label="Navegación principal">
     <div class="nav-wrapper">
@@ -18,10 +19,23 @@
                 </NavLink>
             </li>
             <li role="none">
-                <NavLink role="menuitem" href="/opinions" class="nav-link-item">
+                <NavLink role="menuitem" href="/Reviews" class="nav-link-item">
                     Mis Opiniones
                 </NavLink>
             </li>
+            @if (isAuthenticated)
+            {
+                <li role="none">
+                    <NavLink role="menuitem" href="/compras/crear" class="nav-link-item">
+                        Registrar Compra
+                    </NavLink>
+                </li>
+                <li role="none">
+                    <NavLink role="menuitem" href="/reviews/create" class="nav-link-item">
+                        Crear Opinión
+                    </NavLink>
+                </li>
+            }
         </ul>
 
         <!-- Botones a la derecha -->
@@ -53,10 +67,7 @@
                                 <span class="icon">👤</span>
                                 <span>Mi Perfil</span>
                             </button>
-                            <button class="dropdown-item" @onclick="NavigateToSettings">
-                                <span class="icon">⚙️</span>
-                                <span>Configuración</span>
-                            </button>
+
                             <div class="dropdown-divider"></div>
                             <button class="dropdown-item logout" @onclick="HandleLogout">
                                 <span class="icon">🚪</span>
@@ -77,7 +88,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await CheckAuthenticationState();
+        await _loadingService.ShowDuring(
+            CheckAuthenticationState,
+            "Verificando sesión..."
+        );
         _firebaseAuthService.OnChangeLogin += LoginHasChanged;
     }
 
@@ -112,11 +126,6 @@
         _navigationManager.NavigateTo("/profile");
     }
 
-    private void NavigateToSettings()
-    {
-        showUserDropdown = false;
-        _navigationManager.NavigateTo("/settings");
-    }
 
     private async Task HandleLogout()
     {
