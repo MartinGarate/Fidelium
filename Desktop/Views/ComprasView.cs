@@ -1,5 +1,6 @@
 ﻿using Desktop.Utils.HelpersDesktop;
 using Service.Models;
+using Service.Models.Service.Models;
 using Service.Services;
 using System;
 using System.Collections.Generic;

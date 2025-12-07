@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Initilizate : Migration
+    public partial class InitializeProject : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -76,13 +76,14 @@ namespace Backend.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Descripcion = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    NotasVentaInternas = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     FechaCompra = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    FeedbackRecibido = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     ComentarioFeedback = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     EmpleadoID = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DeleteDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdateAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
@@ -109,39 +110,18 @@ namespace Backend.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ComentarioEmpleado = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    DiasParaRecordatorio = table.Column<int>(type: "int", nullable: false),
+                    CompraServicioID = table.Column<int>(type: "int", nullable: false),
                     Estado = table.Column<int>(type: "int", nullable: false),
                     FechaGenerada = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    FechaRecordatorio = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    CompraServicioID = table.Column<int>(type: "int", nullable: false),
-                    ClienteID = table.Column<int>(type: "int", nullable: false),
-                    EmpleadoID = table.Column<int>(type: "int", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DeleteDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CreateAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdateAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Notificaciones", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Notificaciones_Clientes_ClienteID",
-                        column: x => x.ClienteID,
-                        principalTable: "Clientes",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Notificaciones_ComprasServicios_CompraServicioID",
                         column: x => x.CompraServicioID,
                         principalTable: "ComprasServicios",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Notificaciones_Usuarios_EmpleadoID",
-                        column: x => x.EmpleadoID,
-                        principalTable: "Usuarios",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -176,28 +156,22 @@ namespace Backend.Migrations
 
             migrationBuilder.InsertData(
                 table: "ComprasServicios",
-                columns: new[] { "ID", "ClienteID", "ComentarioFeedback", "CreatedAt", "DeleteDate", "Descripcion", "EmpleadoID", "FechaCompra", "IsDeleted", "Nombre", "UpdateAt" },
+                columns: new[] { "ID", "ClienteID", "ComentarioFeedback", "CreatedAt", "Descripcion", "EmpleadoID", "FechaCompra", "FeedbackRecibido", "IsDeleted", "Nombre", "NotasVentaInternas" },
                 values: new object[,]
                 {
-                    { 1, 1, "Excelente producto y muy buena atención al público. Muy recomendado.", new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Upgrade de GPU para mejorar rendimiento en gaming y rendering", 1, new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "Compra de Tarjeta Gráfica Gigabyte RTX 3050Ti", new DateTime(2025, 11, 6, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, 1, "Trabajo muy profesional, PC corriendo perfectamente", new DateTime(2025, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Instalación limpia de Windows 11 Pro con drivers actualizados", 5, new DateTime(2025, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "Servicio de Instalación de SO Windows 11 Pro", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, 2, "Excelente servicio, la PC ahora funciona mucho más rápido", new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Limpieza a fondo interna y externa, cambio de pasta térmica", 2, new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "Servicio de Limpieza Profesional de PC", new DateTime(2025, 10, 16, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 4, 2, "Proceso rápido y eficiente. Ahora puedo correr múltiples aplicaciones sin lag", new DateTime(2025, 10, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Instalación de módulos RAM Corsair Vengeance para multitarea", 6, new DateTime(2025, 10, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "Upgrade de RAM a 32GB DDR4", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 5, 2, "Muy útil, ahora tengo mi red segura y optimizada", new DateTime(2025, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Asesoramiento en configuración de red doméstica y seguridad", 3, new DateTime(2025, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "Consultoría de Configuración de Red", new DateTime(2025, 11, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 6, 3, "Servicio eliminado - prueba de soft delete", new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Instalación de unidad SSD rápida para sistema operativo", 2, new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "Compra de SSD NVMe 1TB", new DateTime(2025, 9, 11, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, 1, "Excelente producto.", new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Upgrade de GPU", 1, new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), true, false, "Gigabyte RTX 3050Ti", "Buscaba jugar CSGO, se llevó esta por presupuesto." },
+                    { 2, 1, "", new DateTime(2025, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "Instalación limpia", 5, new DateTime(2025, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, "Instalación Windows 11", "PC vieja, chequear que no tire BSOD." },
+                    { 6, 3, "", new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "", 2, new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), false, true, "SSD NVMe 1TB", "Test de borrado" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Notificaciones",
-                columns: new[] { "ID", "ClienteID", "ComentarioEmpleado", "CompraServicioID", "CreateAt", "DeleteDate", "DiasParaRecordatorio", "EmpleadoID", "Estado", "FechaGenerada", "FechaRecordatorio", "IsDeleted", "UpdateAt" },
+                columns: new[] { "ID", "CompraServicioID", "Estado", "FechaGenerada", "IsDeleted" },
                 values: new object[,]
                 {
-                    { 1, 1, "Seguimiento post-venta de GPU, verificar compatibilidad y rendimiento", 1, new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 7, 1, 0, new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 11, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, 1, "Verificar que la instalación de Windows 11 Pro se completó correctamente", 2, new DateTime(2025, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 5, 1, new DateTime(2025, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 11, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), false, new DateTime(2025, 11, 11, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, 2, "Follow-up de limpieza de PC, preguntar si hay mejora en temperatura", 3, new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 14, 2, 1, new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), false, new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 4, 2, "Verificación del upgrade de RAM, evaluar satisfacción del cliente", 4, new DateTime(2025, 10, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 10, 6, 0, new DateTime(2025, 10, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 5, 2, "Evaluación de satisfacción post-consultoría de configuración de red", 5, new DateTime(2025, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 30, 3, 0, new DateTime(2025, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 6, 3, "Notificación eliminada - prueba de soft delete", 6, new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, 2, 0, new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, 1, 1, new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), false },
+                    { 2, 2, 0, new DateTime(2025, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), false },
+                    { 6, 6, 0, new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true }
                 });
 
             migrationBuilder.CreateIndex(
@@ -216,19 +190,9 @@ namespace Backend.Migrations
                 column: "EmpleadoID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Notificaciones_ClienteID",
-                table: "Notificaciones",
-                column: "ClienteID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Notificaciones_CompraServicioID",
                 table: "Notificaciones",
                 column: "CompraServicioID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Notificaciones_EmpleadoID",
-                table: "Notificaciones",
-                column: "EmpleadoID");
         }
 
         /// <inheritdoc />

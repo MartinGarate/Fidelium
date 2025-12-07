@@ -315,13 +315,15 @@ namespace Desktop.Views
 
         private void LimpiarControles()
         {
-            _currentUsuario = null; _currentCliente = null;
-            textBoxNombre.Clear(); textBoxDNI.Clear();
-            textBoxEmail.Clear(); textBoxTelefono.Clear(); textBoxInstagram.Clear();
-            comboBoxTipoUsuario.SelectedIndex = -1;
+            _currentUsuario = null; 
+            _currentCliente = null;
+            textBoxNombre.Clear(); 
+            textBoxDNI.Clear();
+            textBoxEmail.Clear(); 
+            textBoxTelefono.Clear(); 
+            textBoxInstagram.Clear();
 
-            textBoxDNI.Visible = false;
-            textBoxEmail.Visible = false;
+            comboBoxTipoUsuario.SelectedIndex = -1;
             AjustarVisibilidad(false);
         }
 
