@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Backend.DataContext;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Service.Models;
+using Service.Models.Service.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Backend.DataContext;
-using Service.Models;
 
 namespace Backend.Controllers
 {
@@ -26,9 +26,9 @@ namespace Backend.Controllers
         public async Task<ActionResult<IEnumerable<CompraServicio>>> GetComprasServicios()
         {
             return await _context.ComprasServicios
-                .Where(cs => !cs.IsDeleted)  // Filtrar registros eliminados por defecto
-                .Include(u => u.Cliente)      // Incluimos el cliente asociado
-                .Include(u => u.Empleado)     // Incluimos el empleado (usuario) asociado
+                .Include(cs => cs.Cliente)
+                    .ThenInclude(c => c.Usuario) // Nombre y DNI del Cliente
+                .Include(cs => cs.Empleado)     // Nombre y DNI del Empleado
                 .ToListAsync();
         }
 
@@ -37,26 +37,32 @@ namespace Backend.Controllers
         public async Task<ActionResult<CompraServicio>> GetCompraServicio(int id)
         {
             var compraServicio = await _context.ComprasServicios
-                .Where(cs => !cs.IsDeleted)   // Filtrar registros eliminados
+                .Include(cs => cs.Cliente)
+                    .ThenInclude(c => c.Usuario)
+                .Include(cs => cs.Empleado)
                 .FirstOrDefaultAsync(cs => cs.ID == id);
 
-            if (compraServicio == null)
-            {
-                return NotFound();
-            }
+            if (compraServicio == null) return NotFound();
 
             return compraServicio;
         }
 
+        // POST: api/ComprasServicios
+        [HttpPost]
+        public async Task<ActionResult<CompraServicio>> PostCompraServicio(CompraServicio compraServicio)
+        {
+            // El modelo ya trae la lógica de FechaRecordatorio calculada
+            _context.ComprasServicios.Add(compraServicio);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetCompraServicio", new { id = compraServicio.ID }, compraServicio);
+        }
+
         // PUT: api/ComprasServicios/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCompraServicio(int id, CompraServicio compraServicio)
         {
-            if (id != compraServicio.ID)
-            {
-                return BadRequest();
-            }
+            if (id != compraServicio.ID) return BadRequest();
 
             _context.Entry(compraServicio).State = EntityState.Modified;
 
@@ -66,84 +72,52 @@ namespace Backend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CompraServicioExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                if (!CompraServicioExists(id)) return NotFound();
+                else throw;
             }
 
             return NoContent();
         }
 
-        // POST: api/ComprasServicios
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<CompraServicio>> PostCompraServicio(CompraServicio compraServicio)
-        {
-            _context.ComprasServicios.Add(compraServicio);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCompraServicio", new { id = compraServicio.ID }, compraServicio);
-        }
-
-        //// DELETE: api/ComprasServicios/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteCompraServicio(int id)
-        //{
-        //    var compraServicio = await _context.ComprasServicios.FindAsync(id);
-        //    if (compraServicio == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _context.ComprasServicios.Remove(compraServicio);
-        //    await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
-
+        // DELETE: api/ComprasServicios/5 (Soft Delete)
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCompraServicios(int id)
+        public async Task<IActionResult> DeleteCompraServicio(int id)
         {
-            var compraServicios = await _context.ComprasServicios.FindAsync(id);
-            if (compraServicios == null)
-            {
-                return NotFound();
-            }
-            compraServicios.IsDeleted = true; //esto es un soft delete
-            _context.ComprasServicios.Update(compraServicios);
+            var compra = await _context.ComprasServicios.FindAsync(id);
+            if (compra == null) return NotFound();
+
+            compra.IsDeleted = true;
+            _context.ComprasServicios.Update(compra);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
+        // PUT: api/ComprasServicios/restore/5
         [HttpPut("restore/{id}")]
         public async Task<IActionResult> RestoreCompraServicio(int id)
         {
-            var compraServicios = await _context.ComprasServicios.IgnoreQueryFilters().FirstOrDefaultAsync(c => c.ID.Equals(id));
-            if (compraServicios == null)
-            {
-                return NotFound();
-            }
-            compraServicios.IsDeleted = false; //esto es un soft restore
-            _context.ComprasServicios.Update(compraServicios);
+            var compra = await _context.ComprasServicios.IgnoreQueryFilters()
+                .FirstOrDefaultAsync(cs => cs.ID == id);
+
+            if (compra == null) return NotFound();
+
+            compra.IsDeleted = false;
+            _context.ComprasServicios.Update(compra);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        // GET: api/Capacitaciones/deleteds
+        // GET: api/ComprasServicios/deleteds
         [HttpGet("deleteds")]
         public async Task<ActionResult<IEnumerable<CompraServicio>>> GetCompraServicioDeleteds()
         {
-
-            return await _context.ComprasServicios.IgnoreQueryFilters().Where(cs => cs.IsDeleted)
-                .Include(u => u.Cliente)      // Incluimos el cliente asociado
-                .Include(u => u.Empleado)     // Incluimos el empleado (usuario) asociado
+            return await _context.ComprasServicios.IgnoreQueryFilters()
+                .Where(cs => cs.IsDeleted)
+                .Include(cs => cs.Cliente)
+                    .ThenInclude(c => c.Usuario)
+                .Include(cs => cs.Empleado)
                 .ToListAsync();
         }
 

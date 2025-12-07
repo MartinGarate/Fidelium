@@ -11,14 +11,26 @@ namespace Desktop.Views
 {
     public partial class ComprasView : Form
     {
+        // Servicios de datos
         readonly GenericService<Usuario> _usuarioService = new();
         readonly GenericService<Cliente> _clienteService = new();
         readonly GenericService<CompraServicio> _compraServicioService = new();
+        readonly GenericService<Notificacion> _notificacionService = new();
 
-        // VARIABLES EN MEMORIA (Nuestro "universo" de datos local)
+        // Repositorio local sincronizado (Caché RAM)
         List<Cliente> _clientesCache = new();
         List<Usuario> _usuariosCache = new();
         List<CompraServicio> _comprasCache = new();
+        List<Notificacion> _notificacionCache = new ();
+
+        // Objetos para la sesión de edición
+        Cliente? _currentCliente;
+        Usuario? _currentUsuario;
+        CompraServicio? _currentCompraServicio;
+        Notificacion? _currentNotificacion;
+
+
+
 
         public ComprasView()
         {

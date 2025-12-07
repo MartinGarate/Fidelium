@@ -30,7 +30,7 @@
         {
             label5 = new Label();
             label1 = new Label();
-            dataGridViewUsuarios = new DataGridView();
+            dataGridViewCompras = new DataGridView();
             BtnAgregar = new FontAwesome.Sharp.IconButton();
             tabControl = new TabControl();
             Lista_TabPage = new TabPage();
@@ -58,7 +58,7 @@
             label4 = new Label();
             textBoxNombre = new TextBox();
             labelAccion = new Label();
-            ((System.ComponentModel.ISupportInitialize)dataGridViewUsuarios).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewCompras).BeginInit();
             tabControl.SuspendLayout();
             Lista_TabPage.SuspendLayout();
             AgregarEditar_TabPage.SuspendLayout();
@@ -87,14 +87,14 @@
             label1.TabIndex = 16;
             label1.Text = "Revisá la lista completa de cuentas y gestiona roles, estados y accesos.";
             // 
-            // dataGridViewUsuarios
+            // dataGridViewCompras
             // 
-            dataGridViewUsuarios.BackgroundColor = Color.White;
-            dataGridViewUsuarios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewUsuarios.Location = new Point(52, 260);
-            dataGridViewUsuarios.Name = "dataGridViewUsuarios";
-            dataGridViewUsuarios.Size = new Size(1415, 649);
-            dataGridViewUsuarios.TabIndex = 17;
+            dataGridViewCompras.BackgroundColor = Color.White;
+            dataGridViewCompras.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCompras.Location = new Point(52, 260);
+            dataGridViewCompras.Name = "dataGridViewCompras";
+            dataGridViewCompras.Size = new Size(1415, 649);
+            dataGridViewCompras.TabIndex = 17;
             // 
             // BtnAgregar
             // 
@@ -140,7 +140,7 @@
             Lista_TabPage.Controls.Add(textBoxBuscar);
             Lista_TabPage.Controls.Add(label5);
             Lista_TabPage.Controls.Add(BtnAgregar);
-            Lista_TabPage.Controls.Add(dataGridViewUsuarios);
+            Lista_TabPage.Controls.Add(dataGridViewCompras);
             Lista_TabPage.Location = new Point(4, 24);
             Lista_TabPage.Name = "Lista_TabPage";
             Lista_TabPage.Padding = new Padding(3);
@@ -495,7 +495,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             WindowState = FormWindowState.Maximized;
             Load += UsuariosView_Load;
-            ((System.ComponentModel.ISupportInitialize)dataGridViewUsuarios).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewCompras).EndInit();
             tabControl.ResumeLayout(false);
             Lista_TabPage.ResumeLayout(false);
             Lista_TabPage.PerformLayout();
@@ -510,7 +510,7 @@
 
         private Label label5;
         private Label label1;
-        private DataGridView dataGridViewUsuarios;
+        private DataGridView dataGridViewCompras;
         private FontAwesome.Sharp.IconButton BtnAgregar;
         private TabControl tabControl;
         private TabPage AgregarEditar_TabPage;

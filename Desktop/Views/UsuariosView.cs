@@ -83,11 +83,11 @@ namespace Desktop.Views
             ).ToList();
 
             // Transformamos y ordenamos para la interfaz
-            dataGridViewUsuarios.DataSource = TransformarParaUI(clientesFiltrados, usuariosPurosFiltrados);
+            dataGridViewCompras.DataSource = TransformarParaUI(clientesFiltrados, usuariosPurosFiltrados);
 
             // Estética de la grilla
-            DataGridHelpers.HideColumns(dataGridViewUsuarios, "ID");
-            DataGridHelpers.SetupBasicGrid(dataGridViewUsuarios);
+            DataGridHelpers.HideColumns(dataGridViewCompras, "ID");
+            DataGridHelpers.SetupBasicGrid(dataGridViewCompras);
         }
 
         private List<object> TransformarParaUI(List<Cliente> clientes, List<Usuario> usuarios)
@@ -163,7 +163,7 @@ namespace Desktop.Views
 
         private void BtnEditar_Click(object sender, EventArgs e)
         {
-            var item = dataGridViewUsuarios.CurrentRow?.DataBoundItem;
+            var item = dataGridViewCompras.CurrentRow?.DataBoundItem;
             if (item == null || checkBoxEliminados.Checked) return;
 
             try
@@ -195,7 +195,7 @@ namespace Desktop.Views
 
         private async void BtnEliminar_Click(object sender, EventArgs e)
         {
-            var item = dataGridViewUsuarios.CurrentRow?.DataBoundItem;
+            var item = dataGridViewCompras.CurrentRow?.DataBoundItem;
             if (item == null || checkBoxEliminados.Checked) return;
 
             try
@@ -226,7 +226,7 @@ namespace Desktop.Views
 
         private async void BtnRestaurar_Click(object sender, EventArgs e)
         {
-            var item = dataGridViewUsuarios.CurrentRow?.DataBoundItem;
+            var item = dataGridViewCompras.CurrentRow?.DataBoundItem;
             if (item == null) return;
 
             try

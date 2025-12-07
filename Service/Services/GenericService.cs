@@ -46,24 +46,29 @@ namespace Service.Services
 
         public async Task<List<T>?> GetAllAsync(string? filtro = "")
         {
+            // Mantén el filtro si tus controladores lo usan, pero asegura el retorno
             var response = await _httpClient.GetAsync($"{_endpoint}?filter={filtro}");
             var content = await response.Content.ReadAsStringAsync();
+
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"Error al obtener los datos: {response.StatusCode}");
+                throw new Exception($"Error al obtener datos: {response.StatusCode}");
             }
-            return JsonSerializer.Deserialize<List<T>>(content, _options);
 
+            return JsonSerializer.Deserialize<List<T>>(content, _options) ?? new List<T>();
         }
 
         public async Task<List<T>?> GetAllDeletedsAsync(string? filtro = "")
         {
+            // Quitamos el query string del filtro ya que el controlador /deleteds trae todo lo borrado
             var response = await _httpClient.GetAsync($"{_endpoint}/deleteds");
-            var content = await response.Content.ReadAsStringAsync();
+
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"Error al obtener los datos: {response.StatusCode}");
+                throw new Exception($"Error al obtener eliminados: {response.StatusCode}");
             }
+
+            var content = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<List<T>>(content, _options);
         }
 
@@ -99,17 +104,23 @@ namespace Service.Services
 
         public async Task<bool> UpdateAsync(T? entity)
         {
-            var idValue = entity.GetType().GetProperty("ID").GetValue(entity); // Cambiado de "Id" a "ID"
+            if (entity == null) return false;
+
+            // Obtenemos el valor de la propiedad "ID"
+            var property = entity.GetType().GetProperty("ID");
+            if (property == null) throw new Exception("La entidad no tiene una propiedad ID válida.");
+
+            var idValue = property.GetValue(entity);
+
             var response = await _httpClient.PutAsJsonAsync($"{_endpoint}/{idValue}", entity);
+
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception("Hubo un problema al actualizar");
-            }
-            else
-            {
-                return response.IsSuccessStatusCode;
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Error al actualizar: {response.StatusCode} - {errorContent}");
             }
 
+            return response.IsSuccessStatusCode;
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.DataContext;
@@ -25,15 +24,14 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes([FromQuery] string filter = "")
         {
+            // El Context ya filtra los activos (Global Query Filter)
             return await _context.Clientes
                 .Include(c => c.Usuario)
-                .Where(c => c.Usuario != null && c.Usuario.Nombre.Contains(filter) && !c.IsDeleted) // Validar que Usuario no sea nulo
+                .Where(c => c.Usuario != null && (c.Usuario.Nombre.Contains(filter) || c.Usuario.DNI.Contains(filter)))
                 .ToListAsync();
         }
 
-        
-
-        // GET: api/Clientes/{id}
+        // GET: api/Clientes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Cliente>> GetCliente(int id)
         {
@@ -41,23 +39,32 @@ namespace Backend.Controllers
                 .Include(c => c.Usuario)
                 .FirstOrDefaultAsync(c => c.ID == id);
 
-            if (cliente == null)
-            {
-                return NotFound();
-            }
+            if (cliente == null) return NotFound();
 
             return cliente;
         }
 
+        // POST: api/Clientes
+        [HttpPost]
+        public async Task<ActionResult<Cliente>> PostCliente(Cliente cliente)
+        {
+            // Verificación de integridad: ¿El Usuario ya es un cliente?
+            if (await _context.Clientes.AnyAsync(c => c.UsuarioID == cliente.UsuarioID))
+            {
+                return BadRequest("Este usuario ya está registrado como cliente.");
+            }
+
+            _context.Clientes.Add(cliente);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetCliente), new { id = cliente.ID }, cliente);
+        }
+
         // PUT: api/Clientes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCliente(int id, Cliente cliente)
         {
-            if (id != cliente.ID)
-            {
-                return BadRequest();
-            }
+            if (id != cliente.ID) return BadRequest("El ID no coincide con el registro.");
 
             _context.Entry(cliente).State = EntityState.Modified;
 
@@ -67,83 +74,52 @@ namespace Backend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ClienteExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                if (!ClienteExists(id)) return NotFound();
+                throw;
             }
 
             return NoContent();
         }
 
-        // POST: api/Clientes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Cliente>> PostCliente(Cliente cliente)
-        {
-            _context.Clientes.Add(cliente);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCliente", new { id = cliente.ID }, cliente);
-        }
-
-        //// DELETE: api/Clientes/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteCliente(int id)
-        //{
-        //    var cliente = await _context.Clientes.FindAsync(id);
-        //    if (cliente == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _context.Clientes.Update(cliente);
-        //    await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
-
+        // DELETE: api/Clientes/5 (Soft Delete)
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCliente(int id)
         {
             var cliente = await _context.Clientes.FindAsync(id);
-            if (cliente == null)
-            {
-                return NotFound();
-            }
-            cliente.IsDeleted = true; //esto es un soft delete
-            _context.Clientes.Update(cliente);
-            await _context.SaveChangesAsync();
+            if (cliente == null) return NotFound();
 
+            cliente.IsDeleted = true;
+            cliente.DeleteDate = DateTime.Now; // Auditoría semántica
+
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
+        // PUT: api/Clientes/restore/5
         [HttpPut("restore/{id}")]
         public async Task<IActionResult> RestoreCliente(int id)
         {
-            var cliente = await _context.Clientes.IgnoreQueryFilters().FirstOrDefaultAsync(c => c.ID.Equals(id));
-            if (cliente == null)
-            {
-                return NotFound();
-            }
-            cliente.IsDeleted = false; //esto es un soft restore
-            _context.Clientes.Update(cliente);
-            await _context.SaveChangesAsync();
+            var cliente = await _context.Clientes
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(c => c.ID == id);
 
+            if (cliente == null) return NotFound();
+
+            cliente.IsDeleted = false;
+            cliente.DeleteDate = DateTime.MinValue;
+
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
-        // GET: api/Capacitaciones/deleteds
+        // GET: api/Clientes/deleteds
         [HttpGet("deleteds")]
         public async Task<ActionResult<IEnumerable<Cliente>>> GetClientesDeleteds()
         {
-
-            return await _context.Clientes.IgnoreQueryFilters().Where(c => c.IsDeleted)
-                .Include (c => c.Usuario) // Incluye los datos del usuario asociado
+            return await _context.Clientes
+                .IgnoreQueryFilters()
+                .Where(c => c.IsDeleted)
+                .Include(c => c.Usuario)
                 .ToListAsync();
         }
 
