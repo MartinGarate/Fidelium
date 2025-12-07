@@ -78,10 +78,10 @@
             // 
             label5.AutoSize = true;
             label5.BackColor = Color.Transparent;
-            label5.Font = new Font("Microsoft Sans Serif", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label5.Location = new Point(52, 71);
+            label5.Font = new Font("Segoe UI Semibold", 30F, FontStyle.Bold);
+            label5.Location = new Point(48, 71);
             label5.Name = "label5";
-            label5.Size = new Size(791, 46);
+            label5.Size = new Size(764, 54);
             label5.TabIndex = 15;
             label5.Text = "Administrá todas las compras de tu Local";
             // 
@@ -89,10 +89,10 @@
             // 
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label1.Font = new Font("Segoe UI", 14.25F);
             label1.Location = new Point(52, 117);
             label1.Name = "label1";
-            label1.Size = new Size(686, 24);
+            label1.Size = new Size(693, 25);
             label1.TabIndex = 16;
             label1.Text = "Visualizá, gestioná y controlá cada compra realizada de manera rápida y sencilla.";
             // 
@@ -110,7 +110,7 @@
             BtnAgregar.BackColor = Color.FromArgb(88, 1, 180);
             BtnAgregar.FlatAppearance.BorderSize = 0;
             BtnAgregar.FlatStyle = FlatStyle.Flat;
-            BtnAgregar.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            BtnAgregar.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
             BtnAgregar.ForeColor = Color.White;
             BtnAgregar.IconChar = FontAwesome.Sharp.IconChar.CirclePlus;
             BtnAgregar.IconColor = Color.White;
@@ -125,7 +125,6 @@
             BtnAgregar.Text = "Agregar";
             BtnAgregar.TextAlign = ContentAlignment.MiddleRight;
             BtnAgregar.UseVisualStyleBackColor = false;
-            BtnAgregar.Click += BtnAgregar_Click;
             // 
             // tabControl
             // 
@@ -141,6 +140,7 @@
             // Lista_TabPage
             // 
             Lista_TabPage.BackColor = Color.FromArgb(244, 246, 248);
+            Lista_TabPage.Controls.Add(label1);
             Lista_TabPage.Controls.Add(BtnRestaurar);
             Lista_TabPage.Controls.Add(BtnEliminar);
             Lista_TabPage.Controls.Add(BtnEditar);
@@ -149,7 +149,6 @@
             Lista_TabPage.Controls.Add(textBoxBuscar);
             Lista_TabPage.Controls.Add(label5);
             Lista_TabPage.Controls.Add(BtnAgregar);
-            Lista_TabPage.Controls.Add(label1);
             Lista_TabPage.Controls.Add(dataGridViewCompras);
             Lista_TabPage.Location = new Point(4, 24);
             Lista_TabPage.Name = "Lista_TabPage";
@@ -179,7 +178,6 @@
             BtnRestaurar.TextAlign = ContentAlignment.MiddleLeft;
             BtnRestaurar.UseVisualStyleBackColor = false;
             BtnRestaurar.Visible = false;
-            BtnRestaurar.Click += BtnRestaurar_Click;
             // 
             // BtnEliminar
             // 
@@ -201,7 +199,6 @@
             BtnEliminar.Text = "Eliminar";
             BtnEliminar.TextAlign = ContentAlignment.MiddleLeft;
             BtnEliminar.UseVisualStyleBackColor = false;
-            BtnEliminar.Click += BtnEliminar_Click;
             // 
             // BtnEditar
             // 
@@ -223,7 +220,6 @@
             BtnEditar.Text = "Editar";
             BtnEditar.TextAlign = ContentAlignment.MiddleLeft;
             BtnEditar.UseVisualStyleBackColor = false;
-            BtnEditar.Click += BtnEditar_Click;
             // 
             // checkBoxEliminados
             // 
@@ -269,11 +265,11 @@
             // AgregarEditar_TabPage
             // 
             AgregarEditar_TabPage.BackColor = Color.FromArgb(244, 246, 248);
+            AgregarEditar_TabPage.Controls.Add(label3);
             AgregarEditar_TabPage.Controls.Add(BtnCancelar);
             AgregarEditar_TabPage.Controls.Add(BtnGuardar);
             AgregarEditar_TabPage.Controls.Add(panel1);
             AgregarEditar_TabPage.Controls.Add(labelAccion);
-            AgregarEditar_TabPage.Controls.Add(label3);
             AgregarEditar_TabPage.Location = new Point(4, 24);
             AgregarEditar_TabPage.Name = "AgregarEditar_TabPage";
             AgregarEditar_TabPage.Padding = new Padding(3);
@@ -297,7 +293,6 @@
             BtnCancelar.TabIndex = 21;
             BtnCancelar.Text = "Cancelar";
             BtnCancelar.UseVisualStyleBackColor = false;
-            BtnCancelar.Click += BtnCancelar_Click;
             // 
             // BtnGuardar
             // 
@@ -318,23 +313,23 @@
             BtnGuardar.Text = "Guardar";
             BtnGuardar.TextAlign = ContentAlignment.MiddleLeft;
             BtnGuardar.UseVisualStyleBackColor = false;
-            BtnGuardar.Click += BtnGuardar_Click;
             // 
             // panel1
             // 
             panel1.BackColor = Color.White;
-            panel1.Controls.Add(label9);
             panel1.Controls.Add(dateTimeSolicitudFeedback);
-            panel1.Controls.Add(label8);
             panel1.Controls.Add(dateTimeFechaCompra);
-            panel1.Controls.Add(label2);
             panel1.Controls.Add(textBoxResponsable);
-            panel1.Controls.Add(label7);
             panel1.Controls.Add(textBoxDescripcion);
-            panel1.Controls.Add(label6);
             panel1.Controls.Add(textBoxProductoServicio);
-            panel1.Controls.Add(label4);
             panel1.Controls.Add(textBoxCliente);
+            panel1.Controls.Add(label9);
+            panel1.Controls.Add(label8);
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(label7);
+            panel1.Controls.Add(label6);
+            panel1.Controls.Add(label4);
+            panel1.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
             panel1.Location = new Point(164, 185);
             panel1.Name = "panel1";
             panel1.Size = new Size(1180, 661);
@@ -344,10 +339,10 @@
             // 
             label9.AutoSize = true;
             label9.BackColor = Color.Transparent;
-            label9.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label9.Location = new Point(590, 294);
+            label9.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            label9.Location = new Point(586, 294);
             label9.Name = "label9";
-            label9.Size = new Size(361, 29);
+            label9.Size = new Size(355, 32);
             label9.TabIndex = 37;
             label9.Text = "Fecha de Solicitud de Feedback";
             // 
@@ -363,10 +358,10 @@
             // 
             label8.AutoSize = true;
             label8.BackColor = Color.Transparent;
-            label8.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label8.Location = new Point(75, 294);
+            label8.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            label8.Location = new Point(70, 294);
             label8.Name = "label8";
-            label8.Size = new Size(211, 29);
+            label8.Size = new Size(207, 32);
             label8.TabIndex = 35;
             label8.Text = "Fecha de Registro";
             // 
@@ -377,16 +372,15 @@
             dateTimeFechaCompra.Name = "dateTimeFechaCompra";
             dateTimeFechaCompra.Size = new Size(490, 29);
             dateTimeFechaCompra.TabIndex = 34;
-            dateTimeFechaCompra.ValueChanged += dateTimeFechaCompra_ValueChanged;
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.BackColor = Color.Transparent;
-            label2.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label2.Location = new Point(590, 40);
+            label2.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            label2.Location = new Point(585, 40);
             label2.Name = "label2";
-            label2.Size = new Size(156, 29);
+            label2.Size = new Size(149, 32);
             label2.TabIndex = 33;
             label2.Text = "Responsable";
             // 
@@ -404,10 +398,10 @@
             // 
             label7.AutoSize = true;
             label7.BackColor = Color.Transparent;
-            label7.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label7.Location = new Point(75, 200);
+            label7.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            label7.Location = new Point(69, 200);
             label7.Name = "label7";
-            label7.Size = new Size(141, 29);
+            label7.Size = new Size(139, 32);
             label7.TabIndex = 23;
             label7.Text = "Descripción";
             // 
@@ -417,7 +411,7 @@
             textBoxDescripcion.Font = new Font("Segoe UI", 12F);
             textBoxDescripcion.Location = new Point(75, 230);
             textBoxDescripcion.Name = "textBoxDescripcion";
-            textBoxDescripcion.PlaceholderText = "martin@fidelium.com";
+            textBoxDescripcion.PlaceholderText = "Detalles de uso y cualquier información relevante para el comprador";
             textBoxDescripcion.Size = new Size(1004, 29);
             textBoxDescripcion.TabIndex = 22;
             // 
@@ -425,10 +419,10 @@
             // 
             label6.AutoSize = true;
             label6.BackColor = Color.Transparent;
-            label6.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label6.Location = new Point(75, 121);
+            label6.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            label6.Location = new Point(70, 121);
             label6.Name = "label6";
-            label6.Size = new Size(223, 29);
+            label6.Size = new Size(226, 32);
             label6.TabIndex = 21;
             label6.Text = "Producto o Servicio";
             // 
@@ -438,7 +432,7 @@
             textBoxProductoServicio.Font = new Font("Segoe UI", 12F);
             textBoxProductoServicio.Location = new Point(76, 151);
             textBoxProductoServicio.Name = "textBoxProductoServicio";
-            textBoxProductoServicio.PlaceholderText = "Ejemplo: 123456789";
+            textBoxProductoServicio.PlaceholderText = "Ejemplo: Auriculares ASTROS A10";
             textBoxProductoServicio.Size = new Size(1004, 29);
             textBoxProductoServicio.TabIndex = 20;
             // 
@@ -446,10 +440,10 @@
             // 
             label4.AutoSize = true;
             label4.BackColor = Color.Transparent;
-            label4.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label4.Location = new Point(75, 40);
+            label4.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label4.Location = new Point(71, 40);
             label4.Name = "label4";
-            label4.Size = new Size(223, 29);
+            label4.Size = new Size(226, 32);
             label4.TabIndex = 19;
             label4.Text = "Nombre del Cliente";
             // 
@@ -467,10 +461,10 @@
             // 
             labelAccion.AutoSize = true;
             labelAccion.BackColor = Color.Transparent;
-            labelAccion.Font = new Font("Microsoft Sans Serif", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelAccion.Location = new Point(164, 86);
+            labelAccion.Font = new Font("Segoe UI Semibold", 30F, FontStyle.Bold);
+            labelAccion.Location = new Point(158, 86);
             labelAccion.Name = "labelAccion";
-            labelAccion.Size = new Size(792, 46);
+            labelAccion.Size = new Size(757, 54);
             labelAccion.TabIndex = 17;
             labelAccion.Text = "Registrá una nueva compra en el sistema";
             // 
@@ -478,10 +472,10 @@
             // 
             label3.AutoSize = true;
             label3.BackColor = Color.Transparent;
-            label3.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label3.Font = new Font("Segoe UI", 14.25F);
             label3.Location = new Point(164, 132);
             label3.Name = "label3";
-            label3.Size = new Size(597, 24);
+            label3.Size = new Size(610, 25);
             label3.TabIndex = 18;
             label3.Text = "Completá los datos de la compra para mantener tu control actualizado.";
             // 
@@ -544,7 +538,7 @@
             iconButton2.BackColor = Color.FromArgb(88, 1, 180);
             iconButton2.FlatAppearance.BorderSize = 0;
             iconButton2.FlatStyle = FlatStyle.Flat;
-            iconButton2.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            iconButton2.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
             iconButton2.ForeColor = Color.White;
             iconButton2.IconChar = FontAwesome.Sharp.IconChar.CirclePlus;
             iconButton2.IconColor = Color.White;
@@ -593,7 +587,6 @@
             Name = "ComprasView";
             StartPosition = FormStartPosition.CenterScreen;
             WindowState = FormWindowState.Maximized;
-            Load += UsuariosView_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridViewCompras).EndInit();
             tabControl.ResumeLayout(false);
             Lista_TabPage.ResumeLayout(false);

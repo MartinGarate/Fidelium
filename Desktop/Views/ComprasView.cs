@@ -1,149 +1,169 @@
 ﻿using Desktop.Utils.HelpersDesktop;
-using Service.Enums;
 using Service.Models;
 using Service.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace Desktop.Views
 {
     public partial class ComprasView : Form
     {
-        readonly GenericService<Usuario> _usuarioService = new(); // Readonly es una practica mas segura para no romper nada, evitando cambiarlo.
-        readonly GenericService<Cliente> _clienteService = new(); // no esta en memoria
-
+        readonly GenericService<Usuario> _usuarioService = new();
+        readonly GenericService<Cliente> _clienteService = new();
         readonly GenericService<CompraServicio> _compraServicioService = new();
-        readonly GenericService<Notificacion> _notificacionService = new();
 
-        List<Cliente> _clientes = new();
-        List<Usuario> _usuarios = new();// Si esta En memoria
-
-        List<CompraServicio> _comprasServicios = new();
-        List<Notificacion> _notificaciones = new();
-
-        Cliente? _currentCliente;
-        Usuario? _currentUsuario;
-        CompraServicio? _currentCompraServicio;
-        Notificacion? _currentNotificacion;
-
+        // VARIABLES EN MEMORIA (Nuestro "universo" de datos local)
+        List<Cliente> _clientesCache = new();
+        List<Usuario> _usuariosCache = new();
+        List<CompraServicio> _comprasCache = new();
 
         public ComprasView()
         {
             InitializeComponent();
         }
 
-        private async void UsuariosView_Load(object sender, EventArgs e)
+        private async void ComprasView_Load(object sender, EventArgs e)
         {
-            await LoadDataAsync();
+            // Carga inicial masiva
+            await Task.WhenAll(LoadDataUsuariosAsync(), LoadDataComprasAsync());
         }
 
+        
+        //CARGA DE DATOS (API -> MEMORIA)
 
-        private async Task<List<CompraServicio>> ObtenerDatosComprasAsync(string? filtro = null)
-        {
-            if (checkBoxEliminados.Checked)
-            {
-                return await _compraServicioService.GetAllDeletedsAsync(filtro) ?? new List<CompraServicio>();
-            }
-
-            return await _compraServicioService.GetAllAsync(filtro) ?? new List<CompraServicio>();
-        }
-        private object TransformarDatosParaGridCompras(List<CompraServicio> comprasServicios)
-        {
-            var listaFinalCompra = new List<object>();
-
-            // Agregar Compras
-            foreach (var c in comprasServicios)
-            {
-                listaFinalCompra.Add(new
-                {
-                    c.ID,
-                    ClienteNombre = c.Cliente?.Usuario?.Nombre ?? "N/A",
-                    c.Nombre,
-                    c.Descripcion,
-                    c.FechaCompra,
-                    EmpleadoNombre = c.Empleado?.Nombre ?? "N/A",
-                    c.ComentarioFeedback,
-                    c.IsDeleted
-                });
-
-
-            }
-            return listaFinalCompra;
-        }
-        private async Task LoadDataComprasAsync(string? filtro = null)
+        private async Task LoadDataComprasAsync()
         {
             try
             {
-                // Obtener TODOS los datos sin filtro del backend
-                var comprasServicios = await ObtenerDatosComprasAsync();
+                // Traemos TODO de la base de datos sin filtro para tenerlo en RAM
+                var compras = checkBoxEliminados.Checked
+                    ? await _compraServicioService.GetAllDeletedsAsync("")
+                    : await _compraServicioService.GetAllAsync("");
 
-                _comprasServicios = comprasServicios;
-                // Aplicar filtro EN MEMORIA después de obtener los datos
-                if (!string.IsNullOrEmpty(filtro))
-                {
-                    comprasServicios = comprasServicios.Where(c =>
-                        (c.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (c.Descripcion?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (c.Cliente?.Usuario?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (c.Empleado?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (c.ComentarioFeedback?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
-                    ).ToList();
+                _comprasCache = compras ?? new List<CompraServicio>();
 
-                }
-
-                var datosParaGrid = TransformarDatosParaGridCompras(comprasServicios);
-
-                UpdateGridCompras(datosParaGrid);
+                // Actualizamos la visual
+                RefrescarVisualCompras();
             }
             catch (Exception ex)
             {
-                MessageHelpers.ShowError($"Error al cargar datos: {ex.Message}");
+                MessageHelpers.ShowError($"Error al cargar compras: {ex.Message}");
             }
         }
+
+        private async Task LoadDataUsuariosAsync()
+        {
+            try
+            {
+                var (clientes, usuarios) = checkBoxEliminados.Checked
+                    ? (await _clienteService.GetAllDeletedsAsync(""), await _usuarioService.GetAllDeletedsAsync(""))
+                    : (await _clienteService.GetAllAsync(""), await _usuarioService.GetAllAsync(""));
+
+                _clientesCache = clientes ?? new List<Cliente>();
+                _usuariosCache = usuarios ?? new List<Usuario>();
+
+                AsociarUsuariosAClientes(_clientesCache, _usuariosCache);
+
+                RefrescarVisualUsuarios();
+            }
+            catch (Exception ex)
+            {
+                MessageHelpers.ShowError($"Error al cargar usuarios: {ex.Message}");
+            }
+        }
+
+
+        //FILTRADO Y VISUALIZACIÓN (MEMORIA -> GRID)
+
+        private void RefrescarVisualCompras()
+        {
+            string filtro = textBoxBuscar.Text.Trim();
+
+            // FILTRADO EN MEMORIA: Instantáneo, sin ir a la API
+            var filtrados = _comprasCache.Where(c =>
+                string.IsNullOrEmpty(filtro) ||
+                (c.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (c.Descripcion?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (c.Cliente?.Usuario?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
+            ).ToList();
+
+            var datosParaGrid = TransformarDatosParaGridCompras(filtrados);
+            UpdateGridCompras(datosParaGrid);
+        }
+
+        private void RefrescarVisualUsuarios()
+        {
+            string filtro = textBoxBuscar.Text.Trim();
+
+            var clientesFiltrados = _clientesCache.Where(c =>
+                string.IsNullOrEmpty(filtro) ||
+                (c.Usuario?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (c.Usuario?.DNI?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
+            ).ToList();
+
+            var usuariosFiltrados = _usuariosCache.Where(u =>
+                string.IsNullOrEmpty(filtro) ||
+                (u.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
+            ).ToList();
+
+            var datosParaGrid = TransformarDatosParaGridUsuarios(clientesFiltrados, usuariosFiltrados);
+            UpdateGridUsuarios(datosParaGrid);
+        }
+
+
+       //EVENTOS DE UI
+
+        private void textBoxBuscar_TextChanged(object sender, EventArgs e)
+        {
+            // No llamamos a LoadData (API), solo refrescamos la visual (RAM)
+            RefrescarVisualCompras();
+            RefrescarVisualUsuarios();
+        }
+
+        private async void checkBoxEliminados_CheckedChanged(object sender, EventArgs e)
+        {
+            // Aquí sí volvemos a la API porque el set de datos cambia radicalmente
+            await Task.WhenAll(LoadDataUsuariosAsync(), LoadDataComprasAsync());
+        }
+
+        private void BtnBuscar_Click(object sender, EventArgs e)
+        {
+            // El botón ya no es estrictamente necesario, pero lo dejamos por UX
+            RefrescarVisualCompras();
+            RefrescarVisualUsuarios();
+        }
+
+        
+
+        //HELPERS Y TRANSFORMACIONES
+
+        private object TransformarDatosParaGridCompras(List<CompraServicio> comprasServicios)
+        {
+            return comprasServicios.Select(c => new
+            {
+                c.ID,
+                ClienteNombre = c.Cliente?.Usuario?.Nombre ?? "N/A",
+                c.Nombre,
+                c.Descripcion,
+                c.FechaCompra,
+                EmpleadoNombre = c.Empleado?.Nombre ?? "N/A",
+                c.ComentarioFeedback,
+                c.IsDeleted
+            }).ToList();
+        }
+
         private void UpdateGridCompras(object datos)
         {
             dataGridViewCompras.DataSource = null;
             dataGridViewCompras.DataSource = datos;
             DataGridHelpers.HideColumns(dataGridViewCompras, "ID", "ClienteID", "EmpleadoID", "IsDeleted");
             DataGridHelpers.RenameColumn(dataGridViewCompras, "FechaCompra", "Fecha de Compra");
-            DataGridHelpers.RenameColumn(dataGridViewCompras, "ComentarioFeedback", "Feedback");
             DataGridHelpers.SetupBasicGrid(dataGridViewCompras);
         }
-        private void CargarDatosEnControlesCompras(CompraServicio compraServicio, Notificacion notificacion)
-        {
-            textBoxProductoServicio.Text = compraServicio.Nombre;
-            textBoxDescripcion.Text = compraServicio.Descripcion ?? "";
 
-            // Si FechaRecordatorio es null, se usa FechaCompra + 7 días como valor inicial en la UI
-            DateTime fechaRecordatorioInicial = notificacion.FechaRecordatorio.HasValue
-                                        ? notificacion.FechaRecordatorio.Value
-                                        : compraServicio.FechaCompra.AddDays(7);
-            dateTimeFechaCompra.Value = compraServicio.FechaCompra.ToLocalTime();
-            dateTimeSolicitudFeedback.Value = fechaRecordatorioInicial.ToLocalTime();
-
-        }
-
-
-        private async Task<(List<Cliente> clientes, List<Usuario> usuarios)> ObtenerDatosUsuariosAsync(string? filtro = null)
-        {
-            if (checkBoxEliminados.Checked)
-            {
-                return (
-                    await _clienteService.GetAllDeletedsAsync(filtro) ?? new List<Cliente>(),
-                    await _usuarioService.GetAllDeletedsAsync(filtro) ?? new List<Usuario>()
-                );
-            }
-
-            return (
-                await _clienteService.GetAllAsync(filtro) ?? new List<Cliente>(),
-                await _usuarioService.GetAllAsync(filtro) ?? new List<Usuario>()
-            );
-        }
         private void AsociarUsuariosAClientes(List<Cliente> clientes, List<Usuario> usuarios)
         {
             foreach (var cliente in clientes)
@@ -151,403 +171,52 @@ namespace Desktop.Views
                 cliente.Usuario = usuarios.FirstOrDefault(u => u.ID == cliente.UsuarioID);
             }
         }
+
         private object TransformarDatosParaGridUsuarios(List<Cliente> clientes, List<Usuario> usuarios)
         {
             var listaFinal = new List<object>();
 
-            // Agregar clientes con su usuario 
             foreach (var c in clientes)
             {
                 listaFinal.Add(new
                 {
                     c.ID,
                     DNI = c.Usuario?.DNI ?? "N/A",
-                    Nombre = c.Usuario.Nombre,
-                    Email = c.Usuario?.Email ?? "N/A",
+                    c.Usuario?.Nombre,
+                    c.Usuario?.Email,
                     Instagram = c.Instagram ?? "N/A",
                     ClienteTelefono = c.Telefono ?? "N/A",
                     Tipo = "Cliente"
                 });
             }
 
-            // Agregar usuarios sin cliente 
             foreach (var u in usuarios)
             {
-                bool tieneCliente = clientes.Any(c => c.UsuarioID == u.ID);
-
-                if (!tieneCliente)
+                if (!clientes.Any(c => c.UsuarioID == u.ID))
                 {
                     listaFinal.Add(new
                     {
                         u.ID,
                         DNI = u.DNI ?? "N/A",
-                        Nombre = u.Nombre,
-                        Email = u.Email,
+                        u.Nombre,
+                        u.Email,
                         Instagram = "N/A",
                         ClienteTelefono = "N/A",
                         Tipo = u.TipoUsuario.ToString()
                     });
                 }
             }
-
             return listaFinal;
         }
-        private async Task LoadDataUsuariosAsync(string? filtro = null)
-        {
-            try
-            {
-                // Obtener TODOS los datos sin filtro del backend
-                var (clientes, usuarios) = await ObtenerDatosUsuariosAsync();
 
-                _clientes = clientes;
-                _usuarios = usuarios;
-
-                AsociarUsuariosAClientes(clientes, usuarios);
-
-                // Aplicar filtro EN MEMORIA después de obtener los datos
-                if (!string.IsNullOrEmpty(filtro))
-                {
-                    clientes = clientes.Where(c =>
-                        (c.Usuario?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (c.Usuario?.DNI?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (c.Usuario?.Email?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
-                    ).ToList();
-
-                    usuarios = usuarios.Where(u =>
-                        (u.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.DNI?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.Email?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
-                    ).ToList();
-                }
-
-                var datosParaGrid = TransformarDatosParaGridUsuarios(clientes, usuarios);
-
-                UpdateGridUsuarios(datosParaGrid);
-            }
-            catch (Exception ex)
-            {
-                MessageHelpers.ShowError($"Error al cargar datos: {ex.Message}");
-            }
-        }
         private void UpdateGridUsuarios(object datos)
         {
+            // Asumiendo que usas la misma grilla o una similar
             dataGridViewCompras.DataSource = null;
             dataGridViewCompras.DataSource = datos;
             DataGridHelpers.HideColumns(dataGridViewCompras, "ID");
-            DataGridHelpers.RenameColumn(dataGridViewCompras, "ClienteTelefono", "Teléfono");
             DataGridHelpers.SetupBasicGrid(dataGridViewCompras);
         }
-        private void CargarDatosEnControlesUsuarios(Usuario usuario)
-        {
-            // Datos comunes del usuario
-            textBoxCliente.Text = usuario.Nombre ?? "";
-            textBoxResponsable.Text = usuario.Nombre ?? "";
-        }
 
-
-        private void LimpiarControles()
-        {
-            //limpiamos todos los controles
-            _currentUsuario = null;
-            _currentCliente = null;
-            _currentCompraServicio = null;
-            _currentNotificacion = null;
-
-            textBoxCliente.Clear();
-            textBoxProductoServicio.Clear();
-            textBoxDescripcion.Clear();
-            textBoxResponsable.Clear();
-            dateTimeFechaCompra.Value = DateTime.Now;
-            dateTimeSolicitudFeedback.Value = DateTime.Now.AddDays(7);
-            textBoxBuscar.Clear();
-            //falta continuar con esto
-
-        }
-
-
-        // TabPage Lista
-        private void BtnAgregar_Click(object sender, EventArgs e)
-        {
-            labelAccion.Text = "Incorporá a alguien más a la plataforma";
-            tabControl.SelectedTab = AgregarEditar_TabPage;
-
-        }
-        private void BtnEditar_Click(object sender, EventArgs e)
-        {
-            // 1. Validar selección
-            if (dataGridViewCompras.RowCount == 0 || dataGridViewCompras.SelectedRows.Count == 0)
-            {
-                MessageHelpers.ShowError("Debe seleccionar un campo.");
-                return;
-            }
-
-            // 2. Obtener la fila seleccionada
-            DataGridViewRow fila = dataGridViewCompras.SelectedRows[0];
-
-            // 3. Obtener el ID
-            if (!int.TryParse(fila.Cells["ID"].Value?.ToString(), out int idSeleccionado))
-            {
-                MessageHelpers.ShowError("No se pudo obtener el ID del registro seleccionado.");
-                return;
-            }
-
-            // 4. Saber si es Cliente o Usuario
-            string tipo = fila.Cells["Tipo"].Value.ToString();
-
-            Usuario usuarioSeleccionado = null;
-            Cliente? clienteSeleccionado = null;
-
-            if (tipo == "Cliente")
-            {
-                // Buscar cliente
-                clienteSeleccionado = _clientes.FirstOrDefault(c => c.ID == idSeleccionado);
-                if (clienteSeleccionado == null)
-                {
-                    MessageHelpers.ShowError("Cliente no encontrado.");
-                    return;
-                }
-
-                usuarioSeleccionado = clienteSeleccionado.Usuario!;
-                _currentCliente = clienteSeleccionado;
-                _currentUsuario = usuarioSeleccionado;
-
-                labelAccion.Text = "Modificá la información de alguien en la plataforma";
-            }
-            else
-            {
-                // Buscar usuario
-                usuarioSeleccionado = _usuarios.FirstOrDefault(u => u.ID == idSeleccionado);
-                if (usuarioSeleccionado == null)
-                {
-                    MessageHelpers.ShowError("Usuario no encontrado.");
-                    return;
-                }
-
-                _currentUsuario = usuarioSeleccionado;
-                _currentCliente = null;
-
-                labelAccion.Text = "Modificá la información de alguien en la plataforma";
-            }
-
-            // 5. Cargar datos en los controles (usa siempre la misma función)
-            CargarDatosEnControles(usuarioSeleccionado, clienteSeleccionado);
-
-            // 6. Cambiar de pestaña
-            tabControl.SelectedTab = AgregarEditar_TabPage;
-        }
-        private async void BtnEliminar_Click(object sender, EventArgs e)
-        {
-            if (dataGridViewCompras.RowCount == 0 || dataGridViewCompras.SelectedRows.Count == 0)
-            {
-                MessageHelpers.ShowError("Debe seleccionar un registro.");
-                return;
-            }
-
-            DataGridViewRow fila = dataGridViewCompras.SelectedRows[0];
-
-            if (!int.TryParse(fila.Cells["ID"].Value?.ToString(), out int idSeleccionado))
-            {
-                MessageHelpers.ShowError("No se pudo obtener el ID del registro seleccionado.");
-                return;
-            }
-
-            string tipo = fila.Cells["Tipo"].Value.ToString();
-
-            bool confirmado = MessageBox.Show(
-                $"¿Está seguro que desea eliminar este {tipo}?",
-                "Confirmar eliminación",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning) == DialogResult.Yes;
-
-            if (!confirmado)
-                return;
-
-            try
-            {
-                if (tipo == "Cliente")
-                {
-                    var cliente = _clientes.FirstOrDefault(c => c.ID == idSeleccionado);
-                    if (cliente == null)
-                    {
-                        MessageHelpers.ShowError("Cliente no encontrado.");
-                        return;
-                    }
-
-                    // Soft delete
-                    await _clienteService.DeleteAsync(cliente.ID);
-
-                    MessageHelpers.ShowSuccess($"Cliente {cliente.Usuario?.Nombre ?? ""} eliminado correctamente.");
-                }
-                else
-                {
-                    var usuario = _usuarios.FirstOrDefault(u => u.ID == idSeleccionado);
-                    if (usuario == null)
-                    {
-                        MessageHelpers.ShowError("Usuario no encontrado.");
-                        return;
-                    }
-
-                    // Soft delete
-                    await _usuarioService.DeleteAsync(usuario.ID);
-
-                    MessageHelpers.ShowSuccess($"Usuario {usuario.Nombre} eliminado correctamente.");
-                }
-
-                // Refrescar grilla
-                await LoadDataAsync();
-            }
-            catch (Exception ex)
-            {
-                MessageHelpers.ShowError($"Error al eliminar: {ex.Message}");
-            }
-        }
-        private void checkBoxEliminados_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxEliminados.Checked)
-            {
-                LoadDataAsync();
-                BtnRestaurar.Visible = true;
-            }
-            if (!checkBoxEliminados.Checked)
-            {
-                LoadDataAsync();
-                BtnRestaurar.Visible = false;
-            }
-        }
-        private async void BtnRestaurar_Click(object sender, EventArgs e)
-        {
-            if (dataGridViewCompras.RowCount == 0 || dataGridViewCompras.SelectedRows.Count == 0)
-            {
-                MessageHelpers.ShowError("Debe seleccionar un registro para restaurar.");
-                return;
-            }
-
-            DataGridViewRow fila = dataGridViewCompras.SelectedRows[0];
-
-            if (!int.TryParse(fila.Cells["ID"].Value?.ToString(), out int idSeleccionado))
-            {
-                MessageHelpers.ShowError("No se pudo obtener el ID del registro seleccionado.");
-                return;
-            }
-
-            string tipo = fila.Cells["Tipo"].Value.ToString();
-
-            bool confirmado = MessageBox.Show(
-                $"¿Está seguro que desea restaurar este {tipo}?",
-                "Confirmar restauración",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question) == DialogResult.Yes;
-
-            if (!confirmado)
-                return;
-
-            try
-            {
-                if (tipo == "Cliente")
-                {
-                    var cliente = _clientes.FirstOrDefault(c => c.ID == idSeleccionado);
-                    if (cliente == null)
-                    {
-                        MessageHelpers.ShowError("Cliente no encontrado.");
-                        return;
-                    }
-
-                    // Restaurar soft delete
-                    await _clienteService.RestoreAsync(cliente.ID);
-
-                    MessageHelpers.ShowSuccess($"Cliente {cliente.Usuario?.Nombre ?? ""} restaurado correctamente.");
-                }
-                else
-                {
-                    var usuario = _usuarios.FirstOrDefault(u => u.ID == idSeleccionado);
-                    if (usuario == null)
-                    {
-                        MessageHelpers.ShowError("Usuario no encontrado.");
-                        return;
-                    }
-
-                    // Restaurar soft delete
-                    await _usuarioService.RestoreAsync(usuario.ID);
-
-                    MessageHelpers.ShowSuccess($"Usuario {usuario.Nombre} restaurado correctamente.");
-                }
-
-                // Refrescar grilla y limpiar búsqueda
-                textBoxBuscar.Clear(); // si tenés un textbox de búsqueda
-                await LoadDataAsync();
-            }
-            catch (Exception ex)
-            {
-                MessageHelpers.ShowError($"Error al restaurar: {ex.Message}");
-            }
-        }
-        private async void BtnBuscar_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string filtro = textBoxBuscar.Text.Trim();
-                // Cargar datos con filtro
-                await LoadDataAsync(filtro);
-                if (dataGridViewCompras.RowCount == 0)
-                {
-                    MessageHelpers.ShowWarning("No se encontraron resultados para la búsqueda.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageHelpers.ShowError($"Error en la búsqueda: {ex.Message}");
-            }
-        }
-        private async void textBoxBuscar_TextChanged(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(textBoxBuscar.Text))
-            {
-                // Si el cuadro de búsqueda está vacío, recargar todos los datos
-                await LoadDataAsync();
-            }
-        }
-
-
-        // TabPage Agregar/Editar
-        private async void BtnGuardar_Click(object sender, EventArgs e)
-        {
-            try
-            {
-
-
-                // Refrescar UI
-                await LoadDataAsync();
-                LimpiarControles();
-
-                tabControl.SelectedTab = Lista_TabPage;
-            }
-            catch (Exception ex)
-            {
-                MessageHelpers.ShowError($"Error al guardar: {ex.Message}");
-            }
-        }
-        private void BtnCancelar_Click(object sender, EventArgs e)
-        {
-            tabControl.SelectedTab = Lista_TabPage;
-            LimpiarControles();
-        }
-        private void comboBoxTipoUsuario_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dateTimeFechaCompra_ValueChanged(object sender, EventArgs e)
-        {
-            //Obtener la nueva fecha que el usuario seleccionó en el control de compra
-            DateTime nuevaFechaCompraSeleccionada = dateTimeFechaCompra.Value;
-
-            //Calcular la nueva Fecha de Recordatorio (sumarle 7 días)
-            DateTime nuevaFechaRecordatorio = nuevaFechaCompraSeleccionada.AddDays(7);
-
-            // Asignar el resultado al control de feedback, actualizando la UI
-            dateTimeSolicitudFeedback.Value = nuevaFechaRecordatorio;
-
-
-        }
     }
 }

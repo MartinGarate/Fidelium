@@ -41,6 +41,7 @@
             BtnBuscar = new FontAwesome.Sharp.IconButton();
             textBoxBuscar = new TextBox();
             AgregarEditar_TabPage = new TabPage();
+            label3 = new Label();
             BtnCancelar = new FontAwesome.Sharp.IconButton();
             BtnGuardar = new FontAwesome.Sharp.IconButton();
             panel1 = new Panel();
@@ -57,7 +58,6 @@
             label4 = new Label();
             textBoxNombre = new TextBox();
             labelAccion = new Label();
-            label3 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridViewUsuarios).BeginInit();
             tabControl.SuspendLayout();
             Lista_TabPage.SuspendLayout();
@@ -69,10 +69,10 @@
             // 
             label5.AutoSize = true;
             label5.BackColor = Color.Transparent;
-            label5.Font = new Font("Microsoft Sans Serif", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.Font = new Font("Segoe UI Semibold", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label5.Location = new Point(52, 71);
             label5.Name = "label5";
-            label5.Size = new Size(831, 46);
+            label5.Size = new Size(800, 54);
             label5.TabIndex = 15;
             label5.Text = "Administrá a todos los usuarios del sistema";
             // 
@@ -80,10 +80,10 @@
             // 
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label1.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.Location = new Point(52, 117);
             label1.Name = "label1";
-            label1.Size = new Size(606, 24);
+            label1.Size = new Size(600, 25);
             label1.TabIndex = 16;
             label1.Text = "Revisá la lista completa de cuentas y gestiona roles, estados y accesos.";
             // 
@@ -101,7 +101,7 @@
             BtnAgregar.BackColor = Color.FromArgb(88, 1, 180);
             BtnAgregar.FlatAppearance.BorderSize = 0;
             BtnAgregar.FlatStyle = FlatStyle.Flat;
-            BtnAgregar.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            BtnAgregar.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnAgregar.ForeColor = Color.White;
             BtnAgregar.IconChar = FontAwesome.Sharp.IconChar.CirclePlus;
             BtnAgregar.IconColor = Color.White;
@@ -131,6 +131,7 @@
             // Lista_TabPage
             // 
             Lista_TabPage.BackColor = Color.FromArgb(244, 246, 248);
+            Lista_TabPage.Controls.Add(label1);
             Lista_TabPage.Controls.Add(BtnRestaurar);
             Lista_TabPage.Controls.Add(BtnEliminar);
             Lista_TabPage.Controls.Add(BtnEditar);
@@ -139,7 +140,6 @@
             Lista_TabPage.Controls.Add(textBoxBuscar);
             Lista_TabPage.Controls.Add(label5);
             Lista_TabPage.Controls.Add(BtnAgregar);
-            Lista_TabPage.Controls.Add(label1);
             Lista_TabPage.Controls.Add(dataGridViewUsuarios);
             Lista_TabPage.Location = new Point(4, 24);
             Lista_TabPage.Name = "Lista_TabPage";
@@ -260,17 +260,28 @@
             // AgregarEditar_TabPage
             // 
             AgregarEditar_TabPage.BackColor = Color.FromArgb(244, 246, 248);
+            AgregarEditar_TabPage.Controls.Add(label3);
             AgregarEditar_TabPage.Controls.Add(BtnCancelar);
             AgregarEditar_TabPage.Controls.Add(BtnGuardar);
             AgregarEditar_TabPage.Controls.Add(panel1);
             AgregarEditar_TabPage.Controls.Add(labelAccion);
-            AgregarEditar_TabPage.Controls.Add(label3);
             AgregarEditar_TabPage.Location = new Point(4, 24);
             AgregarEditar_TabPage.Name = "AgregarEditar_TabPage";
             AgregarEditar_TabPage.Padding = new Padding(3);
             AgregarEditar_TabPage.Size = new Size(1520, 1020);
             AgregarEditar_TabPage.TabIndex = 1;
             AgregarEditar_TabPage.Text = "Agregar/Editar";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.BackColor = Color.Transparent;
+            label3.Font = new Font("Segoe UI", 14.25F);
+            label3.Location = new Point(164, 132);
+            label3.Name = "label3";
+            label3.Size = new Size(575, 25);
+            label3.TabIndex = 18;
+            label3.Text = "Completá sus datos básicos para darle acceso según sus funciones.";
             // 
             // BtnCancelar
             // 
@@ -336,7 +347,7 @@
             lblInstagram.AutoSize = true;
             lblInstagram.BackColor = Color.Transparent;
             lblInstagram.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblInstagram.Location = new Point(75, 554);
+            lblInstagram.Location = new Point(76, 523);
             lblInstagram.Name = "lblInstagram";
             lblInstagram.Size = new Size(118, 29);
             lblInstagram.TabIndex = 30;
@@ -346,7 +357,7 @@
             // 
             textBoxInstagram.BackColor = Color.FromArgb(244, 246, 248);
             textBoxInstagram.Font = new Font("Segoe UI", 12F);
-            textBoxInstagram.Location = new Point(75, 584);
+            textBoxInstagram.Location = new Point(76, 553);
             textBoxInstagram.Name = "textBoxInstagram";
             textBoxInstagram.PlaceholderText = "@user";
             textBoxInstagram.Size = new Size(1004, 29);
@@ -357,7 +368,7 @@
             lblTelefono.AutoSize = true;
             lblTelefono.BackColor = Color.Transparent;
             lblTelefono.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblTelefono.Location = new Point(76, 451);
+            lblTelefono.Location = new Point(76, 427);
             lblTelefono.Name = "lblTelefono";
             lblTelefono.Size = new Size(110, 29);
             lblTelefono.TabIndex = 28;
@@ -367,7 +378,7 @@
             // 
             textBoxTelefono.BackColor = Color.FromArgb(244, 246, 248);
             textBoxTelefono.Font = new Font("Segoe UI", 12F);
-            textBoxTelefono.Location = new Point(76, 481);
+            textBoxTelefono.Location = new Point(76, 459);
             textBoxTelefono.Name = "textBoxTelefono";
             textBoxTelefono.PlaceholderText = "+12 3 456 7890";
             textBoxTelefono.Size = new Size(1004, 29);
@@ -379,7 +390,7 @@
             comboBoxTipoUsuario.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxTipoUsuario.Font = new Font("Segoe UI", 12F);
             comboBoxTipoUsuario.FormattingEnabled = true;
-            comboBoxTipoUsuario.Location = new Point(76, 373);
+            comboBoxTipoUsuario.Location = new Point(76, 91);
             comboBoxTipoUsuario.Name = "comboBoxTipoUsuario";
             comboBoxTipoUsuario.Size = new Size(1004, 29);
             comboBoxTipoUsuario.TabIndex = 26;
@@ -390,7 +401,7 @@
             label8.AutoSize = true;
             label8.BackColor = Color.Transparent;
             label8.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label8.Location = new Point(76, 343);
+            label8.Location = new Point(76, 59);
             label8.Name = "label8";
             label8.Size = new Size(186, 29);
             label8.TabIndex = 25;
@@ -401,7 +412,7 @@
             label7.AutoSize = true;
             label7.BackColor = Color.Transparent;
             label7.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label7.Location = new Point(76, 242);
+            label7.Location = new Point(75, 335);
             label7.Name = "label7";
             label7.Size = new Size(74, 29);
             label7.TabIndex = 23;
@@ -411,7 +422,7 @@
             // 
             textBoxEmail.BackColor = Color.FromArgb(244, 246, 248);
             textBoxEmail.Font = new Font("Segoe UI", 12F);
-            textBoxEmail.Location = new Point(76, 272);
+            textBoxEmail.Location = new Point(76, 367);
             textBoxEmail.Name = "textBoxEmail";
             textBoxEmail.PlaceholderText = "martin@fidelium.com";
             textBoxEmail.Size = new Size(1004, 29);
@@ -422,7 +433,7 @@
             label6.AutoSize = true;
             label6.BackColor = Color.Transparent;
             label6.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label6.Location = new Point(75, 141);
+            label6.Location = new Point(74, 243);
             label6.Name = "label6";
             label6.Size = new Size(54, 29);
             label6.TabIndex = 21;
@@ -432,7 +443,7 @@
             // 
             textBoxDNI.BackColor = Color.FromArgb(244, 246, 248);
             textBoxDNI.Font = new Font("Segoe UI", 12F);
-            textBoxDNI.Location = new Point(76, 171);
+            textBoxDNI.Location = new Point(76, 275);
             textBoxDNI.Name = "textBoxDNI";
             textBoxDNI.PlaceholderText = "Ejemplo: 123456789";
             textBoxDNI.Size = new Size(1004, 29);
@@ -443,7 +454,7 @@
             label4.AutoSize = true;
             label4.BackColor = Color.Transparent;
             label4.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label4.Location = new Point(75, 40);
+            label4.Location = new Point(74, 151);
             label4.Name = "label4";
             label4.Size = new Size(212, 29);
             label4.TabIndex = 19;
@@ -453,7 +464,7 @@
             // 
             textBoxNombre.BackColor = Color.FromArgb(244, 246, 248);
             textBoxNombre.Font = new Font("Segoe UI", 12F);
-            textBoxNombre.Location = new Point(76, 70);
+            textBoxNombre.Location = new Point(76, 183);
             textBoxNombre.Name = "textBoxNombre";
             textBoxNombre.PlaceholderText = "Ejemplo: Martin Garate";
             textBoxNombre.Size = new Size(1004, 29);
@@ -463,23 +474,12 @@
             // 
             labelAccion.AutoSize = true;
             labelAccion.BackColor = Color.Transparent;
-            labelAccion.Font = new Font("Microsoft Sans Serif", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelAccion.Location = new Point(164, 86);
+            labelAccion.Font = new Font("Segoe UI Semibold", 30F, FontStyle.Bold);
+            labelAccion.Location = new Point(156, 86);
             labelAccion.Name = "labelAccion";
-            labelAccion.Size = new Size(760, 46);
+            labelAccion.Size = new Size(743, 54);
             labelAccion.TabIndex = 17;
             labelAccion.Text = "Incorporá a alguien más a la plataforma\n";
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.BackColor = Color.Transparent;
-            label3.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            label3.Location = new Point(164, 132);
-            label3.Name = "label3";
-            label3.Size = new Size(582, 24);
-            label3.TabIndex = 18;
-            label3.Text = "Completá sus datos básicos para darle acceso según sus funciones.";
             // 
             // UsuariosView
             // 

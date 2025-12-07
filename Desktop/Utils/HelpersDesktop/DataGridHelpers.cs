@@ -59,7 +59,7 @@ namespace Desktop.Utils.HelpersDesktop
             }
         }
 
-       
+
 
         // cambia el nombre de una columna en el grid
         public static void RenameColumn(DataGridView grid, string columnName, string newHeaderText)

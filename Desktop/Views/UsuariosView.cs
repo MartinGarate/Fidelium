@@ -6,23 +6,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace Desktop.Views
 {
     public partial class UsuariosView : Form
     {
-        readonly GenericService<Usuario> _usuarioService = new(); // Readonly es una practica mas segura para no romper nada, evitando cambiarlo.
-        readonly GenericService<Cliente> _clienteService = new(); // no esta en memoria
+        // Servicios
+        readonly GenericService<Usuario> _usuarioService = new();
+        readonly GenericService<Cliente> _clienteService = new();
 
-        List<Cliente> _clientes = new();
-        List<Usuario> _usuarios = new();// Si esta En memoria
+        // Universo de datos en RAM (Cache local estilo profesor)
+        List<Cliente> _clientesCache = new();
+        List<Usuario> _usuariosCache = new();
 
+        // Objetos actuales para edición (referencias directas)
         Cliente? _currentCliente;
         Usuario? _currentUsuario;
-
 
         public UsuariosView()
         {
@@ -35,525 +35,373 @@ namespace Desktop.Views
             comboBoxTipoUsuario.DataSource = Enum.GetValues(typeof(TipoUsuarioEnum));
         }
 
+        //CARGA Y ASOCIACIÓN (API -> RAM)
 
-        private async Task<(List<Cliente> clientes, List<Usuario> usuarios)> ObtenerDatosAsync(string? filtro = null)
-        {
-            if (checkBoxEliminados.Checked)
-            {
-                return (
-                    await _clienteService.GetAllDeletedsAsync(filtro) ?? new List<Cliente>(),
-                    await _usuarioService.GetAllDeletedsAsync(filtro) ?? new List<Usuario>()
-                );
-            }
-
-            return (
-                await _clienteService.GetAllAsync(filtro) ?? new List<Cliente>(),
-                await _usuarioService.GetAllAsync(filtro) ?? new List<Usuario>()
-            );
-        }
-        private void AsociarUsuariosAClientes(List<Cliente> clientes, List<Usuario> usuarios)
-        {
-            foreach (var cliente in clientes)
-            {
-                cliente.Usuario = usuarios.FirstOrDefault(u => u.ID == cliente.UsuarioID);
-            }
-        }
-        private object TransformarDatosParaGrid(List<Cliente> clientes, List<Usuario> usuarios)
-        {
-            var listaFinal = new List<object>();
-
-            // Agregar clientes con su usuario 
-            foreach (var c in clientes)
-            {
-                listaFinal.Add(new
-                {
-                    c.ID,
-                    DNI = c.Usuario?.DNI ?? "N/A",
-                    Nombre = c.Usuario.Nombre,
-                    Email = c.Usuario?.Email ?? "N/A",
-                    Instagram = c.Instagram ?? "N/A",
-                    ClienteTelefono = c.Telefono ?? "N/A",
-                    Tipo = "Cliente"
-                });
-            }
-
-            // Agregar usuarios sin cliente 
-            foreach (var u in usuarios)
-            {
-                bool tieneCliente = clientes.Any(c => c.UsuarioID == u.ID);
-
-                if (!tieneCliente)
-                {
-                    listaFinal.Add(new
-                    {
-                        u.ID,
-                        DNI = u.DNI ?? "N/A",
-                        Nombre = u.Nombre,
-                        Email = u.Email,
-                        Instagram = "N/A",
-                        ClienteTelefono = "N/A",
-                        Tipo = u.TipoUsuario.ToString()
-                    });
-                }
-            }
-
-            return listaFinal;
-        }
-        private void UpdateGrid(object datos)
-        {
-            dataGridViewUsuarios.DataSource = null;
-            dataGridViewUsuarios.DataSource = datos;
-            DataGridHelpers.HideColumns(dataGridViewUsuarios, "ID");
-            DataGridHelpers.RenameColumn(dataGridViewUsuarios, "ClienteTelefono", "Teléfono");
-            DataGridHelpers.SetupBasicGrid(dataGridViewUsuarios);
-        }
-        private async Task LoadDataAsync(string? filtro = null)
+        private async Task LoadDataAsync()
         {
             try
             {
-                // Obtener TODOS los datos sin filtro del backend
-                var (clientes, usuarios) = await ObtenerDatosAsync();
-
-                _clientes = clientes;
-                _usuarios = usuarios;
-
-                AsociarUsuariosAClientes(clientes, usuarios);
-
-                // Aplicar filtro EN MEMORIA después de obtener los datos
-                if (!string.IsNullOrEmpty(filtro))
+                // Carga masiva inicial
+                if (checkBoxEliminados.Checked)
                 {
-                    clientes = clientes.Where(c =>
-                        (c.Usuario?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (c.Usuario?.DNI?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (c.Usuario?.Email?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (c.Telefono?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (c.Instagram?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
-                    ).ToList();
-
-                    usuarios = usuarios.Where(u =>
-                        (u.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.DNI?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                        (u.Email?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
-                    ).ToList();
+                    _clientesCache = await _clienteService.GetAllDeletedsAsync("") ?? new List<Cliente>();
+                    _usuariosCache = await _usuarioService.GetAllDeletedsAsync("") ?? new List<Usuario>();
+                }
+                else
+                {
+                    _clientesCache = await _clienteService.GetAllAsync("") ?? new List<Cliente>();
+                    _usuariosCache = await _usuarioService.GetAllAsync("") ?? new List<Usuario>();
                 }
 
-                var datosParaGrid = TransformarDatosParaGrid(clientes, usuarios);
+                // Asociación lógica (Estilo profesor)
+                foreach (var cliente in _clientesCache)
+                {
+                    cliente.Usuario = _usuariosCache.FirstOrDefault(u => u.ID == cliente.UsuarioID);
+                }
 
-                UpdateGrid(datosParaGrid);
+                RefrescarGrillaLocal();
             }
             catch (Exception ex)
             {
-                MessageHelpers.ShowError($"Error al cargar datos: {ex.Message}");
+                MessageHelpers.ShowError($"Error al sincronizar con el servidor: {ex.Message}");
             }
         }
 
-        private void CargarDatosEnControles(Usuario usuario, Cliente? cliente = null)
+        
+        //FILTRADO LOCAL (RAM -> GRID)
+
+        private void RefrescarGrillaLocal()
         {
-            // Datos comunes del usuario
-            textBoxNombre.Text = usuario.Nombre ?? "";
-            textBoxDNI.Text = usuario.DNI ?? "";
-            textBoxEmail.Text = usuario.Email ?? "";
+            string filtro = textBoxBuscar.Text.Trim();
 
-            // Tipo de usuario (Enum) en el comboBox
-            comboBoxTipoUsuario.SelectedItem = usuario.TipoUsuario;
+            // Filtrado en memoria de Clientes
+            var clientesFiltrados = _clientesCache.Where(c =>
+                string.IsNullOrEmpty(filtro) ||
+                (c.Usuario?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (c.Usuario?.DNI?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
+            ).ToList();
 
-            // Mostrar/ocultar campos según si es cliente
-            bool esCliente = usuario.TipoUsuario == TipoUsuarioEnum.Cliente;
+            // Filtrado en memoria de Usuarios puros
+            var usuariosFiltrados = _usuariosCache.Where(u =>
+                !_clientesCache.Any(c => c.UsuarioID == u.ID) &&
+                (string.IsNullOrEmpty(filtro) || u.Nombre.Contains(filtro, StringComparison.OrdinalIgnoreCase))
+            ).ToList();
 
-            lblInstagram.Visible = esCliente;
-            lblTelefono.Visible = esCliente;
-            textBoxTelefono.Visible = esCliente;
-            textBoxInstagram.Visible = esCliente;
+            // Seteamos el DataSource con los objetos transformados para la UI
+            dataGridViewUsuarios.DataSource = TransformarParaUI(clientesFiltrados, usuariosFiltrados);
 
-            if (cliente != null)
+            // Helpers de visualización
+            DataGridHelpers.HideColumns(dataGridViewUsuarios, "ID");
+            DataGridHelpers.SetupBasicGrid(dataGridViewUsuarios);
+        }
+
+        private List<object> TransformarParaUI(List<Cliente> clientes, List<Usuario> usuarios)
+        {
+            List<object> listaParaGrilla = new List<object>();
+
+            // 1. Proyectamos Clientes
+            var datosClientes = clientes.Select(c => new
             {
-                textBoxTelefono.Text = cliente.Telefono ?? "";
-                textBoxInstagram.Text = cliente.Instagram ?? "";
-            }
-            else
+                TipoUsuario = "Cliente",
+                Nombre = c.Usuario?.Nombre ?? "Sin Nombre",
+                DNI = string.IsNullOrEmpty(c.Usuario?.DNI) ? "N/A" : c.Usuario.DNI,
+                Email = c.Usuario?.Email ?? "N/A",
+                Telefono = c.Telefono ?? "N/A",
+                Instagram = c.Instagram ?? "N/A",
+                ID = (int)c.ID
+            });
+
+            // 2. Proyectamos Usuarios
+            var datosUsuarios = usuarios.Select(u => new
             {
-                textBoxTelefono.Text = "";
-                textBoxInstagram.Text = "";
+                TipoUsuario = u.TipoUsuario.ToString(),
+                Nombre = u.Nombre ?? "N/A",
+                DNI = string.IsNullOrEmpty(u.DNI) ? "N/A" : u.DNI,
+                Email = u.Email ?? "N/A",
+                Telefono = "N/A",
+                Instagram = "N/A",
+                ID = (int)u.ID
+            });
+
+            // 3. Unimos todo en la lista base
+            listaParaGrilla.AddRange(datosClientes);
+            listaParaGrilla.AddRange(datosUsuarios);
+
+            return listaParaGrilla
+                .OrderBy(item => ((dynamic)item).Nombre)
+                .ToList();
+        }
+
+
+        //EVENTOS DE UI Y FILTRADO
+
+        private void textBoxBuscar_TextChanged(object sender, EventArgs e) => RefrescarGrillaLocal();
+        private void textBoxBuscar_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                // evita que el sistema reproduzca el sonido de alerta
+                e.Handled = true;
+
+                // Como ya tenemos todo cargado en RAM, simplemente ejecutamos la lógica de filtrado local sin ir a la API
+                RefrescarGrillaLocal();
+
+                // Opcional: Avisar visualmente al usuario si no hubo resultados
+                if (dataGridViewUsuarios.RowCount == 0)
+                {
+                    MessageHelpers.ShowWarning("No se encontraron resultados locales.");
+                }
             }
         }
-        private void LimpiarControles()
+
+        private async void checkBoxEliminados_CheckedChanged(object sender, EventArgs e)
         {
+            // 1. Recargamos la caché local con los datos de la base de datos (eliminados o activos)
+            await LoadDataAsync();
+
+            // 2. Si checkBoxEliminados está marcado (true), mostramos el botón de restaurar
+            BtnRestaurar.Visible = checkBoxEliminados.Checked;
+
+            // 3. BLOQUEO: Si estamos viendo eliminados, desactivamos Editar y Eliminar
+            // Si checkBoxEliminados.Checked es true, Enabled será false.
+            BtnEditar.Enabled = !checkBoxEliminados.Checked;
+            BtnEliminar.Enabled = !checkBoxEliminados.Checked;
+        }
+
+        private void BtnAgregar_Click(object sender, EventArgs e)
+        {
+            LimpiarControles();
+            labelAccion.Text = "Nuevo Registro";
+            tabControl.SelectedTab = AgregarEditar_TabPage;
+        }
+
+
+        // CRUD
+
+        private void BtnEditar_Click(object sender, EventArgs e)
+        {
+            var item = dataGridViewUsuarios.CurrentRow?.DataBoundItem;
+            if (item == null) return;
+
+            if (checkBoxEliminados.Checked) return;
+
+            // Obtenemos los datos con reflexión segura
+            int idGrid = (int)item.GetType().GetProperty("ID").GetValue(item);
+            string tipo = (string)item.GetType().GetProperty("Tipo").GetValue(item);
+
             _currentUsuario = null;
             _currentCliente = null;
 
-            textBoxNombre.Text = "";
-            textBoxDNI.Text = "";
-            textBoxEmail.Text = "";
-            textBoxTelefono.Text = "";
-            textBoxInstagram.Text = "";
-            comboBoxTipoUsuario.SelectedIndex = -1;
-            textBoxInstagram.Visible = false;
-            textBoxTelefono.Visible = false;
-        }
-
-
-        // TabPage Lista
-        private void BtnAgregar_Click(object sender, EventArgs e)
-        {
-            labelAccion.Text = "Incorporá a alguien más a la plataforma";
-            tabControl.SelectedTab = AgregarEditar_TabPage;
-
-        }
-        private void BtnEditar_Click(object sender, EventArgs e)
-        {
-            // 1. Validar selección
-            if (dataGridViewUsuarios.RowCount == 0 || dataGridViewUsuarios.SelectedRows.Count == 0)
-            {
-                MessageHelpers.ShowError("Debe seleccionar un campo.");
-                return;
-            }
-
-            // 2. Obtener la fila seleccionada
-            DataGridViewRow fila = dataGridViewUsuarios.SelectedRows[0];
-
-            // 3. Obtener el ID
-            if (!int.TryParse(fila.Cells["ID"].Value?.ToString(), out int idSeleccionado))
-            {
-                MessageHelpers.ShowError("No se pudo obtener el ID del registro seleccionado.");
-                return;
-            }
-
-            // 4. Saber si es Cliente o Usuario
-            string tipo = fila.Cells["Tipo"].Value.ToString();
-
-            Usuario usuarioSeleccionado = null;
-            Cliente? clienteSeleccionado = null;
-
             if (tipo == "Cliente")
             {
-                // Buscar cliente
-                clienteSeleccionado = _clientes.FirstOrDefault(c => c.ID == idSeleccionado);
-                if (clienteSeleccionado == null)
-                {
-                    MessageHelpers.ShowError("Cliente no encontrado.");
-                    return;
-                }
-
-                usuarioSeleccionado = clienteSeleccionado.Usuario!;
-                _currentCliente = clienteSeleccionado;
-                _currentUsuario = usuarioSeleccionado;
-
-                labelAccion.Text = "Modificá la información de alguien en la plataforma";
+                _currentCliente = _clientesCache.FirstOrDefault(c => c.ID == idGrid);
+                _currentUsuario = _currentCliente?.Usuario;
             }
             else
             {
-                // Buscar usuario
-                usuarioSeleccionado = _usuarios.FirstOrDefault(u => u.ID == idSeleccionado);
-                if (usuarioSeleccionado == null)
-                {
-                    MessageHelpers.ShowError("Usuario no encontrado.");
-                    return;
-                }
-
-                _currentUsuario = usuarioSeleccionado;
-                _currentCliente = null;
-
-                labelAccion.Text = "Modificá la información de alguien en la plataforma";
+                // Buscamos el usuario asegurándonos que el ID coincida Y que no esté en clientes (si es usuario puro)
+                // O simplemente buscamos por el ID del universo de usuarios
+                _currentUsuario = _usuariosCache.FirstOrDefault(u => u.ID == idGrid);
             }
 
-            // 5. Cargar datos en los controles (usa siempre la misma función)
-            CargarDatosEnControles(usuarioSeleccionado, clienteSeleccionado);
-
-            // 6. Cambiar de pestaña
-            tabControl.SelectedTab = AgregarEditar_TabPage;
+            if (_currentUsuario != null)
+            {
+                CargarDatosEnControles(_currentUsuario, _currentCliente);
+                labelAccion.Text = $"Modificando a: {_currentUsuario.Nombre}";
+                tabControl.SelectedTab = AgregarEditar_TabPage;
+            }
+            else
+            {
+                MessageHelpers.ShowError("No se pudo localizar al usuario en memoria local. Intente refrescar los datos.");
+            }
         }
+
         private async void BtnEliminar_Click(object sender, EventArgs e)
         {
-            if (dataGridViewUsuarios.RowCount == 0 || dataGridViewUsuarios.SelectedRows.Count == 0)
+            var item = dataGridViewUsuarios.CurrentRow?.DataBoundItem;
+            if (item == null) return;
+
+            // Extraemos ID del Usuario y el Tipo
+            int id = (int)item.GetType().GetProperty("ID").GetValue(item);
+            string tipo = (string)item.GetType().GetProperty("Tipo").GetValue(item);
+
+            if (MessageBox.Show($"¿Desea eliminar este {tipo} por completo?", "Atención", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                MessageHelpers.ShowError("Debe seleccionar un registro.");
-                return;
-            }
-
-            DataGridViewRow fila = dataGridViewUsuarios.SelectedRows[0];
-
-            if (!int.TryParse(fila.Cells["ID"].Value?.ToString(), out int idSeleccionado))
-            {
-                MessageHelpers.ShowError("No se pudo obtener el ID del registro seleccionado.");
-                return;
-            }
-
-            string tipo = fila.Cells["Tipo"].Value.ToString();
-
-            bool confirmado = MessageBox.Show(
-                $"¿Está seguro que desea eliminar este {tipo}?",
-                "Confirmar eliminación",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning) == DialogResult.Yes;
-
-            if (!confirmado)
-                return;
-
-            try
-            {
-                if (tipo == "Cliente")
+                try
                 {
-                    var cliente = _clientes.FirstOrDefault(c => c.ID == idSeleccionado);
-                    if (cliente == null)
+                    // 1. Si es cliente, primero borramos la entidad Cliente
+                    if (tipo == "Cliente")
                     {
-                        MessageHelpers.ShowError("Cliente no encontrado.");
-                        return;
+                        // Buscamos el ID del cliente en nuestra cache para borrarlo en su tabla
+                        var cliente = _clientesCache.FirstOrDefault(c => c.ID == id);
+                        if (cliente != null)
+                        {
+                            await _clienteService.DeleteAsync(cliente.ID);
+                        }
+
+                        // 2. AHORA borramos el Usuario vinculado para que desaparezca de la plataforma
+                        // el ID del item es el ID del Usuario cuando viene del Grid
+                        await _usuarioService.DeleteAsync(cliente.UsuarioID);
+                    }
+                    else
+                    {
+                        // Es un usuario puro, solo borramos Usuario
+                        await _usuarioService.DeleteAsync(id);
                     }
 
-                    // Soft delete
-                    await _clienteService.DeleteAsync(cliente.ID);
+                    // 3. RECARGA MASIVA: Trae el nuevo estado de la DB a la RAM
+                    await LoadDataAsync();
 
-                    MessageHelpers.ShowSuccess($"Cliente {cliente.Usuario?.Nombre ?? ""} eliminado correctamente.");
+                    MessageHelpers.ShowSuccess("Registro eliminado correctamente.");
                 }
-                else
+                catch (Exception ex)
                 {
-                    var usuario = _usuarios.FirstOrDefault(u => u.ID == idSeleccionado);
-                    if (usuario == null)
-                    {
-                        MessageHelpers.ShowError("Usuario no encontrado.");
-                        return;
-                    }
-
-                    // Soft delete
-                    await _usuarioService.DeleteAsync(usuario.ID);
-
-                    MessageHelpers.ShowSuccess($"Usuario {usuario.Nombre} eliminado correctamente.");
-                }
-
-                // Refrescar grilla
-                await LoadDataAsync();
-            }
-            catch (Exception ex)
-            {
-                MessageHelpers.ShowError($"Error al eliminar: {ex.Message}");
-            }
-        }
-        private void checkBoxEliminados_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxEliminados.Checked)
-            {
-                LoadDataAsync();
-                BtnRestaurar.Visible = true;
-            }
-            if (!checkBoxEliminados.Checked)
-            {
-                LoadDataAsync();
-                BtnRestaurar.Visible = false;
-            }
-        }
-        private async void BtnRestaurar_Click(object sender, EventArgs e)
-        {
-            if (dataGridViewUsuarios.RowCount == 0 || dataGridViewUsuarios.SelectedRows.Count == 0)
-            {
-                MessageHelpers.ShowError("Debe seleccionar un registro para restaurar.");
-                return;
-            }
-
-            DataGridViewRow fila = dataGridViewUsuarios.SelectedRows[0];
-
-            if (!int.TryParse(fila.Cells["ID"].Value?.ToString(), out int idSeleccionado))
-            {
-                MessageHelpers.ShowError("No se pudo obtener el ID del registro seleccionado.");
-                return;
-            }
-
-            string tipo = fila.Cells["Tipo"].Value.ToString();
-
-            bool confirmado = MessageBox.Show(
-                $"¿Está seguro que desea restaurar este {tipo}?",
-                "Confirmar restauración",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question) == DialogResult.Yes;
-
-            if (!confirmado)
-                return;
-
-            try
-            {
-                if (tipo == "Cliente")
-                {
-                    var cliente = _clientes.FirstOrDefault(c => c.ID == idSeleccionado);
-                    if (cliente == null)
-                    {
-                        MessageHelpers.ShowError("Cliente no encontrado.");
-                        return;
-                    }
-
-                    // Restaurar soft delete
-                    await _clienteService.RestoreAsync(cliente.ID);
-
-                    MessageHelpers.ShowSuccess($"Cliente {cliente.Usuario?.Nombre ?? ""} restaurado correctamente.");
-                }
-                else
-                {
-                    var usuario = _usuarios.FirstOrDefault(u => u.ID == idSeleccionado);
-                    if (usuario == null)
-                    {
-                        MessageHelpers.ShowError("Usuario no encontrado.");
-                        return;
-                    }
-
-                    // Restaurar soft delete
-                    await _usuarioService.RestoreAsync(usuario.ID);
-
-                    MessageHelpers.ShowSuccess($"Usuario {usuario.Nombre} restaurado correctamente.");
-                }
-
-                // Refrescar grilla y limpiar búsqueda
-                textBoxBuscar.Clear(); // si tenés un textbox de búsqueda
-                await LoadDataAsync();
-            }
-            catch (Exception ex)
-            {
-                MessageHelpers.ShowError($"Error al restaurar: {ex.Message}");
-            }
-        }
-        private async void BtnBuscar_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string filtro = textBoxBuscar.Text.Trim();
-                // Cargar datos con filtro
-                await LoadDataAsync(filtro);
-                if (dataGridViewUsuarios.RowCount == 0)
-                {
-                    MessageHelpers.ShowWarning("No se encontraron resultados para la búsqueda.");
+                    MessageHelpers.ShowError($"Error al eliminar: {ex.Message}");
                 }
             }
-            catch (Exception ex)
-            {
-                MessageHelpers.ShowError($"Error en la búsqueda: {ex.Message}");
-            }
-        }
-        private async void textBoxBuscar_TextChanged(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(textBoxBuscar.Text))
-            {
-                // Si el cuadro de búsqueda está vacío, recargar todos los datos
-                await LoadDataAsync();
-            }
         }
 
-
-        // TabPage Agregar/Editar
         private async void BtnGuardar_Click(object sender, EventArgs e)
         {
             try
             {
-                // Validar formulario - campos obligatorios
-                if (string.IsNullOrWhiteSpace(textBoxNombre.Text) ||
-                    string.IsNullOrWhiteSpace(comboBoxTipoUsuario.Text))
-                {
-                    MessageHelpers.ShowError("Nombre y Tipo de Usuario son obligatorios");
-                    return;
-                }
+                bool esNuevo = _currentUsuario == null;
+                Usuario usuario = esNuevo ? new Usuario() : _currentUsuario!;
 
-                if (string.IsNullOrWhiteSpace(textBoxDNI.Text) ||
-                    string.IsNullOrWhiteSpace(textBoxEmail.Text))
-                {
-                    bool confirmado = MessageBox.Show(
-                            "¿Confirmás que querés guardar? Algunos datos están incompletos.",
-                            "Confirmar guardado",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Warning) == DialogResult.Yes;
-
-                    if (!confirmado)
-                        return;
-                }
-
-                // Obtener tipo de usuario
-                Enum.TryParse(comboBoxTipoUsuario.SelectedItem?.ToString(), out TipoUsuarioEnum tipoUsuario);
-
-                // Validación condicional para clientes
-                if (tipoUsuario == TipoUsuarioEnum.Cliente)
-                {
-                    if (string.IsNullOrWhiteSpace(textBoxInstagram.Text) ||
-                        string.IsNullOrWhiteSpace(textBoxTelefono.Text))
-                    {
-                        bool confirmado = MessageBox.Show(
-                            "¿Confirmás que querés guardar? Algunos datos de cliente están incompletos.",
-                            "Confirmar guardado",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Warning) == DialogResult.Yes;
-
-                        if (!confirmado)
-                            return;
-                    }
-                }
-
-                // Determinar si es nuevo o existente
-                bool esNuevo = _currentUsuario == null || _currentUsuario.ID == 0;
-
-                Usuario usuario = esNuevo ? new Usuario() : _currentUsuario;
-
-                // Asignar valores comunes
                 usuario.Nombre = textBoxNombre.Text;
-                usuario.DNI = textBoxDNI.Text;
-                usuario.Email = textBoxEmail.Text;
-                usuario.TipoUsuario = tipoUsuario;
+                usuario.TipoUsuario = (TipoUsuarioEnum)comboBoxTipoUsuario.SelectedItem;
 
-                // Guardar usuario y capturar el retorno con el ID asignado
-                if (esNuevo)
-                {
-                    usuario = await _usuarioService.AddAsync(usuario) ?? usuario;
-                }
-                else
-                {
-                    await _usuarioService.UpdateAsync(usuario);
-                }
+                if (esNuevo) await _usuarioService.AddAsync(usuario);
+                else await _usuarioService.UpdateAsync(usuario);
 
-                // Manejar cliente si aplica
-                if (tipoUsuario == TipoUsuarioEnum.Cliente)
+                // Lógica de cliente si aplica
+                if (usuario.TipoUsuario == TipoUsuarioEnum.Cliente)
                 {
-                    Cliente cliente = esNuevo
-                        ? new Cliente { UsuarioID = usuario.ID }
-                        : _currentCliente ?? new Cliente { UsuarioID = usuario.ID };
-
+                    Cliente cliente = esNuevo || _currentCliente == null ? new Cliente { UsuarioID = usuario.ID } : _currentCliente;
                     cliente.Telefono = textBoxTelefono.Text;
-                    cliente.Instagram = textBoxInstagram.Text;
-
                     if (esNuevo || _currentCliente == null)
                         await _clienteService.AddAsync(cliente);
                     else
                         await _clienteService.UpdateAsync(cliente);
                 }
 
-                // Refrescar UI
-                await LoadDataAsync();
+                await LoadDataAsync(); // Refresca cache local
                 LimpiarControles();
-
-                MessageHelpers.ShowSuccess(esNuevo ? "Usuario agregado correctamente" : "Usuario actualizado correctamente");
                 tabControl.SelectedTab = Lista_TabPage;
             }
-            catch (Exception ex)
+            catch (Exception ex) { MessageHelpers.ShowError(ex.Message); }
+        }
+
+        private async void BtnRestaurar_Click(object sender, EventArgs e)
+        {
+            // Obtenemos el objeto directamente de la fila
+            var item = dataGridViewUsuarios.CurrentRow?.DataBoundItem;
+            if (item == null) return;
+
+            try
             {
-                MessageHelpers.ShowError($"Error al guardar: {ex.Message}");
+                
+                int id = (int)item.GetType().GetProperty("ID").GetValue(item);
+                string tipo = (string)item.GetType().GetProperty("Tipo").GetValue(item);
+
+                if (MessageBox.Show($"¿Desea restaurar este {tipo}?", "Restaurar", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    if (tipo == "Cliente")
+                    {
+                        var cliente = _clientesCache.FirstOrDefault(c => c.ID == id);
+                        if (cliente != null)
+                        {
+                            // Restauramos ambos
+                            await _usuarioService.RestoreAsync(cliente.UsuarioID);
+                            await _clienteService.RestoreAsync(cliente.ID);
+                        }
+                    }
+                    else
+                    {
+                        await _usuarioService.RestoreAsync(id);
+                    }
+
+                    // IMPORTANTE: Sincronizamos RAM con Servidor tras restaurar
+                    await LoadDataAsync();
+                    MessageHelpers.ShowSuccess("Registro restaurado correctamente.");
+                }
             }
+            catch (Exception ex) { MessageHelpers.ShowError(ex.Message); }
+
+        }
+        private void BtnBuscar_Click(object sender, EventArgs e)
+        {
+            // Aplicamos el filtro sobre lo que ya tenemos cargado en _clientesCache y _usuariosCache
+            RefrescarGrillaLocal();
         }
         private void BtnCancelar_Click(object sender, EventArgs e)
         {
             tabControl.SelectedTab = Lista_TabPage;
             LimpiarControles();
         }
-        private void comboBoxTipoUsuario_SelectedIndexChanged(object sender, EventArgs e)
+
+
+        //HELPERS DE UI
+
+        private void CargarDatosEnControles(Usuario u, Cliente? c = null)
         {
-            if (comboBoxTipoUsuario.SelectedItem is TipoUsuarioEnum tipo)
+            textBoxNombre.Text = u.Nombre;
+            comboBoxTipoUsuario.SelectedItem = u.TipoUsuario;
+
+            // Mostramos DNI y Email (Campos de Usuario)
+            textBoxDNI.Text = u.DNI ?? "";
+            textBoxEmail.Text = u.Email ?? "";
+            textBoxDNI.Visible = true;
+            textBoxEmail.Visible = true;
+
+            // Si es cliente, mostramos y llenamos Instagram/Teléfono
+            if (u.TipoUsuario == TipoUsuarioEnum.Cliente)
             {
-                bool esCliente = tipo == TipoUsuarioEnum.Cliente;
-                lblInstagram.Visible = esCliente;
-                lblTelefono.Visible = esCliente;
-                textBoxTelefono.Visible = esCliente;
-                textBoxInstagram.Visible = esCliente;
+                textBoxTelefono.Text = c?.Telefono ?? "";
+                textBoxInstagram.Text = c?.Instagram ?? "";
+                textBoxTelefono.Visible = true;
+                textBoxInstagram.Visible = true;
             }
         }
 
-        private void textBoxBuscar_KeyPress(object sender, KeyPressEventArgs e)
+        private void LimpiarControles()
         {
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-                e.Handled = true; // Evitar el sonido de "ding"
-                BtnBuscar_Click(sender, e);
-            }
+            _currentUsuario = null;
+            _currentCliente = null;
+
+            textBoxNombre.Clear();
+            textBoxDNI.Clear();
+            textBoxEmail.Clear();
+            textBoxTelefono.Clear();
+            textBoxInstagram.Clear();
+            comboBoxTipoUsuario.SelectedIndex = -1;
+
+            // Al ser nuevo, ocultamos los campos hasta que elija el tipo
+            textBoxTelefono.Visible = false;
+            textBoxInstagram.Visible = false;
+            lblTelefono.Visible = false;
+            lblInstagram.Visible = false;
         }
+
+        private void AjustarVisibilidad(bool esCliente)
+        {
+            // Mostrar/Ocultar campos específicos de Cliente
+            textBoxTelefono.Visible = esCliente;
+            textBoxInstagram.Visible = esCliente;
+            lblTelefono.Visible = esCliente;
+            lblInstagram.Visible = esCliente;
+        }
+
+        private void comboBoxTipoUsuario_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxTipoUsuario.SelectedItem is TipoUsuarioEnum tipo)
+                AjustarVisibilidad(tipo == TipoUsuarioEnum.Cliente);
+        }
+
+
+
+
+
     }
 }
