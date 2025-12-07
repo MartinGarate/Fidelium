@@ -181,39 +181,48 @@ namespace Desktop.Views
 
         private void BtnEditar_Click(object sender, EventArgs e)
         {
+            // 1. Obtenemos el objeto vinculado a la fila
             var item = dataGridViewUsuarios.CurrentRow?.DataBoundItem;
             if (item == null) return;
 
             if (checkBoxEliminados.Checked) return;
 
-            // Obtenemos los datos con reflexión segura
-            int idGrid = (int)item.GetType().GetProperty("ID").GetValue(item);
-            string tipo = (string)item.GetType().GetProperty("Tipo").GetValue(item);
+            try
+            {
+                
+                dynamic rowData = item;
+                int idGrid = rowData.ID;
+                string tipo = rowData.TipoUsuario; 
 
-            _currentUsuario = null;
-            _currentCliente = null;
+                _currentUsuario = null;
+                _currentCliente = null;
 
-            if (tipo == "Cliente")
-            {
-                _currentCliente = _clientesCache.FirstOrDefault(c => c.ID == idGrid);
-                _currentUsuario = _currentCliente?.Usuario;
-            }
-            else
-            {
-                // Buscamos el usuario asegurándonos que el ID coincida Y que no esté en clientes (si es usuario puro)
-                // O simplemente buscamos por el ID del universo de usuarios
-                _currentUsuario = _usuariosCache.FirstOrDefault(u => u.ID == idGrid);
-            }
+                // 3. Búsqueda en la caché local
+                if (tipo == "Cliente")
+                {
+                    _currentCliente = _clientesCache.FirstOrDefault(c => c.ID == idGrid);
+                    _currentUsuario = _currentCliente?.Usuario;
+                }
+                else
+                {
+                    _currentUsuario = _usuariosCache.FirstOrDefault(u => u.ID == idGrid);
+                }
 
-            if (_currentUsuario != null)
-            {
-                CargarDatosEnControles(_currentUsuario, _currentCliente);
-                labelAccion.Text = $"Modificando a: {_currentUsuario.Nombre}";
-                tabControl.SelectedTab = AgregarEditar_TabPage;
+                // 4. Actualización de la UI
+                if (_currentUsuario != null)
+                {
+                    CargarDatosEnControles(_currentUsuario, _currentCliente);
+                    labelAccion.Text = $"Modificando a: {_currentUsuario.Nombre}";
+                    tabControl.SelectedTab = AgregarEditar_TabPage;
+                }
+                else
+                {
+                    MessageHelpers.ShowError("No se pudo localizar al usuario en memoria local.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageHelpers.ShowError("No se pudo localizar al usuario en memoria local. Intente refrescar los datos.");
+                MessageHelpers.ShowError("Error al intentar editar el registro: " + ex.Message);
             }
         }
 

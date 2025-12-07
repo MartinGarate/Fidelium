@@ -154,14 +154,14 @@
             BtnRestaurar.BackColor = Color.Transparent;
             BtnRestaurar.FlatAppearance.BorderColor = Color.FromArgb(115, 108, 122);
             BtnRestaurar.FlatStyle = FlatStyle.Flat;
-            BtnRestaurar.Font = new Font("Microsoft Sans Serif", 12F);
+            BtnRestaurar.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
             BtnRestaurar.ForeColor = Color.FromArgb(19, 10, 29);
             BtnRestaurar.IconChar = FontAwesome.Sharp.IconChar.ChevronCircleLeft;
             BtnRestaurar.IconColor = Color.FromArgb(19, 10, 29);
             BtnRestaurar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             BtnRestaurar.IconSize = 24;
             BtnRestaurar.ImageAlign = ContentAlignment.MiddleRight;
-            BtnRestaurar.Location = new Point(181, 915);
+            BtnRestaurar.Location = new Point(192, 915);
             BtnRestaurar.Name = "BtnRestaurar";
             BtnRestaurar.Size = new Size(123, 28);
             BtnRestaurar.TabIndex = 24;
@@ -199,7 +199,7 @@
             BtnEditar.BackColor = Color.Transparent;
             BtnEditar.FlatAppearance.BorderColor = Color.FromArgb(115, 108, 122);
             BtnEditar.FlatStyle = FlatStyle.Flat;
-            BtnEditar.Font = new Font("Microsoft Sans Serif", 12F);
+            BtnEditar.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
             BtnEditar.ForeColor = Color.FromArgb(19, 10, 29);
             BtnEditar.IconChar = FontAwesome.Sharp.IconChar.UserPen;
             BtnEditar.IconColor = Color.FromArgb(19, 10, 29);
@@ -218,10 +218,10 @@
             // checkBoxEliminados
             // 
             checkBoxEliminados.AutoSize = true;
-            checkBoxEliminados.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Italic);
-            checkBoxEliminados.Location = new Point(1230, 920);
+            checkBoxEliminados.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            checkBoxEliminados.Location = new Point(1244, 918);
             checkBoxEliminados.Name = "checkBoxEliminados";
-            checkBoxEliminados.Size = new Size(120, 21);
+            checkBoxEliminados.Size = new Size(120, 23);
             checkBoxEliminados.TabIndex = 21;
             checkBoxEliminados.Text = "Ver eliminados";
             checkBoxEliminados.UseVisualStyleBackColor = true;
@@ -238,9 +238,9 @@
             BtnBuscar.IconColor = Color.White;
             BtnBuscar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             BtnBuscar.IconSize = 28;
-            BtnBuscar.Location = new Point(1420, 221);
+            BtnBuscar.Location = new Point(1420, 223);
             BtnBuscar.Name = "BtnBuscar";
-            BtnBuscar.Size = new Size(47, 33);
+            BtnBuscar.Size = new Size(47, 32);
             BtnBuscar.TabIndex = 20;
             BtnBuscar.TextAlign = ContentAlignment.MiddleRight;
             BtnBuscar.UseVisualStyleBackColor = false;
@@ -249,7 +249,7 @@
             // textBoxBuscar
             // 
             textBoxBuscar.Font = new Font("Segoe UI", 14F);
-            textBoxBuscar.Location = new Point(52, 221);
+            textBoxBuscar.Location = new Point(52, 223);
             textBoxBuscar.Name = "textBoxBuscar";
             textBoxBuscar.PlaceholderText = " ¿A quién estás buscando?…";
             textBoxBuscar.Size = new Size(1368, 32);
@@ -288,14 +288,14 @@
             BtnCancelar.BackColor = Color.Transparent;
             BtnCancelar.FlatAppearance.BorderSize = 0;
             BtnCancelar.FlatStyle = FlatStyle.Flat;
-            BtnCancelar.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
+            BtnCancelar.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
             BtnCancelar.ForeColor = Color.FromArgb(11, 0, 25);
             BtnCancelar.IconChar = FontAwesome.Sharp.IconChar.None;
             BtnCancelar.IconColor = Color.FromArgb(11, 0, 25);
             BtnCancelar.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            BtnCancelar.Location = new Point(1128, 852);
+            BtnCancelar.Location = new Point(1120, 852);
             BtnCancelar.Name = "BtnCancelar";
-            BtnCancelar.Size = new Size(75, 31);
+            BtnCancelar.Size = new Size(92, 34);
             BtnCancelar.TabIndex = 21;
             BtnCancelar.Text = "Cancelar";
             BtnCancelar.UseVisualStyleBackColor = false;
@@ -305,20 +305,20 @@
             // 
             BtnGuardar.BackColor = Color.FromArgb(68, 0, 154);
             BtnGuardar.FlatStyle = FlatStyle.Flat;
-            BtnGuardar.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
+            BtnGuardar.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
             BtnGuardar.ForeColor = SystemColors.Control;
             BtnGuardar.IconChar = FontAwesome.Sharp.IconChar.ArrowRight;
             BtnGuardar.IconColor = Color.White;
             BtnGuardar.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            BtnGuardar.IconSize = 20;
+            BtnGuardar.IconSize = 24;
             BtnGuardar.ImageAlign = ContentAlignment.MiddleRight;
             BtnGuardar.Location = new Point(1234, 852);
             BtnGuardar.Name = "BtnGuardar";
             BtnGuardar.Padding = new Padding(3);
-            BtnGuardar.Size = new Size(110, 31);
+            BtnGuardar.Size = new Size(110, 34);
             BtnGuardar.TabIndex = 20;
             BtnGuardar.Text = "Guardar";
-            BtnGuardar.TextAlign = ContentAlignment.MiddleLeft;
+            BtnGuardar.TextAlign = ContentAlignment.TopLeft;
             BtnGuardar.UseVisualStyleBackColor = false;
             BtnGuardar.Click += BtnGuardar_Click;
             // 
