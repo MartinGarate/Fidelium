@@ -475,7 +475,7 @@
             labelAccion.AutoSize = true;
             labelAccion.BackColor = Color.Transparent;
             labelAccion.Font = new Font("Segoe UI Semibold", 30F, FontStyle.Bold);
-            labelAccion.Location = new Point(156, 86);
+            labelAccion.Location = new Point(156, 77);
             labelAccion.Name = "labelAccion";
             labelAccion.Size = new Size(743, 54);
             labelAccion.TabIndex = 17;
