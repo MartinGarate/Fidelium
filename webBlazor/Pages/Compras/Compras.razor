@@ -259,8 +259,7 @@ else
 
             // Soft delete: marcar como eliminada en lugar de eliminar físicamente
             compra.IsDeleted = true;
-            compra.DeleteDate = DateTime.Now;
-            compra.UpdateAt = DateTime.Now;
+           
 
             await compraService.UpdateAsync(compra);
             compras.RemoveAll(c => c.ID == compraId);

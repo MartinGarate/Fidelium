@@ -228,7 +228,6 @@
 
                 // Solo limpiar el feedback, no eliminar la compra completa
                 compra.ComentarioFeedback = string.Empty;
-                compra.UpdateAt = DateTime.Now;
 
                 await compraService.UpdateAsync(compra);
                 opiniones.RemoveAll(o => o.ID == compraId);

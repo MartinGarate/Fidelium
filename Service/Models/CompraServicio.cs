@@ -24,10 +24,7 @@ namespace Service.Models
             public string NotasVentaInternas { get; set; } = string.Empty;
 
             public DateTime FechaCompra { get; set; } = DateTime.Now;
-
-            // FECHA RECORDATORIO (Lógica de 7 días)
-            // Semánticamente, se puede calcular en el GET de la propiedad
-            public DateTime FechaRecordatorio => FechaCompra.AddDays(7);
+            public DateTime FechaRecordatorio { get; set; }
 
             // Feedback post-venta
             public bool FeedbackRecibido { get; set; } = false;

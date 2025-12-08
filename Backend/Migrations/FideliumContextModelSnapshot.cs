@@ -161,6 +161,9 @@ namespace Backend.Migrations
                     b.Property<DateTime>("FechaCompra")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<DateTime>("FechaRecordatorio")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<bool>("FeedbackRecibido")
                         .HasColumnType("tinyint(1)");
 
@@ -193,6 +196,7 @@ namespace Backend.Migrations
                             Descripcion = "Upgrade de GPU",
                             EmpleadoID = 1,
                             FechaCompra = new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FechaRecordatorio = new DateTime(2025, 11, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FeedbackRecibido = true,
                             IsDeleted = false,
                             Nombre = "Gigabyte RTX 3050Ti",
@@ -207,6 +211,7 @@ namespace Backend.Migrations
                             Descripcion = "Instalación limpia",
                             EmpleadoID = 5,
                             FechaCompra = new DateTime(2025, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FechaRecordatorio = new DateTime(2025, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FeedbackRecibido = false,
                             IsDeleted = false,
                             Nombre = "Instalación Windows 11",
@@ -221,6 +226,7 @@ namespace Backend.Migrations
                             Descripcion = "",
                             EmpleadoID = 2,
                             FechaCompra = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FechaRecordatorio = new DateTime(2025, 9, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FeedbackRecibido = false,
                             IsDeleted = true,
                             Nombre = "SSD NVMe 1TB",

@@ -331,7 +331,6 @@ else
             compra.FechaCompra = fechaCompra;
             compra.ComentarioFeedback = compra.ComentarioFeedback?.Trim() ?? string.Empty;
             compra.EmpleadoID = selectedEmpleadoID > 0 ? selectedEmpleadoID : 0;
-            compra.UpdateAt = DateTime.Now;
 
             if (isEditing)
             {

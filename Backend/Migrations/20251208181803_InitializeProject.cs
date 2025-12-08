@@ -79,6 +79,7 @@ namespace Backend.Migrations
                     NotasVentaInternas = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     FechaCompra = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    FechaRecordatorio = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     FeedbackRecibido = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     ComentarioFeedback = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -156,12 +157,12 @@ namespace Backend.Migrations
 
             migrationBuilder.InsertData(
                 table: "ComprasServicios",
-                columns: new[] { "ID", "ClienteID", "ComentarioFeedback", "CreatedAt", "Descripcion", "EmpleadoID", "FechaCompra", "FeedbackRecibido", "IsDeleted", "Nombre", "NotasVentaInternas" },
+                columns: new[] { "ID", "ClienteID", "ComentarioFeedback", "CreatedAt", "Descripcion", "EmpleadoID", "FechaCompra", "FechaRecordatorio", "FeedbackRecibido", "IsDeleted", "Nombre", "NotasVentaInternas" },
                 values: new object[,]
                 {
-                    { 1, 1, "Excelente producto.", new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Upgrade de GPU", 1, new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), true, false, "Gigabyte RTX 3050Ti", "Buscaba jugar CSGO, se llevó esta por presupuesto." },
-                    { 2, 1, "", new DateTime(2025, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "Instalación limpia", 5, new DateTime(2025, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, "Instalación Windows 11", "PC vieja, chequear que no tire BSOD." },
-                    { 6, 3, "", new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "", 2, new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), false, true, "SSD NVMe 1TB", "Test de borrado" }
+                    { 1, 1, "Excelente producto.", new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Upgrade de GPU", 1, new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 11, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), true, false, "Gigabyte RTX 3050Ti", "Buscaba jugar CSGO, se llevó esta por presupuesto." },
+                    { 2, 1, "", new DateTime(2025, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "Instalación limpia", 5, new DateTime(2025, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, "Instalación Windows 11", "PC vieja, chequear que no tire BSOD." },
+                    { 6, 3, "", new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "", 2, new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 9, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), false, true, "SSD NVMe 1TB", "Test de borrado" }
                 });
 
             migrationBuilder.InsertData(

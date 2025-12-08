@@ -325,7 +325,6 @@ else
 
             // Actualizar opinión
             compraAActualizar.ComentarioFeedback = opinionText;
-            compraAActualizar.UpdateAt = DateTime.Now;
 
             await compraService.UpdateAsync(compraAActualizar);
 

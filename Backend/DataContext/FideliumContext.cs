@@ -52,6 +52,7 @@ namespace Backend.DataContext
                     Descripcion = "Upgrade de GPU",
                     NotasVentaInternas = "Buscaba jugar CSGO, se llevó esta por presupuesto.",
                     FechaCompra = new DateTime(2025, 11, 5),
+                    FechaRecordatorio = new DateTime(2025, 11, 5).AddDays(7),
                     ComentarioFeedback = "Excelente producto.",
                     FeedbackRecibido = true,
                     CreatedAt = new DateTime(2025, 11, 5)
@@ -65,6 +66,7 @@ namespace Backend.DataContext
                     Descripcion = "Instalación limpia",
                     NotasVentaInternas = "PC vieja, chequear que no tire BSOD.",
                     FechaCompra = new DateTime(2025, 11, 8),
+                    FechaRecordatorio = new DateTime(2025, 11, 8).AddDays(7),
                     ComentarioFeedback = "",
                     FeedbackRecibido = false,
                     CreatedAt = new DateTime(2025, 11, 8)
@@ -77,6 +79,7 @@ namespace Backend.DataContext
                     Nombre = "SSD NVMe 1TB",
                     NotasVentaInternas = "Test de borrado",
                     FechaCompra = new DateTime(2025, 9, 10),
+                    FechaRecordatorio = new DateTime(2025, 9, 17),
                     IsDeleted = true,
                     CreatedAt = new DateTime(2025, 9, 10)
                 }
