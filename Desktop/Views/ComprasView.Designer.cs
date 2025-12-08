@@ -41,23 +41,17 @@
             BtnBuscar = new FontAwesome.Sharp.IconButton();
             textBoxBuscar = new TextBox();
             AgregarEditar_TabPage = new TabPage();
-            BtnCancelar = new FontAwesome.Sharp.IconButton();
-            BtnGuardar = new FontAwesome.Sharp.IconButton();
-            panel1 = new Panel();
-            label9 = new Label();
-            dateTimeSolicitudFeedback = new DateTimePicker();
-            label8 = new Label();
-            dateTimeFechaCompra = new DateTimePicker();
-            label2 = new Label();
-            textBoxResponsable = new TextBox();
-            label7 = new Label();
-            textBoxDescripcion = new TextBox();
-            label6 = new Label();
-            textBoxProductoServicio = new TextBox();
-            label4 = new Label();
-            textBoxCliente = new TextBox();
-            labelAccion = new Label();
             label3 = new Label();
+            panel1 = new Panel();
+            dateTime_FechaCompra = new DateTimePicker();
+            textBoxEmpleado = new TextBox();
+            textBoxProductoServicio = new TextBox();
+            textBoxCliente = new TextBox();
+            label8 = new Label();
+            label2 = new Label();
+            label6 = new Label();
+            label4 = new Label();
+            labelAccion = new Label();
             SeleccionarClienteResponsable_TabPage = new TabPage();
             iconButton1 = new FontAwesome.Sharp.IconButton();
             textBoxBuscarUsuario = new TextBox();
@@ -65,6 +59,20 @@
             iconButton2 = new FontAwesome.Sharp.IconButton();
             label11 = new Label();
             dataGridViewUsuarios = new DataGridView();
+            txtDescripcion = new TextBox();
+            label12 = new Label();
+            dateTime_FechaRecordatorio = new DateTimePicker();
+            label7 = new Label();
+            txtNotasVentaInternas = new TextBox();
+            label13 = new Label();
+            label14 = new Label();
+            checkBox1 = new CheckBox();
+            txtFeedbackCliente = new TextBox();
+            label9 = new Label();
+            BtnCancelar = new FontAwesome.Sharp.IconButton();
+            BtnGuardar = new FontAwesome.Sharp.IconButton();
+            iconButton3 = new FontAwesome.Sharp.IconButton();
+            iconButton4 = new FontAwesome.Sharp.IconButton();
             ((System.ComponentModel.ISupportInitialize)dataGridViewCompras).BeginInit();
             tabControl.SuspendLayout();
             Lista_TabPage.SuspendLayout();
@@ -265,8 +273,8 @@
             // AgregarEditar_TabPage
             // 
             AgregarEditar_TabPage.BackColor = Color.FromArgb(244, 246, 248);
-            AgregarEditar_TabPage.Controls.Add(label3);
             AgregarEditar_TabPage.Controls.Add(BtnCancelar);
+            AgregarEditar_TabPage.Controls.Add(label3);
             AgregarEditar_TabPage.Controls.Add(BtnGuardar);
             AgregarEditar_TabPage.Controls.Add(panel1);
             AgregarEditar_TabPage.Controls.Add(labelAccion);
@@ -276,197 +284,6 @@
             AgregarEditar_TabPage.Size = new Size(1520, 1020);
             AgregarEditar_TabPage.TabIndex = 1;
             AgregarEditar_TabPage.Text = "Agregar/Editar";
-            // 
-            // BtnCancelar
-            // 
-            BtnCancelar.BackColor = Color.Transparent;
-            BtnCancelar.FlatAppearance.BorderSize = 0;
-            BtnCancelar.FlatStyle = FlatStyle.Flat;
-            BtnCancelar.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
-            BtnCancelar.ForeColor = Color.FromArgb(11, 0, 25);
-            BtnCancelar.IconChar = FontAwesome.Sharp.IconChar.None;
-            BtnCancelar.IconColor = Color.FromArgb(11, 0, 25);
-            BtnCancelar.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            BtnCancelar.Location = new Point(1128, 852);
-            BtnCancelar.Name = "BtnCancelar";
-            BtnCancelar.Size = new Size(75, 31);
-            BtnCancelar.TabIndex = 21;
-            BtnCancelar.Text = "Cancelar";
-            BtnCancelar.UseVisualStyleBackColor = false;
-            // 
-            // BtnGuardar
-            // 
-            BtnGuardar.BackColor = Color.FromArgb(68, 0, 154);
-            BtnGuardar.FlatStyle = FlatStyle.Flat;
-            BtnGuardar.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
-            BtnGuardar.ForeColor = SystemColors.Control;
-            BtnGuardar.IconChar = FontAwesome.Sharp.IconChar.ArrowRight;
-            BtnGuardar.IconColor = Color.White;
-            BtnGuardar.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            BtnGuardar.IconSize = 20;
-            BtnGuardar.ImageAlign = ContentAlignment.MiddleRight;
-            BtnGuardar.Location = new Point(1234, 852);
-            BtnGuardar.Name = "BtnGuardar";
-            BtnGuardar.Padding = new Padding(3);
-            BtnGuardar.Size = new Size(110, 31);
-            BtnGuardar.TabIndex = 20;
-            BtnGuardar.Text = "Guardar";
-            BtnGuardar.TextAlign = ContentAlignment.MiddleLeft;
-            BtnGuardar.UseVisualStyleBackColor = false;
-            // 
-            // panel1
-            // 
-            panel1.BackColor = Color.White;
-            panel1.Controls.Add(dateTimeSolicitudFeedback);
-            panel1.Controls.Add(dateTimeFechaCompra);
-            panel1.Controls.Add(textBoxResponsable);
-            panel1.Controls.Add(textBoxDescripcion);
-            panel1.Controls.Add(textBoxProductoServicio);
-            panel1.Controls.Add(textBoxCliente);
-            panel1.Controls.Add(label9);
-            panel1.Controls.Add(label8);
-            panel1.Controls.Add(label2);
-            panel1.Controls.Add(label7);
-            panel1.Controls.Add(label6);
-            panel1.Controls.Add(label4);
-            panel1.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
-            panel1.Location = new Point(164, 185);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(1180, 661);
-            panel1.TabIndex = 19;
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.BackColor = Color.Transparent;
-            label9.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
-            label9.Location = new Point(586, 294);
-            label9.Name = "label9";
-            label9.Size = new Size(355, 32);
-            label9.TabIndex = 37;
-            label9.Text = "Fecha de Solicitud de Feedback";
-            // 
-            // dateTimeSolicitudFeedback
-            // 
-            dateTimeSolicitudFeedback.Font = new Font("Segoe UI", 12F);
-            dateTimeSolicitudFeedback.Location = new Point(590, 324);
-            dateTimeSolicitudFeedback.Name = "dateTimeSolicitudFeedback";
-            dateTimeSolicitudFeedback.Size = new Size(490, 29);
-            dateTimeSolicitudFeedback.TabIndex = 36;
-            // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.BackColor = Color.Transparent;
-            label8.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
-            label8.Location = new Point(70, 294);
-            label8.Name = "label8";
-            label8.Size = new Size(207, 32);
-            label8.TabIndex = 35;
-            label8.Text = "Fecha de Registro";
-            // 
-            // dateTimeFechaCompra
-            // 
-            dateTimeFechaCompra.Font = new Font("Segoe UI", 12F);
-            dateTimeFechaCompra.Location = new Point(75, 324);
-            dateTimeFechaCompra.Name = "dateTimeFechaCompra";
-            dateTimeFechaCompra.Size = new Size(490, 29);
-            dateTimeFechaCompra.TabIndex = 34;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.BackColor = Color.Transparent;
-            label2.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
-            label2.Location = new Point(585, 40);
-            label2.Name = "label2";
-            label2.Size = new Size(149, 32);
-            label2.TabIndex = 33;
-            label2.Text = "Responsable";
-            // 
-            // textBoxResponsable
-            // 
-            textBoxResponsable.BackColor = Color.FromArgb(244, 246, 248);
-            textBoxResponsable.Font = new Font("Segoe UI", 12F);
-            textBoxResponsable.Location = new Point(590, 70);
-            textBoxResponsable.Name = "textBoxResponsable";
-            textBoxResponsable.PlaceholderText = "Ejemplo: Martin Garate";
-            textBoxResponsable.Size = new Size(489, 29);
-            textBoxResponsable.TabIndex = 32;
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.BackColor = Color.Transparent;
-            label7.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
-            label7.Location = new Point(69, 200);
-            label7.Name = "label7";
-            label7.Size = new Size(139, 32);
-            label7.TabIndex = 23;
-            label7.Text = "Descripción";
-            // 
-            // textBoxDescripcion
-            // 
-            textBoxDescripcion.BackColor = Color.FromArgb(244, 246, 248);
-            textBoxDescripcion.Font = new Font("Segoe UI", 12F);
-            textBoxDescripcion.Location = new Point(75, 230);
-            textBoxDescripcion.Name = "textBoxDescripcion";
-            textBoxDescripcion.PlaceholderText = "Detalles de uso y cualquier información relevante para el comprador";
-            textBoxDescripcion.Size = new Size(1004, 29);
-            textBoxDescripcion.TabIndex = 22;
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.BackColor = Color.Transparent;
-            label6.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
-            label6.Location = new Point(70, 121);
-            label6.Name = "label6";
-            label6.Size = new Size(226, 32);
-            label6.TabIndex = 21;
-            label6.Text = "Producto o Servicio";
-            // 
-            // textBoxProductoServicio
-            // 
-            textBoxProductoServicio.BackColor = Color.FromArgb(244, 246, 248);
-            textBoxProductoServicio.Font = new Font("Segoe UI", 12F);
-            textBoxProductoServicio.Location = new Point(76, 151);
-            textBoxProductoServicio.Name = "textBoxProductoServicio";
-            textBoxProductoServicio.PlaceholderText = "Ejemplo: Auriculares ASTROS A10";
-            textBoxProductoServicio.Size = new Size(1004, 29);
-            textBoxProductoServicio.TabIndex = 20;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.BackColor = Color.Transparent;
-            label4.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label4.Location = new Point(71, 40);
-            label4.Name = "label4";
-            label4.Size = new Size(226, 32);
-            label4.TabIndex = 19;
-            label4.Text = "Nombre del Cliente";
-            // 
-            // textBoxCliente
-            // 
-            textBoxCliente.BackColor = Color.FromArgb(244, 246, 248);
-            textBoxCliente.Font = new Font("Segoe UI", 12F);
-            textBoxCliente.Location = new Point(76, 70);
-            textBoxCliente.Name = "textBoxCliente";
-            textBoxCliente.PlaceholderText = "Ejemplo: Martin Garate";
-            textBoxCliente.Size = new Size(489, 29);
-            textBoxCliente.TabIndex = 0;
-            // 
-            // labelAccion
-            // 
-            labelAccion.AutoSize = true;
-            labelAccion.BackColor = Color.Transparent;
-            labelAccion.Font = new Font("Segoe UI Semibold", 30F, FontStyle.Bold);
-            labelAccion.Location = new Point(158, 86);
-            labelAccion.Name = "labelAccion";
-            labelAccion.Size = new Size(757, 54);
-            labelAccion.TabIndex = 17;
-            labelAccion.Text = "Registrá una nueva compra en el sistema";
             // 
             // label3
             // 
@@ -478,6 +295,129 @@
             label3.Size = new Size(610, 25);
             label3.TabIndex = 18;
             label3.Text = "Completá los datos de la compra para mantener tu control actualizado.";
+            // 
+            // panel1
+            // 
+            panel1.BackColor = Color.White;
+            panel1.Controls.Add(iconButton4);
+            panel1.Controls.Add(iconButton3);
+            panel1.Controls.Add(txtFeedbackCliente);
+            panel1.Controls.Add(label9);
+            panel1.Controls.Add(checkBox1);
+            panel1.Controls.Add(label14);
+            panel1.Controls.Add(txtNotasVentaInternas);
+            panel1.Controls.Add(label13);
+            panel1.Controls.Add(dateTime_FechaRecordatorio);
+            panel1.Controls.Add(label7);
+            panel1.Controls.Add(txtDescripcion);
+            panel1.Controls.Add(label12);
+            panel1.Controls.Add(dateTime_FechaCompra);
+            panel1.Controls.Add(textBoxEmpleado);
+            panel1.Controls.Add(textBoxProductoServicio);
+            panel1.Controls.Add(textBoxCliente);
+            panel1.Controls.Add(label8);
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(label6);
+            panel1.Controls.Add(label4);
+            panel1.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            panel1.Location = new Point(164, 185);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1180, 661);
+            panel1.TabIndex = 19;
+            // 
+            // dateTime_FechaCompra
+            // 
+            dateTime_FechaCompra.Font = new Font("Segoe UI", 12F);
+            dateTime_FechaCompra.Format = DateTimePickerFormat.Custom;
+            dateTime_FechaCompra.Location = new Point(590, 150);
+            dateTime_FechaCompra.Name = "dateTime_FechaCompra";
+            dateTime_FechaCompra.Size = new Size(490, 29);
+            dateTime_FechaCompra.TabIndex = 34;
+            // 
+            // textBoxEmpleado
+            // 
+            textBoxEmpleado.BackColor = Color.FromArgb(244, 246, 248);
+            textBoxEmpleado.Font = new Font("Segoe UI", 12F);
+            textBoxEmpleado.Location = new Point(590, 70);
+            textBoxEmpleado.Name = "textBoxEmpleado";
+            textBoxEmpleado.PlaceholderText = "Ejemplo: Martin Garate";
+            textBoxEmpleado.Size = new Size(453, 29);
+            textBoxEmpleado.TabIndex = 32;
+            // 
+            // textBoxProductoServicio
+            // 
+            textBoxProductoServicio.BackColor = Color.FromArgb(244, 246, 248);
+            textBoxProductoServicio.Font = new Font("Segoe UI", 12F);
+            textBoxProductoServicio.Location = new Point(76, 150);
+            textBoxProductoServicio.Name = "textBoxProductoServicio";
+            textBoxProductoServicio.PlaceholderText = "Ejemplo: Auriculares ASTROS A10";
+            textBoxProductoServicio.Size = new Size(489, 29);
+            textBoxProductoServicio.TabIndex = 20;
+            // 
+            // textBoxCliente
+            // 
+            textBoxCliente.BackColor = Color.FromArgb(244, 246, 248);
+            textBoxCliente.Font = new Font("Segoe UI", 12F);
+            textBoxCliente.Location = new Point(75, 70);
+            textBoxCliente.Name = "textBoxCliente";
+            textBoxCliente.PlaceholderText = "Ejemplo: Martin Garate";
+            textBoxCliente.Size = new Size(464, 29);
+            textBoxCliente.TabIndex = 0;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.BackColor = Color.Transparent;
+            label8.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            label8.Location = new Point(590, 115);
+            label8.Name = "label8";
+            label8.Size = new Size(204, 32);
+            label8.TabIndex = 35;
+            label8.Text = "Fecha de Compra";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.BackColor = Color.Transparent;
+            label2.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            label2.Location = new Point(590, 35);
+            label2.Name = "label2";
+            label2.Size = new Size(257, 32);
+            label2.TabIndex = 33;
+            label2.Text = "Nombre del Empleado";
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.BackColor = Color.Transparent;
+            label6.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            label6.Location = new Point(75, 115);
+            label6.Name = "label6";
+            label6.Size = new Size(358, 32);
+            label6.TabIndex = 21;
+            label6.Text = "Nombre del Producto / Servicio";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.BackColor = Color.Transparent;
+            label4.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label4.Location = new Point(76, 35);
+            label4.Name = "label4";
+            label4.Size = new Size(226, 32);
+            label4.TabIndex = 19;
+            label4.Text = "Nombre del Cliente";
+            // 
+            // labelAccion
+            // 
+            labelAccion.AutoSize = true;
+            labelAccion.BackColor = Color.Transparent;
+            labelAccion.Font = new Font("Segoe UI Semibold", 30F, FontStyle.Bold);
+            labelAccion.Location = new Point(158, 78);
+            labelAccion.Name = "labelAccion";
+            labelAccion.Size = new Size(757, 54);
+            labelAccion.TabIndex = 17;
+            labelAccion.Text = "Registrá una nueva compra en el sistema";
             // 
             // SeleccionarClienteResponsable_TabPage
             // 
@@ -574,6 +514,192 @@
             dataGridViewUsuarios.Size = new Size(1415, 649);
             dataGridViewUsuarios.TabIndex = 23;
             // 
+            // txtDescripcion
+            // 
+            txtDescripcion.BackColor = Color.FromArgb(244, 246, 248);
+            txtDescripcion.Font = new Font("Segoe UI", 12F);
+            txtDescripcion.Location = new Point(75, 241);
+            txtDescripcion.Multiline = true;
+            txtDescripcion.Name = "txtDescripcion";
+            txtDescripcion.PlaceholderText = "Detalles de uso y cualquier información relevante para el comprador";
+            txtDescripcion.ScrollBars = ScrollBars.Vertical;
+            txtDescripcion.Size = new Size(491, 64);
+            txtDescripcion.TabIndex = 38;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.BackColor = Color.Transparent;
+            label12.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            label12.Location = new Point(76, 206);
+            label12.Name = "label12";
+            label12.Size = new Size(394, 32);
+            label12.TabIndex = 39;
+            label12.Text = "Descripción del Producto / Servicio";
+            // 
+            // dateTime_FechaRecordatorio
+            // 
+            dateTime_FechaRecordatorio.Font = new Font("Segoe UI", 12F);
+            dateTime_FechaRecordatorio.Format = DateTimePickerFormat.Custom;
+            dateTime_FechaRecordatorio.Location = new Point(591, 241);
+            dateTime_FechaRecordatorio.Name = "dateTime_FechaRecordatorio";
+            dateTime_FechaRecordatorio.Size = new Size(490, 29);
+            dateTime_FechaRecordatorio.TabIndex = 40;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.BackColor = Color.Transparent;
+            label7.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            label7.Location = new Point(591, 206);
+            label7.Name = "label7";
+            label7.Size = new Size(258, 32);
+            label7.TabIndex = 41;
+            label7.Text = "Fecha de Recordatorio";
+            // 
+            // txtNotasVentaInternas
+            // 
+            txtNotasVentaInternas.BackColor = Color.FromArgb(244, 246, 248);
+            txtNotasVentaInternas.Font = new Font("Segoe UI", 12F);
+            txtNotasVentaInternas.Location = new Point(75, 365);
+            txtNotasVentaInternas.Multiline = true;
+            txtNotasVentaInternas.Name = "txtNotasVentaInternas";
+            txtNotasVentaInternas.PlaceholderText = "Ej: \"Buscaba mouse para CS:GO, ver si el peso del G203 le resultó cómodo\"";
+            txtNotasVentaInternas.ScrollBars = ScrollBars.Vertical;
+            txtNotasVentaInternas.Size = new Size(1004, 64);
+            txtNotasVentaInternas.TabIndex = 42;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.BackColor = Color.Transparent;
+            label13.FlatStyle = FlatStyle.Popup;
+            label13.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            label13.Location = new Point(75, 330);
+            label13.Name = "label13";
+            label13.Size = new Size(470, 32);
+            label13.TabIndex = 43;
+            label13.Text = "Notas Internas para Feedback (Empleado)";
+            // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.BackColor = Color.Transparent;
+            label14.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            label14.Location = new Point(75, 448);
+            label14.Name = "label14";
+            label14.Size = new Size(243, 32);
+            label14.TabIndex = 44;
+            label14.Text = "Estado del Feedback:";
+            // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            checkBox1.Location = new Point(324, 455);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(94, 25);
+            checkBox1.TabIndex = 45;
+            checkBox1.Text = "Recibido";
+            checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // txtFeedbackCliente
+            // 
+            txtFeedbackCliente.BackColor = Color.FromArgb(244, 246, 248);
+            txtFeedbackCliente.Font = new Font("Segoe UI", 12F);
+            txtFeedbackCliente.Location = new Point(75, 529);
+            txtFeedbackCliente.Multiline = true;
+            txtFeedbackCliente.Name = "txtFeedbackCliente";
+            txtFeedbackCliente.PlaceholderText = "Ej: \"Me encantó el sensor, pero el cable es algo rígido\"";
+            txtFeedbackCliente.ScrollBars = ScrollBars.Vertical;
+            txtFeedbackCliente.Size = new Size(1004, 99);
+            txtFeedbackCliente.TabIndex = 46;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.BackColor = Color.Transparent;
+            label9.FlatStyle = FlatStyle.Popup;
+            label9.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            label9.Location = new Point(75, 494);
+            label9.Name = "label9";
+            label9.Size = new Size(298, 32);
+            label9.TabIndex = 47;
+            label9.Text = "Feedback Final del Cliente";
+            // 
+            // BtnCancelar
+            // 
+            BtnCancelar.BackColor = Color.Transparent;
+            BtnCancelar.FlatAppearance.BorderSize = 0;
+            BtnCancelar.FlatStyle = FlatStyle.Flat;
+            BtnCancelar.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            BtnCancelar.ForeColor = Color.FromArgb(11, 0, 25);
+            BtnCancelar.IconChar = FontAwesome.Sharp.IconChar.None;
+            BtnCancelar.IconColor = Color.FromArgb(11, 0, 25);
+            BtnCancelar.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            BtnCancelar.Location = new Point(1120, 852);
+            BtnCancelar.Name = "BtnCancelar";
+            BtnCancelar.Size = new Size(92, 34);
+            BtnCancelar.TabIndex = 23;
+            BtnCancelar.Text = "Cancelar";
+            BtnCancelar.UseVisualStyleBackColor = false;
+            // 
+            // BtnGuardar
+            // 
+            BtnGuardar.BackColor = Color.FromArgb(68, 0, 154);
+            BtnGuardar.FlatStyle = FlatStyle.Flat;
+            BtnGuardar.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            BtnGuardar.ForeColor = SystemColors.Control;
+            BtnGuardar.IconChar = FontAwesome.Sharp.IconChar.ArrowRight;
+            BtnGuardar.IconColor = Color.White;
+            BtnGuardar.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            BtnGuardar.IconSize = 24;
+            BtnGuardar.ImageAlign = ContentAlignment.MiddleRight;
+            BtnGuardar.Location = new Point(1234, 852);
+            BtnGuardar.Name = "BtnGuardar";
+            BtnGuardar.Padding = new Padding(3);
+            BtnGuardar.Size = new Size(110, 34);
+            BtnGuardar.TabIndex = 22;
+            BtnGuardar.Text = "Guardar";
+            BtnGuardar.TextAlign = ContentAlignment.TopLeft;
+            BtnGuardar.UseVisualStyleBackColor = false;
+            // 
+            // iconButton3
+            // 
+            iconButton3.BackColor = Color.FromArgb(68, 0, 154);
+            iconButton3.FlatStyle = FlatStyle.Flat;
+            iconButton3.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            iconButton3.ForeColor = SystemColors.Control;
+            iconButton3.IconChar = FontAwesome.Sharp.IconChar.UniversalAccess;
+            iconButton3.IconColor = Color.White;
+            iconButton3.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconButton3.IconSize = 24;
+            iconButton3.Location = new Point(539, 69);
+            iconButton3.Name = "iconButton3";
+            iconButton3.Padding = new Padding(3);
+            iconButton3.Size = new Size(36, 30);
+            iconButton3.TabIndex = 24;
+            iconButton3.TextAlign = ContentAlignment.TopLeft;
+            iconButton3.UseVisualStyleBackColor = false;
+            // 
+            // iconButton4
+            // 
+            iconButton4.BackColor = Color.FromArgb(68, 0, 154);
+            iconButton4.FlatStyle = FlatStyle.Flat;
+            iconButton4.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            iconButton4.ForeColor = SystemColors.Control;
+            iconButton4.IconChar = FontAwesome.Sharp.IconChar.UniversalAccess;
+            iconButton4.IconColor = Color.White;
+            iconButton4.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconButton4.IconSize = 24;
+            iconButton4.Location = new Point(1043, 68);
+            iconButton4.Name = "iconButton4";
+            iconButton4.Padding = new Padding(3);
+            iconButton4.Size = new Size(36, 31);
+            iconButton4.TabIndex = 48;
+            iconButton4.TextAlign = ContentAlignment.TopLeft;
+            iconButton4.UseVisualStyleBackColor = false;
+            // 
             // ComprasView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -617,22 +743,17 @@
         private Panel panel1;
         private Label label4;
         private TextBox textBoxCliente;
-        private Label label7;
-        private TextBox textBoxDescripcion;
         private Label label6;
         private TextBox textBoxProductoServicio;
         private CheckBox checkBoxEliminados;
         private FontAwesome.Sharp.IconButton BtnRestaurar;
         private FontAwesome.Sharp.IconButton BtnEliminar;
         private FontAwesome.Sharp.IconButton BtnEditar;
-        private FontAwesome.Sharp.IconButton BtnCancelar;
-        private FontAwesome.Sharp.IconButton BtnGuardar;
         private Label label2;
-        private TextBox textBoxResponsable;
-        private Label label9;
+        private TextBox textBoxEmpleado;
         private DateTimePicker dateTimeSolicitudFeedback;
         private Label label8;
-        private DateTimePicker dateTimeFechaCompra;
+        private DateTimePicker dateTime_FechaCompra;
         private TabPage SeleccionarClienteResponsable_TabPage;
         private FontAwesome.Sharp.IconButton iconButton1;
         private TextBox textBoxBuscarUsuario;
@@ -640,5 +761,20 @@
         private FontAwesome.Sharp.IconButton iconButton2;
         private Label label11;
         private DataGridView dataGridViewUsuarios;
+        private Label label7;
+        private TextBox textBox1;
+        private Label label12;
+        private Label label14;
+        private TextBox txtNotasVentaInternas;
+        private Label label13;
+        private CheckBox checkBox1;
+        private TextBox txtFeedbackCliente;
+        private Label label9;
+        private FontAwesome.Sharp.IconButton iconButton3;
+        private FontAwesome.Sharp.IconButton BtnCancelar;
+        private FontAwesome.Sharp.IconButton BtnGuardar;
+        private FontAwesome.Sharp.IconButton iconButton4;
+        private TextBox txtDescripcion;
+        private DateTimePicker dateTime_FechaRecordatorio;
     }
 }
