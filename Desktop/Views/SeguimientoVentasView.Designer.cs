@@ -76,6 +76,7 @@
             BtnSeleccionarUsuario = new FontAwesome.Sharp.IconButton();
             lblSeleccionUsuarioCliente_SubTitulo = new Label();
             dataGridViewUsuarios = new DataGridView();
+            BtnImprimirFeedbackPendiente = new FontAwesome.Sharp.IconButton();
             ((System.ComponentModel.ISupportInitialize)dataGridViewCompras).BeginInit();
             tabControl.SuspendLayout();
             Lista_TabPage.SuspendLayout();
@@ -152,6 +153,7 @@
             // Lista_TabPage
             // 
             Lista_TabPage.BackColor = Color.FromArgb(244, 246, 248);
+            Lista_TabPage.Controls.Add(BtnImprimirFeedbackPendiente);
             Lista_TabPage.Controls.Add(label3);
             Lista_TabPage.Controls.Add(comboBoxModoVista);
             Lista_TabPage.Controls.Add(BtnRestaurar);
@@ -761,6 +763,28 @@
             dataGridViewUsuarios.Size = new Size(1415, 649);
             dataGridViewUsuarios.TabIndex = 23;
             // 
+            // BtnImprimirFeedbackPendiente
+            // 
+            BtnImprimirFeedbackPendiente.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            BtnImprimirFeedbackPendiente.BackColor = Color.Transparent;
+            BtnImprimirFeedbackPendiente.FlatAppearance.BorderColor = Color.FromArgb(115, 108, 122);
+            BtnImprimirFeedbackPendiente.FlatStyle = FlatStyle.Flat;
+            BtnImprimirFeedbackPendiente.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            BtnImprimirFeedbackPendiente.ForeColor = Color.FromArgb(19, 10, 29);
+            BtnImprimirFeedbackPendiente.IconChar = FontAwesome.Sharp.IconChar.Print;
+            BtnImprimirFeedbackPendiente.IconColor = Color.FromArgb(19, 10, 29);
+            BtnImprimirFeedbackPendiente.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            BtnImprimirFeedbackPendiente.IconSize = 24;
+            BtnImprimirFeedbackPendiente.ImageAlign = ContentAlignment.MiddleRight;
+            BtnImprimirFeedbackPendiente.Location = new Point(636, 186);
+            BtnImprimirFeedbackPendiente.Name = "BtnImprimirFeedbackPendiente";
+            BtnImprimirFeedbackPendiente.Size = new Size(258, 29);
+            BtnImprimirFeedbackPendiente.TabIndex = 31;
+            BtnImprimirFeedbackPendiente.Text = "Imprimir Feedback Pendientes";
+            BtnImprimirFeedbackPendiente.TextAlign = ContentAlignment.MiddleLeft;
+            BtnImprimirFeedbackPendiente.UseVisualStyleBackColor = false;
+            BtnImprimirFeedbackPendiente.Click += BtnImprimirFeedbackPendiente_Click;
+            // 
             // SeguimientoVentasView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -842,5 +866,6 @@
         private ComboBox comboBox1;
         private Label label3;
         private ComboBox comboBoxModoVista;
+        private FontAwesome.Sharp.IconButton BtnImprimirFeedbackPendiente;
     }
 }

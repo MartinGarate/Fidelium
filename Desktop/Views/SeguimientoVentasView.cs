@@ -1,4 +1,5 @@
 ﻿using Desktop.Utils.HelpersDesktop;
+using Desktop.ViewReports;
 using Service.Enums;
 using Service.Models;
 using Service.Models.Service.Models;
@@ -48,7 +49,7 @@ namespace Desktop.Views
 
         private async void ComprasView_Load(object sender, EventArgs e)
         {
-            // 1. Desvinculamos el evento para evitar excepciones por datos nulos
+            // Desvinculamos el evento para evitar excepciones por datos nulos
             comboBoxModoVista.SelectedIndexChanged -= comboBoxModoVista_SelectedIndexChanged;
 
             await SincronizarCacheConServidor();
@@ -60,22 +61,21 @@ namespace Desktop.Views
         new { Texto = "Feedbacks Pendientes", Valor = ModoVistaCompra.FeedbacksPendientes }
     };
 
-            // 2. IMPORTANTE: Configurar Display y Value ANTES del DataSource 
-            // Esto ayuda a WinForms a preparar la estructura interna
+
             comboBoxModoVista.DisplayMember = "Texto";
             comboBoxModoVista.ValueMember = "Valor";
             comboBoxModoVista.DataSource = modos;
 
-            // 3. Verificamos disponibilidad antes de asignar el índice
+            //  Verificamos disponibilidad antes de asignar el índice
             if (comboBoxModoVista.Items.Count > 0)
             {
                 comboBoxModoVista.SelectedIndex = 0;
             }
 
-            // 4. Volvemos a vincular el evento
+            // Volvemos a vincular el evento
             comboBoxModoVista.SelectedIndexChanged += comboBoxModoVista_SelectedIndexChanged;
 
-            // 5. Refresco manual inicial
+            //  Refresco manual inicial
             RefrescarGrillaCompras();
         }
 
@@ -759,5 +759,26 @@ namespace Desktop.Views
         private void textBoxBuscarUsuario_TextChanged(object sender, EventArgs e) => RefrescarGrillaUsuario();
         private void BtnBuscarUsuario_Click(object sender, EventArgs e) => RefrescarGrillaUsuario();
 
+        private void BtnImprimirFeedbackPendiente_Click(object sender, EventArgs e)
+        {
+            // tomamos las compras que todavia no tienen feedback
+            var comprasPendientes = _comprasCache
+                .Where(cs => !cs.FeedbackRecibido)
+                .OrderByDescending(cs => cs.FechaCompra)
+                .ToList();
+            if (comprasPendientes.Count == 0)
+            {
+                MessageHelpers.ShowWarning("No hay compras pendientes de feedback para imprimir.");
+            }
+
+            if (comprasPendientes.Count >= 1)
+            {
+                var feedbackPendienteViewReport = new FeedbackPendientesViewReport(comprasPendientes);
+                feedbackPendienteViewReport.MdiParent = this.MdiParent;
+                feedbackPendienteViewReport.Show();
+            }
+
+
+        }
     }
 }
