@@ -5,6 +5,7 @@ using Service.Models.Service.Models;
 using Service.Services;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -36,7 +37,7 @@ namespace Desktop.Views
         public enum ModoVistaCompra
         {
             TodasLasCompras,
-            FeedbacksCompletados,
+            FeedbacksRecibidos,
             FeedbacksPendientes
         }
 
@@ -47,10 +48,19 @@ namespace Desktop.Views
 
         private async void ComprasView_Load(object sender, EventArgs e)
         {
-            // Carga inicial masiva
             await SincronizarCacheConServidor();
-            comboBoxModoVista.DataSource = Enum.GetValues(typeof(ModoVistaCompra));
-            // Para que se vea bonito:
+
+            // Creamos una lista "traducida" para que el usuario vea espacios
+            comboBoxModoVista.DataSource = new[] {
+        new { Texto = "Todas las Compras", Valor = ModoVistaCompra.TodasLasCompras },
+        new { Texto = "Feedbacks Recibidos", Valor = ModoVistaCompra.FeedbacksRecibidos },
+        new { Texto = "Feedbacks Pendientes", Valor = ModoVistaCompra.FeedbacksPendientes }
+            };
+
+            // Le decimos qué campo mostrar y qué campo usar internamente
+            comboBoxModoVista.DisplayMember = "Texto";
+            comboBoxModoVista.ValueMember = "Valor";
+
             comboBoxModoVista.SelectedIndex = 0;
         }
 
@@ -105,31 +115,32 @@ namespace Desktop.Views
         }
         private void RefrescarGrillaCompras()
         {
-            // 1. Capturamos los criterios de búsqueda (Texto + Modo de Vista)
+            // 1. Capturamos los criterios de búsqueda
             string filtroTexto = textBoxBuscar.Text.Trim();
 
-            // Obtenemos el modo seleccionado del ComboBox
-            ModoVistaCompra modoSeleccionado = comboBoxModoVista.SelectedItem is ModoVistaCompra modo
-                                              ? modo
-                                              : ModoVistaCompra.TodasLasCompras;
+            // 2. Extraemos el modo seleccionado desde el SelectedValue
+            ModoVistaCompra modoSeleccionado = comboBoxModoVista.SelectedValue is ModoVistaCompra modo
+                                                ? modo
+                                                : ModoVistaCompra.TodasLasCompras;
 
-            // 2. Aplicamos el filtrado en memoria (RAM)
+            // 3. Aplicamos el filtrado en RAM (usando validaciones explícitas contra null)
             var query = _comprasCache.AsQueryable();
 
-            // Filtro por Texto
             if (!string.IsNullOrEmpty(filtroTexto))
             {
                 query = query.Where(cs =>
                     (cs.Nombre != null && cs.Nombre.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase)) ||
-                    (cs.Cliente != null && cs.Cliente.Usuario != null && cs.Cliente.Usuario.Nombre.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase)) ||
-                    (cs.Empleado != null && cs.Empleado.Nombre.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase))
+                    (cs.Cliente != null && cs.Cliente.Usuario != null && cs.Cliente.Usuario.Nombre != null &&
+                     cs.Cliente.Usuario.Nombre.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase)) ||
+                    (cs.Empleado != null && cs.Empleado.Nombre != null &&
+                     cs.Empleado.Nombre.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase))
                 );
             }
 
-            // 3. Filtro de Negocio (Prioridad visual según selección)
+            // 4. Filtro por Estado (Enum)
             switch (modoSeleccionado)
             {
-                case ModoVistaCompra.FeedbacksCompletados:
+                case ModoVistaCompra.FeedbacksRecibidos:
                     query = query.Where(cs => cs.FeedbackRecibido == true);
                     break;
                 case ModoVistaCompra.FeedbacksPendientes:
@@ -137,46 +148,51 @@ namespace Desktop.Views
                     break;
             }
 
-            // 4. Ordenamiento y Transformación Final
+            // 5. Ordenamiento y Binding
             var comprasFiltradas = query.OrderByDescending(cs => cs.FechaCompra).ToList();
 
-            // 5. Binding a la Grilla
+            // Limpiamos siempre el DataSource antes para evitar conflictos de columnas
             dataGridViewCompras.DataSource = null;
             dataGridViewCompras.DataSource = TransformarParaUICompras(comprasFiltradas);
 
-            // 6. Estética (Ocultamos ID y renombramos cabeceras)
+            // 6. Lógica de estética y cabeceras (DataGridHelpers)
             if (dataGridViewCompras.ColumnCount > 0)
             {
+                // Ocultamos el ID que usamos para editar/eliminar pero que el usuario no ve
                 DataGridHelpers.HideColumns(dataGridViewCompras, "ID");
+
+                // Aplica colores, bordes y estilos básicos definidos en tu helper
                 DataGridHelpers.SetupBasicGrid(dataGridViewCompras);
-                DataGridHelpers.RenameColumn(dataGridViewCompras, "Empleado", "VENDEDOR");
+
+                // Renombramos cabeceras para que se vean profesionales
+                DataGridHelpers.RenameColumn(dataGridViewCompras, "FECHA", "FECHA VENTA");
             }
         }
         private List<object> TransformarParaUICompras(List<CompraServicio> compras)
         {
-            // Detectamos el modo actual
-            ModoVistaCompra modoActual = comboBoxModoVista.SelectedItem is ModoVistaCompra modo ? modo : ModoVistaCompra.TodasLasCompras;
+            // Obtenemos el modo usando SelectedValue igual que arriba
+            ModoVistaCompra modoActual = comboBoxModoVista.SelectedValue is ModoVistaCompra modo
+                                         ? modo
+                                         : ModoVistaCompra.TodasLasCompras;
 
             var datosParaGrilla = compras.Select(cs => {
-                if (modoActual == ModoVistaCompra.FeedbacksCompletados)
+                if (modoActual == ModoVistaCompra.FeedbacksRecibidos)
                 {
-                    // Vista específica para feedbacks: Sin fechas, con comentario
                     return (object)new
                     {
                         PRODUCTO = cs.Nombre ?? "Sin Nombre",
-                        CLIENTE = cs.Cliente?.Usuario != null ? $"{cs.Cliente.Usuario.Nombre}" : "N/A",
+                        CLIENTE = cs.Cliente?.Usuario?.Nombre ?? "N/A",
                         COMENTARIO = cs.ComentarioFeedback ?? "Sin comentarios",
                         ID = (int)cs.ID,
                     };
                 }
                 else
                 {
-                    // Vista estándar (Todas las compras o pendientes)
                     return (object)new
                     {
                         PRODUCTO = cs.Nombre ?? "Sin Nombre",
-                        CLIENTE = cs.Cliente?.Usuario != null ? $"{cs.Cliente.Usuario.Nombre}" : "N/A",
-                        VENDEDOR = cs.Empleado != null ? $"{cs.Empleado.Nombre}" : "N/A",
+                        CLIENTE = cs.Cliente?.Usuario?.Nombre ?? "N/A",
+                        VENDEDOR = cs.Empleado?.Nombre ?? "N/A",
                         FECHA = cs.FechaCompra.ToShortDateString(),
                         RECORDATORIO = cs.FechaRecordatorio.ToShortDateString(),
                         FEEDBACK = cs.FeedbackRecibido ? "Recibido" : "Pendiente",
