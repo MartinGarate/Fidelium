@@ -356,7 +356,6 @@ vbCrLf &amp;
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
-                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -647,7 +646,7 @@ vbCrLf &amp;
               <rd:DefaultName>Textbox3</rd:DefaultName>
               <Top>1.40321cm</Top>
               <Left>0.39371cm</Left>
-              <Height>0.94396cm</Height>
+              <Height>0.8734cm</Height>
               <Width>16.86688cm</Width>
               <ZIndex>4</ZIndex>
               <Style>
@@ -682,7 +681,7 @@ vbCrLf &amp;
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox3</rd:DefaultName>
-              <Top>2.52356cm</Top>
+              <Top>2.27662cm</Top>
               <Left>0.39371cm</Left>
               <Height>0.57354cm</Height>
               <Width>13.95153cm</Width>
