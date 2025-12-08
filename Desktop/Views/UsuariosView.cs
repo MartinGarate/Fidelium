@@ -35,8 +35,8 @@ namespace Desktop.Views
             comboBoxTipoUsuario.DataSource = Enum.GetValues(typeof(TipoUsuarioEnum));
         }
 
-        // --- LÓGICA DE SINCRONIZACIÓN Y DATOS ---
-
+        
+        // LÓGICA DE SINCRONIZACIÓN Y DATOS
         private async Task SincronizarCacheConServidor()
         {
             try
@@ -66,7 +66,6 @@ namespace Desktop.Views
                 MessageHelpers.ShowError($"Error de sincronización: {ex.Message}");
             }
         }
-
         private void RefrescarGrillaLocal()
         {
             string filtro = textBoxBuscar.Text.Trim();
@@ -89,7 +88,6 @@ namespace Desktop.Views
             DataGridHelpers.HideColumns(dataGridViewCompras, "ID");
             DataGridHelpers.SetupBasicGrid(dataGridViewCompras);
         }
-
         private List<object> TransformarParaUI(List<Cliente> clientes, List<Usuario> usuarios)
         {
             List<object> listaUnificada = new List<object>();
@@ -124,43 +122,58 @@ namespace Desktop.Views
             return listaUnificada.OrderBy(item => ((dynamic)item).NOMBRE).ToList();
         }
 
-        // --- MANEJO DE EVENTOS ---
 
-        private void textBoxBuscar_TextChanged(object sender, EventArgs e) => RefrescarGrillaLocal();
-
-        private void textBoxBuscar_KeyPress(object sender, KeyPressEventArgs e)
+        // MÉTODOS AUXILIARES DE CONTROLES
+        private void CargarDatosEnControles(Usuario u, Cliente? c = null)
         {
-            if (e.KeyChar == (char)Keys.Enter)
+            textBoxNombre.Text = u.Nombre;
+            comboBoxTipoUsuario.SelectedItem = u.TipoUsuario;
+            textBoxDNI.Text = u.DNI ?? "";
+            textBoxEmail.Text = u.Email ?? "";
+
+            textBoxDNI.Visible = true;
+            textBoxEmail.Visible = true;
+
+            bool esCliente = u.TipoUsuario == TipoUsuarioEnum.Cliente;
+            AjustarVisibilidad(esCliente);
+
+            if (c != null)
             {
-                e.Handled = true;
-                RefrescarGrillaLocal();
+                textBoxTelefono.Text = c.Telefono ?? "";
+                textBoxInstagram.Text = c.Instagram ?? "";
             }
         }
-
-        private async void checkBoxEliminados_CheckedChanged(object sender, EventArgs e)
+        private void LimpiarControles()
         {
-            await SincronizarCacheConServidor();
-            BtnRestaurar.Visible = checkBoxEliminados.Checked;
-            BtnEditar.Enabled = !checkBoxEliminados.Checked;
-            BtnEliminar.Enabled = !checkBoxEliminados.Checked;
+            _currentUsuario = null;
+            _currentCliente = null;
+            textBoxNombre.Clear();
+            textBoxDNI.Clear();
+            textBoxEmail.Clear();
+            textBoxTelefono.Clear();
+            textBoxInstagram.Clear();
+
+            comboBoxTipoUsuario.SelectedIndex = -1;
+            AjustarVisibilidad(false);
+        }
+        private void AjustarVisibilidad(bool esCliente)
+        {
+            textBoxTelefono.Visible = esCliente;
+            textBoxInstagram.Visible = esCliente;
+            lblInstagram.Visible = esCliente;
+            lblTelefono.Visible = esCliente;
+            // Si tienes Labels, añádelos aquí: lblTelefono.Visible = esCliente;
         }
 
+
+
+        // TabPage LISTA | Controles
         private void BtnAgregar_Click(object sender, EventArgs e)
         {
             LimpiarControles();
             labelAccion.Text = "Nuevo Registro";
             tabControl.SelectedTab = AgregarEditar_TabPage;
         }
-
-        private void BtnCancelar_Click(object sender, EventArgs e)
-        {
-            LimpiarControles();
-            tabControl.SelectedTab = Lista_TabPage;
-        }
-        private void BtnBuscar_Click(object sender, EventArgs e) => RefrescarGrillaLocal();
-
-        // --- CRUD (USANDO DataBoundItem) ---
-
         private void BtnEditar_Click(object sender, EventArgs e)
         {
             var item = dataGridViewCompras.CurrentRow?.DataBoundItem;
@@ -192,7 +205,6 @@ namespace Desktop.Views
             }
             catch (Exception ex) { MessageHelpers.ShowError("Error al cargar edición: " + ex.Message); }
         }
-
         private async void BtnEliminar_Click(object sender, EventArgs e)
         {
             var item = dataGridViewCompras.CurrentRow?.DataBoundItem;
@@ -223,7 +235,6 @@ namespace Desktop.Views
             }
             catch (Exception ex) { MessageHelpers.ShowError(ex.Message); }
         }
-
         private async void BtnRestaurar_Click(object sender, EventArgs e)
         {
             var item = dataGridViewCompras.CurrentRow?.DataBoundItem;
@@ -254,7 +265,27 @@ namespace Desktop.Views
             }
             catch (Exception ex) { MessageHelpers.ShowError(ex.Message); }
         }
+        private async void checkBoxEliminados_CheckedChanged(object sender, EventArgs e)
+        {
+            await SincronizarCacheConServidor();
+            BtnRestaurar.Visible = checkBoxEliminados.Checked;
+            BtnEditar.Enabled = !checkBoxEliminados.Checked;
+            BtnEliminar.Enabled = !checkBoxEliminados.Checked;
+        }
+        
+        private void BtnBuscar_Click(object sender, EventArgs e) => RefrescarGrillaLocal();
+        private void textBoxBuscar_TextChanged(object sender, EventArgs e) => RefrescarGrillaLocal();
+        private void textBoxBuscar_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                RefrescarGrillaLocal();
+            }
+        }
 
+
+        // TabPage Agregar/Editar | Controles
         private async void BtnGuardar_Click(object sender, EventArgs e)
         {
             try
@@ -290,52 +321,11 @@ namespace Desktop.Views
             }
             catch (Exception ex) { MessageHelpers.ShowError(ex.Message); }
         }
-
-        // --- HELPERS DE UI ---
-
-        private void CargarDatosEnControles(Usuario u, Cliente? c = null)
+        private void BtnCancelar_Click(object sender, EventArgs e)
         {
-            textBoxNombre.Text = u.Nombre;
-            comboBoxTipoUsuario.SelectedItem = u.TipoUsuario;
-            textBoxDNI.Text = u.DNI ?? "";
-            textBoxEmail.Text = u.Email ?? "";
-
-            textBoxDNI.Visible = true;
-            textBoxEmail.Visible = true;
-
-            bool esCliente = u.TipoUsuario == TipoUsuarioEnum.Cliente;
-            AjustarVisibilidad(esCliente);
-
-            if (c != null)
-            {
-                textBoxTelefono.Text = c.Telefono ?? "";
-                textBoxInstagram.Text = c.Instagram ?? "";
-            }
+            LimpiarControles();
+            tabControl.SelectedTab = Lista_TabPage;
         }
-
-        private void LimpiarControles()
-        {
-            _currentUsuario = null; 
-            _currentCliente = null;
-            textBoxNombre.Clear(); 
-            textBoxDNI.Clear();
-            textBoxEmail.Clear(); 
-            textBoxTelefono.Clear(); 
-            textBoxInstagram.Clear();
-
-            comboBoxTipoUsuario.SelectedIndex = -1;
-            AjustarVisibilidad(false);
-        }
-
-        private void AjustarVisibilidad(bool esCliente)
-        {
-            textBoxTelefono.Visible = esCliente;
-            textBoxInstagram.Visible = esCliente;
-            lblInstagram.Visible = esCliente;
-            lblTelefono.Visible = esCliente;
-            // Si tienes Labels, añádelos aquí: lblTelefono.Visible = esCliente;
-        }
-
         private void comboBoxTipoUsuario_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBoxTipoUsuario.SelectedItem is TipoUsuarioEnum tipo)
