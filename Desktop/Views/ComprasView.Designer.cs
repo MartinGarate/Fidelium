@@ -34,6 +34,8 @@
             BtnAgregar = new FontAwesome.Sharp.IconButton();
             tabControl = new TabControl();
             Lista_TabPage = new TabPage();
+            label3 = new Label();
+            comboBoxModoVista = new ComboBox();
             BtnRestaurar = new FontAwesome.Sharp.IconButton();
             BtnEliminar = new FontAwesome.Sharp.IconButton();
             BtnEditar = new FontAwesome.Sharp.IconButton();
@@ -67,13 +69,13 @@
             label4 = new Label();
             labelAccion = new Label();
             SeleccionarUsuario_TabPage = new TabPage();
+            BtnCancelarSeleccion = new FontAwesome.Sharp.IconButton();
             iconButton1 = new FontAwesome.Sharp.IconButton();
             textBoxBuscarUsuario = new TextBox();
             lblSeleccionUsuarioCliente_Titulo = new Label();
             BtnSeleccionarUsuario = new FontAwesome.Sharp.IconButton();
             lblSeleccionUsuarioCliente_SubTitulo = new Label();
             dataGridViewUsuarios = new DataGridView();
-            BtnCancelarSeleccion = new FontAwesome.Sharp.IconButton();
             ((System.ComponentModel.ISupportInitialize)dataGridViewCompras).BeginInit();
             tabControl.SuspendLayout();
             Lista_TabPage.SuspendLayout();
@@ -88,7 +90,7 @@
             label5.AutoSize = true;
             label5.BackColor = Color.Transparent;
             label5.Font = new Font("Segoe UI Semibold", 30F, FontStyle.Bold);
-            label5.Location = new Point(48, 71);
+            label5.Location = new Point(48, 63);
             label5.Name = "label5";
             label5.Size = new Size(764, 54);
             label5.TabIndex = 15;
@@ -150,6 +152,8 @@
             // Lista_TabPage
             // 
             Lista_TabPage.BackColor = Color.FromArgb(244, 246, 248);
+            Lista_TabPage.Controls.Add(label3);
+            Lista_TabPage.Controls.Add(comboBoxModoVista);
             Lista_TabPage.Controls.Add(BtnRestaurar);
             Lista_TabPage.Controls.Add(BtnEliminar);
             Lista_TabPage.Controls.Add(BtnEditar);
@@ -166,6 +170,29 @@
             Lista_TabPage.Size = new Size(1520, 1020);
             Lista_TabPage.TabIndex = 0;
             Lista_TabPage.Text = "Lista";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.BackColor = Color.Transparent;
+            label3.Font = new Font("Segoe UI", 14.25F);
+            label3.Location = new Point(48, 186);
+            label3.Name = "label3";
+            label3.Size = new Size(138, 25);
+            label3.TabIndex = 30;
+            label3.Text = "Modo de Vista:";
+            // 
+            // comboBoxModoVista
+            // 
+            comboBoxModoVista.BackColor = Color.FromArgb(244, 246, 248);
+            comboBoxModoVista.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxModoVista.Font = new Font("Segoe UI", 12F);
+            comboBoxModoVista.FormattingEnabled = true;
+            comboBoxModoVista.Location = new Point(192, 186);
+            comboBoxModoVista.Name = "comboBoxModoVista";
+            comboBoxModoVista.Size = new Size(427, 29);
+            comboBoxModoVista.TabIndex = 29;
+            comboBoxModoVista.SelectedIndexChanged += comboBoxModoVista_SelectedIndexChanged;
             // 
             // BtnRestaurar
             // 
@@ -259,7 +286,7 @@
             BtnBuscar.IconSize = 28;
             BtnBuscar.Location = new Point(1420, 221);
             BtnBuscar.Name = "BtnBuscar";
-            BtnBuscar.Size = new Size(47, 33);
+            BtnBuscar.Size = new Size(47, 32);
             BtnBuscar.TabIndex = 20;
             BtnBuscar.TextAlign = ContentAlignment.MiddleRight;
             BtnBuscar.UseVisualStyleBackColor = false;
@@ -635,6 +662,23 @@
             SeleccionarUsuario_TabPage.Text = "Seleccionar Usuario";
             SeleccionarUsuario_TabPage.UseVisualStyleBackColor = true;
             // 
+            // BtnCancelarSeleccion
+            // 
+            BtnCancelarSeleccion.BackColor = Color.Transparent;
+            BtnCancelarSeleccion.FlatStyle = FlatStyle.Flat;
+            BtnCancelarSeleccion.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            BtnCancelarSeleccion.ForeColor = Color.FromArgb(11, 0, 25);
+            BtnCancelarSeleccion.IconChar = FontAwesome.Sharp.IconChar.None;
+            BtnCancelarSeleccion.IconColor = Color.FromArgb(11, 0, 25);
+            BtnCancelarSeleccion.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            BtnCancelarSeleccion.Location = new Point(1044, 90);
+            BtnCancelarSeleccion.Name = "BtnCancelarSeleccion";
+            BtnCancelarSeleccion.Size = new Size(205, 52);
+            BtnCancelarSeleccion.TabIndex = 27;
+            BtnCancelarSeleccion.Text = "Cancelar";
+            BtnCancelarSeleccion.UseVisualStyleBackColor = false;
+            BtnCancelarSeleccion.Click += BtnCancelarSeleccion_Click;
+            // 
             // iconButton1
             // 
             iconButton1.BackColor = Color.FromArgb(11, 0, 25);
@@ -715,23 +759,6 @@
             dataGridViewUsuarios.Size = new Size(1415, 649);
             dataGridViewUsuarios.TabIndex = 23;
             // 
-            // BtnCancelarSeleccion
-            // 
-            BtnCancelarSeleccion.BackColor = Color.Transparent;
-            BtnCancelarSeleccion.FlatStyle = FlatStyle.Flat;
-            BtnCancelarSeleccion.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-            BtnCancelarSeleccion.ForeColor = Color.FromArgb(11, 0, 25);
-            BtnCancelarSeleccion.IconChar = FontAwesome.Sharp.IconChar.None;
-            BtnCancelarSeleccion.IconColor = Color.FromArgb(11, 0, 25);
-            BtnCancelarSeleccion.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            BtnCancelarSeleccion.Location = new Point(1044, 90);
-            BtnCancelarSeleccion.Name = "BtnCancelarSeleccion";
-            BtnCancelarSeleccion.Size = new Size(205, 52);
-            BtnCancelarSeleccion.TabIndex = 27;
-            BtnCancelarSeleccion.Text = "Cancelar";
-            BtnCancelarSeleccion.UseVisualStyleBackColor = false;
-            BtnCancelarSeleccion.Click += BtnCancelarSeleccion_Click;
-            // 
             // ComprasView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -810,5 +837,8 @@
         private FontAwesome.Sharp.IconButton BtnEditar;
         private CheckBox checkBoxEliminados;
         private FontAwesome.Sharp.IconButton BtnCancelarSeleccion;
+        private ComboBox comboBox1;
+        private Label label3;
+        private ComboBox comboBoxModoVista;
     }
 }

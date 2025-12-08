@@ -33,7 +33,12 @@ namespace Desktop.Views
 
         // Estado del selector: true = Cliente, false = Vendedor
         bool _isSelectingClient = true;
-
+        public enum ModoVistaCompra
+        {
+            TodasLasCompras,
+            FeedbacksCompletados,
+            FeedbacksPendientes
+        }
 
         public ComprasView()
         {
@@ -44,6 +49,9 @@ namespace Desktop.Views
         {
             // Carga inicial masiva
             await SincronizarCacheConServidor();
+            comboBoxModoVista.DataSource = Enum.GetValues(typeof(ModoVistaCompra));
+            // Para que se vea bonito:
+            comboBoxModoVista.SelectedIndex = 0;
         }
 
 
@@ -97,45 +105,87 @@ namespace Desktop.Views
         }
         private void RefrescarGrillaCompras()
         {
-            string filtro = textBoxBuscar.Text.Trim();
+            // 1. Capturamos los criterios de búsqueda (Texto + Modo de Vista)
+            string filtroTexto = textBoxBuscar.Text.Trim();
 
-            // 1. Filtramos las Compras en memoria
-            var comprasFiltradas = _comprasCache.Where(cs =>
-                string.IsNullOrEmpty(filtro) ||
-                (cs.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) || // Filtro por nombre de producto
-                (cs.Cliente?.Usuario?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) || // Filtro por Cliente
-                (cs.Empleado?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) // Filtro por Vendedor
-            ).OrderByDescending(cs => cs.FechaCompra).ToList();
+            // Obtenemos el modo seleccionado del ComboBox
+            ModoVistaCompra modoSeleccionado = comboBoxModoVista.SelectedItem is ModoVistaCompra modo
+                                              ? modo
+                                              : ModoVistaCompra.TodasLasCompras;
 
-            // 2. Transformamos la lista filtrada para la interfaz de Compras
+            // 2. Aplicamos el filtrado en memoria (RAM)
+            var query = _comprasCache.AsQueryable();
+
+            // Filtro por Texto
+            if (!string.IsNullOrEmpty(filtroTexto))
+            {
+                query = query.Where(cs =>
+                    (cs.Nombre != null && cs.Nombre.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase)) ||
+                    (cs.Cliente != null && cs.Cliente.Usuario != null && cs.Cliente.Usuario.Nombre.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase)) ||
+                    (cs.Empleado != null && cs.Empleado.Nombre.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase))
+                );
+            }
+
+            // 3. Filtro de Negocio (Prioridad visual según selección)
+            switch (modoSeleccionado)
+            {
+                case ModoVistaCompra.FeedbacksCompletados:
+                    query = query.Where(cs => cs.FeedbackRecibido == true);
+                    break;
+                case ModoVistaCompra.FeedbacksPendientes:
+                    query = query.Where(cs => cs.FeedbackRecibido == false);
+                    break;
+            }
+
+            // 4. Ordenamiento y Transformación Final
+            var comprasFiltradas = query.OrderByDescending(cs => cs.FechaCompra).ToList();
+
+            // 5. Binding a la Grilla
             dataGridViewCompras.DataSource = null;
             dataGridViewCompras.DataSource = TransformarParaUICompras(comprasFiltradas);
 
-            // 3. Estética de la grilla
-            DataGridHelpers.HideColumns(dataGridViewCompras, "ID");
-            DataGridHelpers.SetupBasicGrid(dataGridViewCompras);
-
-            // Renombrar columnas
-            DataGridHelpers.RenameColumn(dataGridViewCompras, "Empleado", "VENDEDOR");
+            // 6. Estética (Ocultamos ID y renombramos cabeceras)
+            if (dataGridViewCompras.ColumnCount > 0)
+            {
+                DataGridHelpers.HideColumns(dataGridViewCompras, "ID");
+                DataGridHelpers.SetupBasicGrid(dataGridViewCompras);
+                DataGridHelpers.RenameColumn(dataGridViewCompras, "Empleado", "VENDEDOR");
+            }
         }
         private List<object> TransformarParaUICompras(List<CompraServicio> compras)
         {
-            var datosParaGrilla = compras.Select(cs => new
-            {
-                PRODUCTO = cs.Nombre ?? "Sin Nombre",
-                CLIENTE = cs.Cliente?.Usuario != null
-                          ? $"{cs.Cliente.Usuario.Nombre} | DNI: {cs.Cliente.Usuario.DNI}" : "N/A",
-                VENDEDOR = cs.Empleado != null ? $"{cs.Empleado.Nombre} | DNI: {cs.Empleado.DNI}" : "N/A",
-                FECHA = cs.FechaCompra.ToShortDateString(),
-                RECORDATORIO = cs.FechaRecordatorio.ToShortDateString(),
-                FEEDBACK = cs.FeedbackRecibido ? "Recibido" : "Pendiente",
+            // Detectamos el modo actual
+            ModoVistaCompra modoActual = comboBoxModoVista.SelectedItem is ModoVistaCompra modo ? modo : ModoVistaCompra.TodasLasCompras;
 
-                // Campo técnico: ID de la compra (Se ocultará en el Grid)
-                ID = (int)cs.ID
+            var datosParaGrilla = compras.Select(cs => {
+                if (modoActual == ModoVistaCompra.FeedbacksCompletados)
+                {
+                    // Vista específica para feedbacks: Sin fechas, con comentario
+                    return (object)new
+                    {
+                        PRODUCTO = cs.Nombre ?? "Sin Nombre",
+                        CLIENTE = cs.Cliente?.Usuario != null ? $"{cs.Cliente.Usuario.Nombre}" : "N/A",
+                        COMENTARIO = cs.ComentarioFeedback ?? "Sin comentarios",
+                        ID = (int)cs.ID,
+                    };
+                }
+                else
+                {
+                    // Vista estándar (Todas las compras o pendientes)
+                    return (object)new
+                    {
+                        PRODUCTO = cs.Nombre ?? "Sin Nombre",
+                        CLIENTE = cs.Cliente?.Usuario != null ? $"{cs.Cliente.Usuario.Nombre}" : "N/A",
+                        VENDEDOR = cs.Empleado != null ? $"{cs.Empleado.Nombre}" : "N/A",
+                        FECHA = cs.FechaCompra.ToShortDateString(),
+                        RECORDATORIO = cs.FechaRecordatorio.ToShortDateString(),
+                        FEEDBACK = cs.FeedbackRecibido ? "Recibido" : "Pendiente",
+                        ID = (int)cs.ID
+                    };
+                }
             });
 
-            // 2. Retornamos la lista casteada a object para que el DataGridView la acepte
-            return datosParaGrilla.Cast<object>().ToList();
+            return datosParaGrilla.ToList();
         }
 
 
@@ -240,8 +290,41 @@ namespace Desktop.Views
         // MÉTODOS AUXILIARES DE CONTROLES
         private void CargarDatosEnControles(CompraServicio cs)
         {
-            // Datos de Personas (Usamos los objetos vinculados en RAM)
-            // Combinamos Nombre y DNI
+            // 1. Definimos el límite seguro para WinForms/SQL (1 de enero de 1753)
+            DateTime fechaMinimaSegura = new DateTime(1753, 1, 1);
+
+            // 2. RESETEAR LÍMITES ANTES DE ASIGNAR VALOR
+            // Usamos el límite real del picker para evitar la excepción de '0001-01-01'
+            dateTime_FechaCompra.MinDate = fechaMinimaSegura;
+            dateTime_FechaCompra.MaxDate = DateTime.MaxValue;
+            dateTime_FechaRecordatorio.MinDate = fechaMinimaSegura;
+            dateTime_FechaRecordatorio.MaxDate = DateTime.MaxValue;
+
+            // 3. ASIGNACIÓN SEGURA DE FECHAS (Validación contra año 0001)
+            if (cs.FechaCompra >= fechaMinimaSegura)
+            {
+                dateTime_FechaCompra.Value = cs.FechaCompra;
+            }
+            else
+            {
+                dateTime_FechaCompra.Value = DateTime.Now;
+            }
+
+            if (cs.FechaRecordatorio >= fechaMinimaSegura)
+            {
+                dateTime_FechaRecordatorio.Value = cs.FechaRecordatorio;
+            }
+            else
+            {
+                // Si no hay fecha de recordatorio válida, sugerimos +7 días sobre la compra
+                dateTime_FechaRecordatorio.Value = dateTime_FechaCompra.Value.AddDays(7);
+            }
+
+            // 4. LÓGICA DE MÍNIMO DINÁMICO
+            // Ahora que ambos tienen valores seguros, fijamos que el recordatorio sea posterior a la compra
+            dateTime_FechaRecordatorio.MinDate = dateTime_FechaCompra.Value;
+
+            // 5. DATOS DE PERSONAS (UI)
             textBoxCliente.Text = cs.Cliente?.Usuario != null
                 ? $"{cs.Cliente.Usuario.Nombre} (DNI: {cs.Cliente.Usuario.DNI})"
                 : "N/A";
@@ -250,21 +333,16 @@ namespace Desktop.Views
                 ? $"{cs.Empleado.Nombre} (DNI: {cs.Empleado.DNI})"
                 : "N/A";
 
-            // 2. Datos de la Transacción
+            // 6. DATOS DE LA TRANSACCIÓN
             textBoxProductoServicio.Text = cs.Nombre;
             textBoxDescripcion.Text = cs.Descripcion ?? "";
             textBoxNotasVentaInternas.Text = cs.NotasVentaInternas ?? "";
 
-            // 3. Fechas
-            dateTime_FechaCompra.Value = cs.FechaCompra;
-            // La FechaRecordatorio es calculada (FechaCompra + 7), pero la mostramos en su picker
-            dateTime_FechaRecordatorio.Value = cs.FechaRecordatorio;
-
-            // 4. Seguimiento Post-Venta
+            // 7. SEGUIMIENTO POST-VENTA
             checkBoxFeedbackRecibido.Checked = cs.FeedbackRecibido;
             textBoxFeedbackCliente.Text = cs.ComentarioFeedback ?? "";
 
-            // Al ser una edición de compra, bloqueamos los datos que no deberían cambiar
+            // 8. BLOQUEO DE EDICIÓN
             ConfigurarSoloLectura();
         }
         private void ConfigurarSoloLectura()
@@ -291,18 +369,21 @@ namespace Desktop.Views
             textBoxNotasVentaInternas.Clear();
             textBoxFeedbackCliente.Clear();
 
+            // IMPORTANTE: Resetear límites antes de asignar fechas
+            dateTime_FechaCompra.MinDate = new DateTime(1753, 1, 1);
+            dateTime_FechaRecordatorio.MinDate = new DateTime(1753, 1, 1);
+
             // 3. Resetear fechas a la actualidad
             dateTime_FechaCompra.Value = DateTime.Now;
-            // El label o control de recordatorio se limpiará/actualizará mediante evento
             dateTime_FechaRecordatorio.Value = DateTime.Now.AddDays(7);
+
+            // Fijamos el mínimo dinámico
+            dateTime_FechaRecordatorio.MinDate = dateTime_FechaCompra.Value;
 
             // 4. Resetear estados booleanos
             checkBoxFeedbackRecibido.Checked = false;
 
-            // 5. Quitar estados de "Solo lectura" para permitir nuevas cargas
-            textBoxCliente.ReadOnly = false;
-            textBoxEmpleado.ReadOnly = false;
-            textBoxNotasVentaInternas.ReadOnly = false;
+           
         }
 
 
@@ -419,10 +500,26 @@ namespace Desktop.Views
         }
         private async void checkBoxEliminados_CheckedChanged(object sender, EventArgs e)
         {
-            await SincronizarCacheConServidor();
-            BtnRestaurar.Visible = checkBoxEliminados.Checked;
-            BtnEditar.Enabled = !checkBoxEliminados.Checked;
-            BtnEliminar.Enabled = !checkBoxEliminados.Checked;
+            // Bloqueamos la grilla visualmente para dar feedback de carga
+            dataGridViewCompras.Enabled = false;
+
+            try
+            {
+                // 1. Volvemos a pedir los datos al servidor según el nuevo estado del checkbox
+                await SincronizarCacheConServidor();
+
+                // 2. Ajustamos visibilidad de botones
+                BtnRestaurar.Visible = checkBoxEliminados.Checked;
+                BtnEditar.Enabled = !checkBoxEliminados.Checked;
+                BtnEliminar.Enabled = !checkBoxEliminados.Checked;
+
+                // El botón Agregar suele ocultarse en la papelera para evitar errores
+                BtnAgregar.Enabled = !checkBoxEliminados.Checked;
+            }
+            finally
+            {
+                dataGridViewCompras.Enabled = true;
+            }
         }
 
         private void BtnBuscar_Click(object sender, EventArgs e) => RefrescarGrillaCompras();
@@ -442,27 +539,57 @@ namespace Desktop.Views
         {
             try
             {
-                // 1. Determinar si es una nueva compra o edición de feedback
+                // 1. DETERMINAR MODO (NUEVO O EDICIÓN)
                 bool esNuevo = _currentCompraServicio == null;
-                CompraServicio compra = esNuevo ? new CompraServicio() : _currentCompraServicio!; // implementamos lo aprendido en clase: "!" indica que sabemos que no es nulo aquí.
 
-                // 2. Mapeo de datos básicos (Producto y Notas)
+                // 2. VALIDACIONES PREVIAS (SEGURIDAD DE DATOS)
+                // Validar que el nombre del producto no esté vacío
+                if (string.IsNullOrWhiteSpace(textBoxProductoServicio.Text))
+                {
+                    MessageHelpers.ShowWarning("El nombre del producto o servicio es obligatorio.");
+                    return;
+                }
+
+                // Si es un registro nuevo, verificar obligatoriamente Cliente y Vendedor
+                if (esNuevo)
+                {
+                    if (_currentCliente == null || _currentCliente.ID == 0)
+                    {
+                        MessageHelpers.ShowWarning("Debe seleccionar un Cliente para registrar esta compra.");
+                        return;
+                    }
+
+                    if (_currentUsuario == null || _currentUsuario.ID == 0)
+                    {
+                        MessageHelpers.ShowWarning("Debe seleccionar un Vendedor para esta transacción.");
+                        return;
+                    }
+                }
+
+                // 3. MAPEO DE OBJETO
+                CompraServicio compra = esNuevo ? new CompraServicio() : _currentCompraServicio!;
+
+                // Datos básicos
                 compra.Nombre = textBoxProductoServicio.Text.Trim();
                 compra.Descripcion = textBoxDescripcion.Text.Trim();
                 compra.NotasVentaInternas = textBoxNotasVentaInternas.Text.Trim();
+
+                // Fechas (Ya validadas dinámicamente en el control visual)
                 compra.FechaCompra = dateTime_FechaCompra.Value;
                 compra.FechaRecordatorio = dateTime_FechaRecordatorio.Value;
-                // 3. Asignación de actores (Solo en registros nuevos)
+
+                // IDs de Relación (Solo en registros nuevos)
                 if (esNuevo)
                 {
-                    compra.ClienteID = _currentCliente?.ID ?? 0;
-                    compra.EmpleadoID = _currentUsuario?.ID ?? 0;
+                    compra.ClienteID = _currentCliente.ID; // Ya validado arriba que no es null
+                    compra.EmpleadoID = _currentUsuario.ID; // Ya validado arriba que no es null
                 }
 
-                // 4. Seguimiento de Feedback (Disponible siempre)
+                // Feedback (Disponible siempre para edición o carga inicial)
                 compra.FeedbackRecibido = checkBoxFeedbackRecibido.Checked;
                 compra.ComentarioFeedback = textBoxFeedbackCliente.Text.Trim();
 
+                // 4. PERSISTENCIA EN SERVIDOR
                 if (esNuevo)
                 {
                     await _compraServicioService.AddAsync(compra);
@@ -472,15 +599,17 @@ namespace Desktop.Views
                     await _compraServicioService.UpdateAsync(compra);
                 }
 
-                await SincronizarCacheConServidor(); // Recarga RAM masiva
+                // 5. FINALIZACIÓN Y LIMPIEZA
+                await SincronizarCacheConServidor(); // Recarga la RAM local con los datos del servidor
                 LimpiarControles();
 
                 tabControl.SelectedTab = Lista_TabPage;
-                MessageHelpers.ShowSuccess(esNuevo ? "Venta registrada con éxito." : "Feedback actualizado.");
+                MessageHelpers.ShowSuccess(esNuevo ? "Venta registrada con éxito." : "Registro de feedback actualizado correctamente.");
             }
             catch (Exception ex)
             {
-                MessageHelpers.ShowError($"No se pudo guardar: {ex.Message}");
+                // Captura errores de red, base de datos (FK) o lógica de servidor
+                MessageHelpers.ShowError($"No se pudo completar la operación: {ex.Message}");
             }
         }
         private void BtnCancelar_Click(object sender, EventArgs e)
@@ -490,13 +619,23 @@ namespace Desktop.Views
         }
         private void dateTime_FechaCompra_ValueChanged(object sender, EventArgs e)
         {
-            // Solo sugerimos si es un registro nuevo para no sobreescribir ediciones manuales previas
+            // Bloqueo de seguridad: Evitar procesar si la fecha es inválida (año 0001)
+            if (dateTime_FechaCompra.Value < new DateTime(1753, 1, 1)) return;
+
+            // 1. Reset temporal para permitir cambios
+            dateTime_FechaRecordatorio.MinDate = new DateTime(1753, 1, 1);
+
+            // 2. Solo sugerimos +7 días si es un registro nuevo
             if (_currentCompraServicio == null)
             {
                 dateTime_FechaRecordatorio.Value = dateTime_FechaCompra.Value.AddDays(7);
             }
 
-            // Validación semántica: El recordatorio no puede ser antes que la compra
+            // 3. Validación lógica
+            if (dateTime_FechaRecordatorio.Value < dateTime_FechaCompra.Value)
+                dateTime_FechaRecordatorio.Value = dateTime_FechaCompra.Value;
+
+            // 4. Fijar el mínimo real
             dateTime_FechaRecordatorio.MinDate = dateTime_FechaCompra.Value;
         }
         private void checkBoxFeedbackRecibido_CheckedChanged(object sender, EventArgs e)
@@ -581,6 +720,9 @@ namespace Desktop.Views
             tabControl.SelectedTab = AgregarEditar_TabPage;
         }
 
-
+        private void comboBoxModoVista_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefrescarGrillaCompras();
+        }
     }
 }
