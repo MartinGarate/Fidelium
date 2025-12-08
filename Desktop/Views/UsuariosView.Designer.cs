@@ -34,6 +34,8 @@
             BtnAgregar = new FontAwesome.Sharp.IconButton();
             tabControl = new TabControl();
             Lista_TabPage = new TabPage();
+            label2 = new Label();
+            comboBoxModoVista = new ComboBox();
             BtnRestaurar = new FontAwesome.Sharp.IconButton();
             BtnEliminar = new FontAwesome.Sharp.IconButton();
             BtnEditar = new FontAwesome.Sharp.IconButton();
@@ -131,6 +133,8 @@
             // Lista_TabPage
             // 
             Lista_TabPage.BackColor = Color.FromArgb(244, 246, 248);
+            Lista_TabPage.Controls.Add(label2);
+            Lista_TabPage.Controls.Add(comboBoxModoVista);
             Lista_TabPage.Controls.Add(label1);
             Lista_TabPage.Controls.Add(BtnRestaurar);
             Lista_TabPage.Controls.Add(BtnEliminar);
@@ -147,6 +151,29 @@
             Lista_TabPage.Size = new Size(1520, 1020);
             Lista_TabPage.TabIndex = 0;
             Lista_TabPage.Text = "Lista";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.BackColor = Color.Transparent;
+            label2.Font = new Font("Segoe UI", 14.25F);
+            label2.Location = new Point(48, 188);
+            label2.Name = "label2";
+            label2.Size = new Size(149, 25);
+            label2.TabIndex = 32;
+            label2.Text = "Tipo de Usuario:";
+            // 
+            // comboBoxModoVista
+            // 
+            comboBoxModoVista.BackColor = Color.FromArgb(244, 246, 248);
+            comboBoxModoVista.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxModoVista.Font = new Font("Segoe UI", 12F);
+            comboBoxModoVista.FormattingEnabled = true;
+            comboBoxModoVista.Location = new Point(203, 188);
+            comboBoxModoVista.Name = "comboBoxModoVista";
+            comboBoxModoVista.Size = new Size(427, 29);
+            comboBoxModoVista.TabIndex = 31;
+            comboBoxModoVista.SelectedIndexChanged += comboBoxModoVista_SelectedIndexChanged;
             // 
             // BtnRestaurar
             // 
@@ -538,5 +565,7 @@
         private FontAwesome.Sharp.IconButton BtnEditar;
         private FontAwesome.Sharp.IconButton BtnCancelar;
         private FontAwesome.Sharp.IconButton BtnGuardar;
+        private Label label2;
+        private ComboBox comboBoxModoVista;
     }
 }

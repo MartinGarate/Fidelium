@@ -48,22 +48,36 @@ namespace Desktop.Views
 
         private async void ComprasView_Load(object sender, EventArgs e)
         {
+            // 1. Desvinculamos el evento para evitar excepciones por datos nulos
+            comboBoxModoVista.SelectedIndexChanged -= comboBoxModoVista_SelectedIndexChanged;
+
             await SincronizarCacheConServidor();
 
-            // Creamos una lista "traducida" para que el usuario vea espacios
-            comboBoxModoVista.DataSource = new[] {
+            // Definimos la fuente de datos
+            var modos = new[] {
         new { Texto = "Todas las Compras", Valor = ModoVistaCompra.TodasLasCompras },
         new { Texto = "Feedbacks Recibidos", Valor = ModoVistaCompra.FeedbacksRecibidos },
         new { Texto = "Feedbacks Pendientes", Valor = ModoVistaCompra.FeedbacksPendientes }
-            };
+    };
 
-            // Le decimos qué campo mostrar y qué campo usar internamente
+            // 2. IMPORTANTE: Configurar Display y Value ANTES del DataSource 
+            // Esto ayuda a WinForms a preparar la estructura interna
             comboBoxModoVista.DisplayMember = "Texto";
             comboBoxModoVista.ValueMember = "Valor";
+            comboBoxModoVista.DataSource = modos;
 
-            comboBoxModoVista.SelectedIndex = 0;
+            // 3. Verificamos disponibilidad antes de asignar el índice
+            if (comboBoxModoVista.Items.Count > 0)
+            {
+                comboBoxModoVista.SelectedIndex = 0;
+            }
+
+            // 4. Volvemos a vincular el evento
+            comboBoxModoVista.SelectedIndexChanged += comboBoxModoVista_SelectedIndexChanged;
+
+            // 5. Refresco manual inicial
+            RefrescarGrillaCompras();
         }
-
 
 
         // LÓGICA DE SINCRONIZACIÓN Y DATOS
@@ -115,15 +129,14 @@ namespace Desktop.Views
         }
         private void RefrescarGrillaCompras()
         {
-            // 1. Capturamos los criterios de búsqueda
+            // Verificación de nulidad y estabilidad
+            if (comboBoxModoVista.SelectedValue == null) return;
+
             string filtroTexto = textBoxBuscar.Text.Trim();
 
-            // 2. Extraemos el modo seleccionado desde el SelectedValue
-            ModoVistaCompra modoSeleccionado = comboBoxModoVista.SelectedValue is ModoVistaCompra modo
-                                                ? modo
-                                                : ModoVistaCompra.TodasLasCompras;
+            // Extraemos el valor real del objeto anónimo
+            ModoVistaCompra modoSeleccionado = (ModoVistaCompra)comboBoxModoVista.SelectedValue;
 
-            // 3. Aplicamos el filtrado en RAM (usando validaciones explícitas contra null)
             var query = _comprasCache.AsQueryable();
 
             if (!string.IsNullOrEmpty(filtroTexto))

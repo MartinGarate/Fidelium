@@ -24,6 +24,13 @@ namespace Desktop.Views
         Cliente? _currentCliente;
         Usuario? _currentUsuario;
 
+        public enum ModoVistaUsuario
+        {
+            Todos,
+            Administradores,
+            Empleados,
+            Clientes
+        }
         public UsuariosView()
         {
             InitializeComponent();
@@ -31,11 +38,38 @@ namespace Desktop.Views
 
         private async void UsuariosView_Load(object sender, EventArgs e)
         {
+            // 1. Desvinculamos el evento para evitar disparos prematuros
+            comboBoxModoVista.SelectedIndexChanged -= comboBoxModoVista_SelectedIndexChanged;
+
             await SincronizarCacheConServidor();
+
+            // 2. Cargamos los tipos de usuario para edición
             comboBoxTipoUsuario.DataSource = Enum.GetValues(typeof(TipoUsuarioEnum));
+
+            // 3. Cargamos el modo de vista (Usando una lista anónima para mejor UX)
+            comboBoxModoVista.DataSource = new[] {
+        new { Texto = "Ver Todos", Valor = ModoVistaUsuario.Todos },
+        new { Texto = "Administradores", Valor = ModoVistaUsuario.Administradores },
+        new { Texto = "Empleados", Valor = ModoVistaUsuario.Empleados },
+        new { Texto = "Clientes", Valor = ModoVistaUsuario.Clientes }
+    };
+            comboBoxModoVista.DisplayMember = "Texto";
+            comboBoxModoVista.ValueMember = "Valor";
+
+            // 4. Verificamos que existan items antes de seleccionar
+            if (comboBoxModoVista.Items.Count > 0)
+            {
+                comboBoxModoVista.SelectedIndex = 0;
+            }
+
+            // 5. Volvemos a vincular el evento
+            comboBoxModoVista.SelectedIndexChanged += comboBoxModoVista_SelectedIndexChanged;
+
+            // 6. Refresco manual inicial
+            RefrescarGrillaLocal();
         }
 
-        
+
         // LÓGICA DE SINCRONIZACIÓN Y DATOS
         private async Task SincronizarCacheConServidor()
         {
@@ -68,25 +102,59 @@ namespace Desktop.Views
         }
         private void RefrescarGrillaLocal()
         {
-            string filtro = textBoxBuscar.Text.Trim();
+            // Verificación de seguridad para evitar NullReference
+            if (comboBoxModoVista.SelectedValue == null) return;
 
-            // Filtramos las listas originales en memoria
-            var clientesFiltrados = _clientesCache.Where(c =>
-                string.IsNullOrEmpty(filtro) ||
-                (c.Usuario?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
-            ).ToList();
+            string filtroText = textBoxBuscar.Text.Trim();
+            ModoVistaUsuario modoSeleccionado = (ModoVistaUsuario)comboBoxModoVista.SelectedValue;
 
-            var usuariosPurosFiltrados = _usuariosCache.Where(u =>
-                !_clientesCache.Any(c => c.UsuarioID == u.ID) &&
-                (string.IsNullOrEmpty(filtro) || u.Nombre.Contains(filtro, StringComparison.OrdinalIgnoreCase))
-            ).ToList();
+            List<Cliente> clientesFinal;
+            List<Usuario> usuariosFinal;
 
-            // Transformamos y ordenamos para la interfaz
-            dataGridViewCompras.DataSource = TransformarParaUI(clientesFiltrados, usuariosPurosFiltrados);
+            // 1. Filtrado por CATEGORÍA
+            switch (modoSeleccionado)
+            {
+                case ModoVistaUsuario.Administradores:
+                    clientesFinal = new List<Cliente>();
+                    usuariosFinal = _usuariosCache.Where(u => u.TipoUsuario == TipoUsuarioEnum.Administrador).ToList();
+                    break;
+                case ModoVistaUsuario.Empleados:
+                    clientesFinal = new List<Cliente>();
+                    usuariosFinal = _usuariosCache.Where(u => u.TipoUsuario == TipoUsuarioEnum.Empleado).ToList();
+                    break;
+                case ModoVistaUsuario.Clientes:
+                    clientesFinal = _clientesCache.ToList();
+                    usuariosFinal = new List<Usuario>();
+                    break;
+                default: // Todos
+                    clientesFinal = _clientesCache.ToList();
+                    usuariosFinal = _usuariosCache.Where(u => !_clientesCache.Any(c => c.UsuarioID == u.ID)).ToList();
+                    break;
+            }
 
-            // Estética de la grilla
-            DataGridHelpers.HideColumns(dataGridViewCompras, "ID");
-            DataGridHelpers.SetupBasicGrid(dataGridViewCompras);
+            // 2. Filtrado por TEXTO (Nombre o DNI para mayor utilidad)
+            if (!string.IsNullOrEmpty(filtroText))
+            {
+                clientesFinal = clientesFinal.Where(c =>
+                    (c.Usuario?.Nombre?.Contains(filtroText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (c.Usuario?.DNI?.Contains(filtroText) ?? false)
+                ).ToList();
+
+                usuariosFinal = usuariosFinal.Where(u =>
+                    u.Nombre.Contains(filtroText, StringComparison.OrdinalIgnoreCase) ||
+                    u.DNI.Contains(filtroText)
+                ).ToList();
+            }
+
+            // 3. Renderizado
+            dataGridViewCompras.DataSource = TransformarParaUI(clientesFinal, usuariosFinal);
+
+            // Estética
+            if (dataGridViewCompras.ColumnCount > 0)
+            {
+                DataGridHelpers.HideColumns(dataGridViewCompras, "ID");
+                DataGridHelpers.SetupBasicGrid(dataGridViewCompras);
+            }
         }
         private List<object> TransformarParaUI(List<Cliente> clientes, List<Usuario> usuarios)
         {
@@ -168,6 +236,12 @@ namespace Desktop.Views
 
 
         // TabPage LISTA | Controles
+
+        private void comboBoxModoVista_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefrescarGrillaLocal();
+        }
+
         private void BtnAgregar_Click(object sender, EventArgs e)
         {
             LimpiarControles();
@@ -272,7 +346,7 @@ namespace Desktop.Views
             BtnEditar.Enabled = !checkBoxEliminados.Checked;
             BtnEliminar.Enabled = !checkBoxEliminados.Checked;
         }
-        
+
         private void BtnBuscar_Click(object sender, EventArgs e) => RefrescarGrillaLocal();
         private void textBoxBuscar_TextChanged(object sender, EventArgs e) => RefrescarGrillaLocal();
         private void textBoxBuscar_KeyPress(object sender, KeyPressEventArgs e)
@@ -335,5 +409,6 @@ namespace Desktop.Views
                 AjustarVisibilidad(tipo == TipoUsuarioEnum.Cliente);
             }
         }
+
     }
 }
