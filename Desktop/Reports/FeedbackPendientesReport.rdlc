@@ -6,27 +6,27 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>3.58219cm</Width>
+              <Width>3.71758cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>3.58219cm</Width>
+              <Width>3.71758cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>3.58219cm</Width>
+              <Width>3.71758cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>3.82442cm</Width>
+              <Width>3.19251cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>3.82442cm</Width>
+              <Width>3.43063cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.87708cm</Width>
+              <Width>3.22413cm</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
             <TablixRow>
-              <Height>0.66615cm</Height>
+              <Height>0.68351cm</Height>
               <TablixCells>
                 <TablixCell>
                   <CellContents>
@@ -40,7 +40,7 @@
                               <Value>PRODUCTO</Value>
                               <Style>
                                 <FontFamily>Segoe UI</FontFamily>
-                                <FontSize>9pt</FontSize>
+                                <FontSize>8pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <TextDecoration>None</TextDecoration>
                                 <Color>White</Color>
@@ -58,7 +58,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
-                        <BackgroundColor>#140437</BackgroundColor>
+                        <BackgroundColor>#873fff</BackgroundColor>
                         <PaddingTop>3pt</PaddingTop>
                       </Style>
                     </Textbox>
@@ -76,7 +76,7 @@
                               <Value>CLIENTE</Value>
                               <Style>
                                 <FontFamily>Segoe UI</FontFamily>
-                                <FontSize>9pt</FontSize>
+                                <FontSize>8pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <TextDecoration>None</TextDecoration>
                                 <Color>White</Color>
@@ -94,7 +94,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
-                        <BackgroundColor>#140437</BackgroundColor>
+                        <BackgroundColor>#873fff</BackgroundColor>
                         <PaddingTop>3pt</PaddingTop>
                       </Style>
                     </Textbox>
@@ -112,7 +112,7 @@
                               <Value>VIAS DE CONTACTO</Value>
                               <Style>
                                 <FontFamily>Segoe UI</FontFamily>
-                                <FontSize>9pt</FontSize>
+                                <FontSize>8pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <TextDecoration>None</TextDecoration>
                                 <Color>White</Color>
@@ -130,7 +130,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
-                        <BackgroundColor>#140437</BackgroundColor>
+                        <BackgroundColor>#873fff</BackgroundColor>
                         <PaddingTop>3pt</PaddingTop>
                       </Style>
                     </Textbox>
@@ -148,7 +148,7 @@
                               <Value>RECORDATORIO</Value>
                               <Style>
                                 <FontFamily>Segoe UI</FontFamily>
-                                <FontSize>9pt</FontSize>
+                                <FontSize>7pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <TextDecoration>None</TextDecoration>
                                 <Color>White</Color>
@@ -166,7 +166,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
-                        <BackgroundColor>#140437</BackgroundColor>
+                        <BackgroundColor>#873fff</BackgroundColor>
                         <PaddingTop>3pt</PaddingTop>
                       </Style>
                     </Textbox>
@@ -184,7 +184,7 @@
                               <Value>VENDEDOR</Value>
                               <Style>
                                 <FontFamily>Segoe UI</FontFamily>
-                                <FontSize>9pt</FontSize>
+                                <FontSize>8pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <TextDecoration>None</TextDecoration>
                                 <Color>White</Color>
@@ -202,7 +202,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
-                        <BackgroundColor>#140437</BackgroundColor>
+                        <BackgroundColor>#873fff</BackgroundColor>
                         <PaddingTop>3pt</PaddingTop>
                       </Style>
                     </Textbox>
@@ -220,7 +220,7 @@
                               <Value>Notas</Value>
                               <Style>
                                 <FontFamily>Segoe UI</FontFamily>
-                                <FontSize>9pt</FontSize>
+                                <FontSize>8pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <TextDecoration>None</TextDecoration>
                                 <Color>White</Color>
@@ -238,7 +238,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
-                        <BackgroundColor>#140437</BackgroundColor>
+                        <BackgroundColor>#873fff</BackgroundColor>
                         <PaddingTop>3pt</PaddingTop>
                       </Style>
                     </Textbox>
@@ -247,7 +247,7 @@
               </TablixCells>
             </TablixRow>
             <TablixRow>
-              <Height>0.66615cm</Height>
+              <Height>0.68351cm</Height>
               <TablixCells>
                 <TablixCell>
                   <CellContents>
@@ -260,12 +260,12 @@
                             <TextRun>
                               <Value>=Fields!Producto.Value</Value>
                               <Style>
-                                <FontSize>9pt</FontSize>
+                                <FontSize>7pt</FontSize>
                               </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
-                            <TextAlign>Center</TextAlign>
+                            <TextAlign>Left</TextAlign>
                           </Style>
                         </Paragraph>
                       </Paragraphs>
@@ -275,6 +275,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>White</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -294,12 +295,12 @@
                             <TextRun>
                               <Value>=Fields!Cliente.Value</Value>
                               <Style>
-                                <FontSize>9pt</FontSize>
+                                <FontSize>7pt</FontSize>
                               </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
-                            <TextAlign>Center</TextAlign>
+                            <TextAlign>Left</TextAlign>
                           </Style>
                         </Paragraph>
                       </Paragraphs>
@@ -309,6 +310,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>White</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -326,14 +328,18 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>="Tel: " &amp; Fields!Telefono.Value &amp; vbCrLf &amp; "IG: " &amp; Fields!Instagram.Value &amp; vbCrLf &amp; "Mail: " &amp; Fields!Email.Value</Value>
+                              <Value>="Tel: " &amp; Fields!Telefono.Value &amp;
+vbCrLf &amp;
+"IG: " &amp; Fields!Instagram.Value &amp;
+vbCrLf &amp;
+"Email: " &amp; Fields!Email.Value</Value>
                               <Style>
-                                <FontSize>9pt</FontSize>
+                                <FontSize>6pt</FontSize>
                               </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
-                            <TextAlign>Center</TextAlign>
+                            <TextAlign>Left</TextAlign>
                           </Style>
                         </Paragraph>
                       </Paragraphs>
@@ -343,12 +349,14 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>White</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
+                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -362,12 +370,12 @@
                             <TextRun>
                               <Value>=Fields!FechaRecordatorio.Value</Value>
                               <Style>
-                                <FontSize>9pt</FontSize>
+                                <FontSize>7pt</FontSize>
                               </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
-                            <TextAlign>Center</TextAlign>
+                            <TextAlign>Left</TextAlign>
                           </Style>
                         </Paragraph>
                       </Paragraphs>
@@ -377,6 +385,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>White</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -396,12 +405,12 @@
                             <TextRun>
                               <Value>=Fields!Vendedor.Value</Value>
                               <Style>
-                                <FontSize>9pt</FontSize>
+                                <FontSize>7pt</FontSize>
                               </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
-                            <TextAlign>Center</TextAlign>
+                            <TextAlign>Left</TextAlign>
                           </Style>
                         </Paragraph>
                       </Paragraphs>
@@ -411,6 +420,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>White</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -430,12 +440,12 @@
                             <TextRun>
                               <Value>=Fields!Notas.Value</Value>
                               <Style>
-                                <FontSize>9pt</FontSize>
+                                <FontSize>7pt</FontSize>
                               </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
-                            <TextAlign>Center</TextAlign>
+                            <TextAlign>Left</TextAlign>
                           </Style>
                         </Paragraph>
                       </Paragraphs>
@@ -445,6 +455,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>White</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -480,8 +491,8 @@
         <DataSetName>DSComprasPendientes</DataSetName>
         <Top>0.17639cm</Top>
         <Left>0.00001cm</Left>
-        <Height>1.33229cm</Height>
-        <Width>21.2725cm</Width>
+        <Height>1.36701cm</Height>
+        <Width>21cm</Width>
         <Style>
           <Border>
             <Style>Solid</Style>
@@ -492,13 +503,15 @@
         </Style>
       </Tablix>
     </ReportItems>
-    <Height>0.70833in</Height>
-    <Style />
+    <Height>1.60125cm</Height>
+    <Style>
+      <BackgroundColor>White</BackgroundColor>
+    </Style>
   </Body>
-  <Width>8.375in</Width>
+  <Width>21cm</Width>
   <Page>
     <PageHeader>
-      <Height>3.76682cm</Height>
+      <Height>3.68745cm</Height>
       <PrintOnFirstPage>true</PrintOnFirstPage>
       <PrintOnLastPage>true</PrintOnLastPage>
       <ReportItems>
@@ -508,7 +521,7 @@
               <KeepTogether>true</KeepTogether>
               <Top>3.53808cm</Top>
               <Height>0.06583cm</Height>
-              <Width>21.2725cm</Width>
+              <Width>21cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -521,7 +534,7 @@
               <Value>Fidelium</Value>
               <Sizing>FitProportional</Sizing>
               <Top>0.36724cm</Top>
-              <Left>0.3937cm</Left>
+              <Left>0.39371cm</Left>
               <Height>0.69109cm</Height>
               <Width>1.26187cm</Width>
               <ZIndex>1</ZIndex>
@@ -552,7 +565,7 @@
               </Paragraphs>
               <rd:DefaultName>Textbox1</rd:DefaultName>
               <Top>0.36724cm</Top>
-              <Left>1.83196cm</Left>
+              <Left>1.83197cm</Left>
               <Height>0.71755cm</Height>
               <Width>2.52646cm</Width>
               <ZIndex>2</ZIndex>
@@ -576,7 +589,7 @@
                       <Value>Fecha: </Value>
                       <Style>
                         <FontFamily>Segoe UI</FontFamily>
-                        <FontSize>9pt</FontSize>
+                        <FontSize>8pt</FontSize>
                         <Color>White</Color>
                       </Style>
                     </TextRun>
@@ -584,7 +597,7 @@
                       <Value>=Now()</Value>
                       <Style>
                         <FontFamily>Segoe UI</FontFamily>
-                        <FontSize>9pt</FontSize>
+                        <FontSize>8pt</FontSize>
                         <Color>White</Color>
                       </Style>
                     </TextRun>
@@ -596,9 +609,9 @@
               </Paragraphs>
               <rd:DefaultName>Textbox1</rd:DefaultName>
               <Top>0.36724cm</Top>
-              <Left>16.50354cm</Left>
+              <Left>13.42cm</Left>
               <Height>0.69109cm</Height>
-              <Width>4.405cm</Width>
+              <Width>7.58cm</Width>
               <ZIndex>3</ZIndex>
               <Style>
                 <Border>
@@ -633,9 +646,9 @@
               </Paragraphs>
               <rd:DefaultName>Textbox3</rd:DefaultName>
               <Top>1.40321cm</Top>
-              <Left>0.3937cm</Left>
+              <Left>0.39371cm</Left>
               <Height>0.94396cm</Height>
-              <Width>12.42188cm</Width>
+              <Width>16.86688cm</Width>
               <ZIndex>4</ZIndex>
               <Style>
                 <Border>
@@ -670,9 +683,9 @@
               </Paragraphs>
               <rd:DefaultName>Textbox3</rd:DefaultName>
               <Top>2.52356cm</Top>
-              <Left>0.3937cm</Left>
+              <Left>0.39371cm</Left>
               <Height>0.57354cm</Height>
-              <Width>9.80251cm</Width>
+              <Width>13.95153cm</Width>
               <ZIndex>5</ZIndex>
               <Style>
                 <Border>
@@ -686,9 +699,8 @@
             </Textbox>
           </ReportItems>
           <KeepTogether>true</KeepTogether>
-          <Left>0.00001cm</Left>
           <Height>3.60391cm</Height>
-          <Width>21.2725cm</Width>
+          <Width>21cm</Width>
           <Style>
             <Border>
               <Style>None</Style>
@@ -740,8 +752,8 @@
               </Paragraphs>
               <rd:DefaultName>Textbox1</rd:DefaultName>
               <Top>0.61856cm</Top>
-              <Left>16.50355cm</Left>
-              <Height>0.69109cm</Height>
+              <Left>15.98647cm</Left>
+              <Height>0.53234cm</Height>
               <Width>4.405cm</Width>
               <Style>
                 <Border>
@@ -764,7 +776,7 @@
                       <Style>
                         <FontStyle>Normal</FontStyle>
                         <FontFamily>Segoe UI Semilight</FontFamily>
-                        <FontSize>12pt</FontSize>
+                        <FontSize>9pt</FontSize>
                         <FontWeight>Normal</FontWeight>
                         <TextDecoration>None</TextDecoration>
                         <Color>White</Color>
@@ -777,8 +789,8 @@
               <rd:DefaultName>Textbox3</rd:DefaultName>
               <Top>0.61856cm</Top>
               <Left>0.3937cm</Left>
-              <Height>0.69109cm</Height>
-              <Width>3.68089cm</Width>
+              <Height>0.53234cm</Height>
+              <Width>2.91359cm</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
@@ -793,9 +805,9 @@
             <Rectangle Name="Rectangle5">
               <KeepTogether>true</KeepTogether>
               <Top>0.61856cm</Top>
-              <Left>4.2157cm</Left>
-              <Height>0.69109cm</Height>
-              <Width>8.12721cm</Width>
+              <Left>3.48368cm</Left>
+              <Height>0.53234cm</Height>
+              <Width>7.66904cm</Width>
               <ZIndex>2</ZIndex>
               <Style>
                 <Border>
@@ -809,7 +821,7 @@
           <Top>0.1856cm</Top>
           <Left>0.00001cm</Left>
           <Height>1.48724cm</Height>
-          <Width>21.2725cm</Width>
+          <Width>20.99999cm</Width>
           <Style>
             <Border>
               <Style>None</Style>
@@ -821,7 +833,7 @@
           <KeepTogether>true</KeepTogether>
           <Top>0.14111cm</Top>
           <Height>0.06583cm</Height>
-          <Width>21.2725cm</Width>
+          <Width>21cm</Width>
           <ZIndex>1</ZIndex>
           <Style>
             <Border>
@@ -839,10 +851,10 @@
     </PageFooter>
     <PageHeight>29.7cm</PageHeight>
     <PageWidth>21cm</PageWidth>
-    <LeftMargin>2cm</LeftMargin>
-    <RightMargin>2cm</RightMargin>
-    <TopMargin>2cm</TopMargin>
-    <BottomMargin>2cm</BottomMargin>
+    <LeftMargin>0cm</LeftMargin>
+    <RightMargin>0cm</RightMargin>
+    <TopMargin>0cm</TopMargin>
+    <BottomMargin>0cm</BottomMargin>
     <ColumnSpacing>0.13cm</ColumnSpacing>
     <Style />
   </Page>

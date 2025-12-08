@@ -56,10 +56,14 @@ namespace Desktop.ViewReports
             _report.LocalReport.DataSources.Clear();
             _report.LocalReport.DataSources.Add(new ReportDataSource("DSComprasPendientes", dataset));
 
-            // 4. Configuración estética de impresión
-            _report.SetDisplayMode(DisplayMode.PrintLayout);
-            _report.ZoomMode = ZoomMode.Percent;
-            _report.ZoomPercent = 100;
+            // Configuración estética de impresión
+            _report.SetDisplayMode(DisplayMode.PrintLayout); // Muestra los márgenes reales
+
+            // CAMBIO CLAVE: "PageWidth" hace que el reporte ocupe todo el ancho de la ventana
+            _report.ZoomMode = ZoomMode.PageWidth;
+            // _report.ZoomPercent = 100; // Borra o comenta esta línea si usas PageWidth
+
+            _report.RefreshReport();
 
             _report.RefreshReport();
         }
