@@ -89,17 +89,11 @@ namespace Desktop
         {
             ButtonSeleccionado(sender, e);
             CloseCurrentView();
-            var comprasView = new ComprasView();
-            comprasView.MdiParent = this;
-            comprasView.Show();
-            currentOpenView = comprasView;
+            var seguimientoVentasView = new SeguimientoVentasView();
+            seguimientoVentasView.MdiParent = this;
+            seguimientoVentasView.Show();
+            currentOpenView = seguimientoVentasView;
         }
 
-        private void BtnNotificaciones_Click(object sender, EventArgs e)
-        {
-            ButtonSeleccionado(sender, e);
-            CloseCurrentView();
-            // Tu lógica específica de Notificaciones aquí
-        }
     }
 }

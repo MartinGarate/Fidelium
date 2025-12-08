@@ -23,7 +23,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Views\ComprasView.cs">
+    <Compile Update="Views\SeguimientoVentasView.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

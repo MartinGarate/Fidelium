@@ -1,6 +1,6 @@
 ﻿namespace Desktop.Views
 {
-    partial class ComprasView
+    partial class SeguimientoVentasView
     {
         /// <summary>
         /// Required designer variable.
@@ -70,7 +70,7 @@
             labelAccion = new Label();
             SeleccionarUsuario_TabPage = new TabPage();
             BtnCancelarSeleccion = new FontAwesome.Sharp.IconButton();
-            iconButton1 = new FontAwesome.Sharp.IconButton();
+            BtnBuscarUsuario = new FontAwesome.Sharp.IconButton();
             textBoxBuscarUsuario = new TextBox();
             lblSeleccionUsuarioCliente_Titulo = new Label();
             BtnSeleccionarUsuario = new FontAwesome.Sharp.IconButton();
@@ -648,7 +648,7 @@
             // SeleccionarUsuario_TabPage
             // 
             SeleccionarUsuario_TabPage.Controls.Add(BtnCancelarSeleccion);
-            SeleccionarUsuario_TabPage.Controls.Add(iconButton1);
+            SeleccionarUsuario_TabPage.Controls.Add(BtnBuscarUsuario);
             SeleccionarUsuario_TabPage.Controls.Add(textBoxBuscarUsuario);
             SeleccionarUsuario_TabPage.Controls.Add(lblSeleccionUsuarioCliente_Titulo);
             SeleccionarUsuario_TabPage.Controls.Add(BtnSeleccionarUsuario);
@@ -679,23 +679,24 @@
             BtnCancelarSeleccion.UseVisualStyleBackColor = false;
             BtnCancelarSeleccion.Click += BtnCancelarSeleccion_Click;
             // 
-            // iconButton1
+            // BtnBuscarUsuario
             // 
-            iconButton1.BackColor = Color.FromArgb(11, 0, 25);
-            iconButton1.FlatAppearance.BorderSize = 0;
-            iconButton1.FlatStyle = FlatStyle.Flat;
-            iconButton1.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            iconButton1.ForeColor = Color.White;
-            iconButton1.IconChar = FontAwesome.Sharp.IconChar.Search;
-            iconButton1.IconColor = Color.White;
-            iconButton1.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconButton1.IconSize = 28;
-            iconButton1.Location = new Point(1424, 224);
-            iconButton1.Name = "iconButton1";
-            iconButton1.Size = new Size(47, 33);
-            iconButton1.TabIndex = 26;
-            iconButton1.TextAlign = ContentAlignment.MiddleRight;
-            iconButton1.UseVisualStyleBackColor = false;
+            BtnBuscarUsuario.BackColor = Color.FromArgb(11, 0, 25);
+            BtnBuscarUsuario.FlatAppearance.BorderSize = 0;
+            BtnBuscarUsuario.FlatStyle = FlatStyle.Flat;
+            BtnBuscarUsuario.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            BtnBuscarUsuario.ForeColor = Color.White;
+            BtnBuscarUsuario.IconChar = FontAwesome.Sharp.IconChar.Search;
+            BtnBuscarUsuario.IconColor = Color.White;
+            BtnBuscarUsuario.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            BtnBuscarUsuario.IconSize = 28;
+            BtnBuscarUsuario.Location = new Point(1424, 224);
+            BtnBuscarUsuario.Name = "BtnBuscarUsuario";
+            BtnBuscarUsuario.Size = new Size(47, 33);
+            BtnBuscarUsuario.TabIndex = 26;
+            BtnBuscarUsuario.TextAlign = ContentAlignment.MiddleRight;
+            BtnBuscarUsuario.UseVisualStyleBackColor = false;
+            BtnBuscarUsuario.Click += BtnBuscarUsuario_Click;
             // 
             // textBoxBuscarUsuario
             // 
@@ -705,6 +706,7 @@
             textBoxBuscarUsuario.PlaceholderText = " ¿Qué estás buscando?…";
             textBoxBuscarUsuario.Size = new Size(1368, 32);
             textBoxBuscarUsuario.TabIndex = 25;
+            textBoxBuscarUsuario.TextChanged += textBoxBuscarUsuario_TextChanged;
             // 
             // lblSeleccionUsuarioCliente_Titulo
             // 
@@ -759,7 +761,7 @@
             dataGridViewUsuarios.Size = new Size(1415, 649);
             dataGridViewUsuarios.TabIndex = 23;
             // 
-            // ComprasView
+            // SeguimientoVentasView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -769,7 +771,7 @@
             Controls.Add(tabControl);
             MaximizeBox = false;
             MinimizeBox = false;
-            Name = "ComprasView";
+            Name = "SeguimientoVentasView";
             StartPosition = FormStartPosition.CenterScreen;
             WindowState = FormWindowState.Maximized;
             Load += ComprasView_Load;
@@ -811,7 +813,7 @@
         private Label label8;
         private DateTimePicker dateTime_FechaCompra;
         private TabPage SeleccionarUsuario_TabPage;
-        private FontAwesome.Sharp.IconButton iconButton1;
+        private FontAwesome.Sharp.IconButton BtnBuscarUsuario;
         private TextBox textBoxBuscarUsuario;
         private Label lblSeleccionUsuarioCliente_Titulo;
         private FontAwesome.Sharp.IconButton BtnSeleccionarUsuario;

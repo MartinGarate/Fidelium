@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace Desktop.Views
 {
-    public partial class ComprasView : Form
+    public partial class SeguimientoVentasView : Form
     {
         // Servicios de datos
         readonly GenericService<Usuario> _usuarioService = new();
@@ -41,7 +41,7 @@ namespace Desktop.Views
             FeedbacksPendientes
         }
 
-        public ComprasView()
+        public SeguimientoVentasView()
         {
             InitializeComponent();
         }
@@ -175,7 +175,8 @@ namespace Desktop.Views
                                          ? modo
                                          : ModoVistaCompra.TodasLasCompras;
 
-            var datosParaGrilla = compras.Select(cs => {
+            var datosParaGrilla = compras.Select(cs =>
+            {
                 if (modoActual == ModoVistaCompra.FeedbacksRecibidos)
                 {
                     return (object)new
@@ -207,100 +208,103 @@ namespace Desktop.Views
 
         private void RefrescarGrillaUsuario()
         {
-            // 1. Filtrado lógico basado en el estado
+            // 1. Capturamos el texto de búsqueda
+            string filtro = textBoxBuscarUsuario.Text.Trim();
             List<object> datosAMostrar;
 
             if (_isSelectingClient)
             {
-                // Traemos todos los clientes de la caché
-                datosAMostrar = TransformarParaUIUsuario(_clientesCache.Cast<object>().ToList());
+                // Filtramos la lista de Clientes
+                var clientesFiltrados = _clientesCache.Where(c =>
+                    string.IsNullOrEmpty(filtro) ||
+                    (c.Usuario?.Nombre.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (c.Usuario?.DNI.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
+                ).ToList();
+
+                datosAMostrar = TransformarParaUICliente(clientesFiltrados);
             }
             else
             {
-                // Traemos usuarios que NO son clientes (Administradores y Empleados)
-                var vendedores = _usuariosCache.Where(u => u.TipoUsuario != TipoUsuarioEnum.Cliente).Cast<object>().ToList();
-                datosAMostrar = TransformarParaUIUsuario(vendedores);
+                // Filtramos la lista de Vendedores (Usuarios puros)
+                var vendedoresFiltrados = _usuariosCache.Where(u =>
+                    u.TipoUsuario != TipoUsuarioEnum.Cliente &&
+                    (string.IsNullOrEmpty(filtro) ||
+                     u.Nombre.Contains(filtro, StringComparison.OrdinalIgnoreCase) ||
+                     u.DNI.Contains(filtro, StringComparison.OrdinalIgnoreCase))
+                ).ToList();
+
+                datosAMostrar = TransformarParaUIUsuarioPuro(vendedoresFiltrados);
             }
 
-            // 2. Binding a la grilla de selección (usa el nombre de tu control de grilla en ese tab)
+            // 2. Binding y Estética
             dataGridViewUsuarios.DataSource = null;
             dataGridViewUsuarios.DataSource = datosAMostrar;
 
-            // 3. Estética
-            DataGridHelpers.HideColumns(dataGridViewUsuarios, "ID");
-            DataGridHelpers.SetupBasicGrid(dataGridViewUsuarios);
+            if (dataGridViewUsuarios.ColumnCount > 0)
+            {
+                DataGridHelpers.HideColumns(dataGridViewUsuarios, "ID");
+                DataGridHelpers.SetupBasicGrid(dataGridViewUsuarios);
+            }
         }
-        private List<object> TransformarParaUIUsuario(List<object> origen)
+        private List<object> TransformarParaUICliente(List<Cliente> origen)
         {
-            if (_isSelectingClient)
+            return origen.Select(c => new
             {
-                return origen.Cast<Cliente>().Select(c => new
-                {
-                    NOMBRE = c.Usuario?.Nombre ?? "N/A",
-                    DNI = c.Usuario?.DNI ?? "N/A",
-                    TIPO = "Cliente",
-                    ID = (int)c.ID // ID de Cliente
-                }).Cast<object>().ToList();
-            }
-            else
+                NOMBRE = c.Usuario?.Nombre ?? "N/A",
+                DNI = c.Usuario?.DNI ?? "N/A",
+                TIPO = "Cliente",
+                ID = (int)c.ID
+            }).Cast<object>().ToList();
+        }
+
+        private List<object> TransformarParaUIUsuarioPuro(List<Usuario> origen)
+        {
+            return origen.Select(u => new
             {
-                return origen.Cast<Usuario>().Select(u => new
-                {
-                    NOMBRE = u.Nombre,
-                    DNI = u.DNI,
-                    TIPO = u.TipoUsuario.ToString(),
-                    ID = (int)u.ID // ID de Usuario
-                }).Cast<object>().ToList();
-            }
+                NOMBRE = u.Nombre ?? "N/A",
+                DNI = u.DNI ?? "N/A",
+                TIPO = u.TipoUsuario.ToString(), // .ToString() evita el error de casting de Enum
+                ID = (int)u.ID
+            }).Cast<object>().ToList();
         }
         private void DetectarTipoUsuario(bool esCliente)
         {
-            if (esCliente)
+            var item = dataGridViewUsuarios.CurrentRow?.DataBoundItem;
+            if (item == null) return;
+
+            try
             {
-                lblSeleccionUsuarioCliente_Titulo.Text = "Seleccione el Cliente para esta Compra:";
-                lblSeleccionUsuarioCliente_SubTitulo.Text = "Listado de Clientes Registrados";
+                dynamic row = item;
+                int idRecuperado = (int)row.ID;
 
-                var item = dataGridViewUsuarios.CurrentRow?.DataBoundItem;
-                try
+                if (esCliente)
                 {
-                    dynamic row = item;
-                    int idRecuperado = (int)row.ID;
-                    string tipo = (string)row.TipoUsuario;
-
-                    if (tipo == "Cliente")
-                    {
-                        _currentCliente = _clientesCache.FirstOrDefault(c => c.ID == idRecuperado);
-                        _currentUsuario = _currentCliente?.Usuario;
-                    }
-                    else
-                    {
-                        _currentUsuario = _usuariosCache.FirstOrDefault(u => u.ID == idRecuperado);
-                        _currentCliente = null;
-                    }
+                    _currentCliente = _clientesCache.FirstOrDefault(c => c.ID == idRecuperado);
+                    _currentUsuario = _currentCliente?.Usuario;
 
                     if (_currentUsuario != null)
-                    {
-
-                        if (esCliente)
-                        {
-                            textBoxCliente.Text = $"{_currentUsuario.Nombre} (DNI: {_currentUsuario.DNI})";
-                        }
-                        else
-                        {
-                            textBoxEmpleado.Text = $"{_currentUsuario.Nombre} (DNI: {_currentUsuario.DNI})";
-                        }
-
-                        labelAccion.Text = esCliente ? "Cliente seleccionado" : "Vendedor seleccionado";
-                        tabControl.SelectedTab = AgregarEditar_TabPage;
-                    }
+                        textBoxCliente.Text = $"{_currentUsuario.Nombre} (DNI: {_currentUsuario.DNI})";
                 }
-                catch (Exception ex) { MessageHelpers.ShowError("Error al cargar edición: " + ex.Message); }
+                else
+                {
+                    _currentUsuario = _usuariosCache.FirstOrDefault(u => u.ID == idRecuperado);
+                    _currentCliente = null;
+
+                    if (_currentUsuario != null)
+                        textBoxEmpleado.Text = $"{_currentUsuario.Nombre} (DNI: {_currentUsuario.DNI})";
+                }
+
+                if (_currentUsuario != null)
+                {
+                    labelAccion.Text = esCliente ? "Cliente seleccionado" : "Vendedor seleccionado";
+                    tabControl.SelectedTab = AgregarEditar_TabPage;
+                }
             }
-
-
+            catch (Exception ex)
+            {
+                MessageHelpers.ShowError("Error al seleccionar usuario: " + ex.Message);
+            }
         }
-
-
 
 
         // MÉTODOS AUXILIARES DE CONTROLES
@@ -399,7 +403,7 @@ namespace Desktop.Views
             // 4. Resetear estados booleanos
             checkBoxFeedbackRecibido.Checked = false;
 
-           
+
         }
 
 
@@ -551,6 +555,10 @@ namespace Desktop.Views
 
 
         // TabPage Agregar/Editar | Controles
+        private void comboBoxModoVista_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefrescarGrillaCompras();
+        }
         private async void BtnGuardar_Click(object sender, EventArgs e)
         {
             try
@@ -735,10 +743,8 @@ namespace Desktop.Views
         {
             tabControl.SelectedTab = AgregarEditar_TabPage;
         }
+        private void textBoxBuscarUsuario_TextChanged(object sender, EventArgs e) => RefrescarGrillaUsuario();
+        private void BtnBuscarUsuario_Click(object sender, EventArgs e) => RefrescarGrillaUsuario();
 
-        private void comboBoxModoVista_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            RefrescarGrillaCompras();
-        }
     }
 }
