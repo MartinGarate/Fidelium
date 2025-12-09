@@ -21,9 +21,10 @@ namespace Desktop
         private void ConfigureMenuButtons()
         {
             // Establecer el Dashboard como botón seleccionado por defecto
-            currentSelectedButton = BtnDashboard;
-            BtnDashboard.BackColor = ColorTranslator.FromHtml("#5801b4");
-            BtnDashboard.ForeColor = Color.White;
+            currentSelectedButton = BtnUsuarios;
+            BtnUsuarios.BackColor = ColorTranslator.FromHtml("#5801b4");
+            BtnUsuarios.ForeColor = Color.White;
+            BtnUsuarios.IconColor = Color.White;
         }
 
         private void CloseCurrentView()
@@ -94,6 +95,12 @@ namespace Desktop
             seguimientoVentasView.Show();
             currentOpenView = seguimientoVentasView;
         }
+
+        private void MenuPrincipalView_Load(object sender, EventArgs e)
+        {
+            BtnUsuarios.PerformClick();
+        }
+
 
     }
 }

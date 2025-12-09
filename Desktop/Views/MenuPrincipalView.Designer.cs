@@ -36,7 +36,6 @@
             panel1 = new Panel();
             BtnCompras = new FontAwesome.Sharp.IconButton();
             BtnUsuarios = new FontAwesome.Sharp.IconButton();
-            BtnDashboard = new FontAwesome.Sharp.IconButton();
             pictureBox1 = new PictureBox();
             label5 = new Label();
             Menu.SuspendLayout();
@@ -68,7 +67,6 @@
             Menu.Controls.Add(panel1);
             Menu.Controls.Add(BtnCompras);
             Menu.Controls.Add(BtnUsuarios);
-            Menu.Controls.Add(BtnDashboard);
             Menu.Controls.Add(pictureBox1);
             Menu.Controls.Add(label5);
             Menu.Dock = DockStyle.Left;
@@ -97,7 +95,7 @@
             BtnCompras.IconFont = FontAwesome.Sharp.IconFont.Auto;
             BtnCompras.IconSize = 33;
             BtnCompras.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnCompras.Location = new Point(45, 443);
+            BtnCompras.Location = new Point(42, 351);
             BtnCompras.Name = "BtnCompras";
             BtnCompras.Padding = new Padding(3);
             BtnCompras.Size = new Size(259, 52);
@@ -119,7 +117,7 @@
             BtnUsuarios.IconFont = FontAwesome.Sharp.IconFont.Auto;
             BtnUsuarios.IconSize = 33;
             BtnUsuarios.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnUsuarios.Location = new Point(45, 350);
+            BtnUsuarios.Location = new Point(42, 258);
             BtnUsuarios.Name = "BtnUsuarios";
             BtnUsuarios.Padding = new Padding(3, 3, 100, 3);
             BtnUsuarios.Size = new Size(259, 52);
@@ -128,28 +126,6 @@
             BtnUsuarios.TextAlign = ContentAlignment.MiddleRight;
             BtnUsuarios.UseVisualStyleBackColor = false;
             BtnUsuarios.Click += BtnUsuarios_Click;
-            // 
-            // BtnDashboard
-            // 
-            BtnDashboard.BackColor = Color.FromArgb(88, 1, 180);
-            BtnDashboard.FlatAppearance.BorderSize = 0;
-            BtnDashboard.FlatStyle = FlatStyle.Flat;
-            BtnDashboard.Font = new Font("Clash Display Medium", 15F);
-            BtnDashboard.ForeColor = Color.White;
-            BtnDashboard.IconChar = FontAwesome.Sharp.IconChar.ChartLine;
-            BtnDashboard.IconColor = Color.White;
-            BtnDashboard.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            BtnDashboard.IconSize = 33;
-            BtnDashboard.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnDashboard.Location = new Point(45, 257);
-            BtnDashboard.Name = "BtnDashboard";
-            BtnDashboard.Padding = new Padding(3, 3, 76, 3);
-            BtnDashboard.Size = new Size(259, 52);
-            BtnDashboard.TabIndex = 16;
-            BtnDashboard.Text = "Dashboard";
-            BtnDashboard.TextAlign = ContentAlignment.MiddleRight;
-            BtnDashboard.UseVisualStyleBackColor = false;
-            BtnDashboard.Click += BtnDashboard_Click;
             // 
             // pictureBox1
             // 
@@ -187,6 +163,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Fidelium";
             WindowState = FormWindowState.Maximized;
+            Load += MenuPrincipalView_Load;
             Menu.ResumeLayout(false);
             Menu.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
@@ -208,7 +185,6 @@
         private Panel Menu;
         private Label label5;
         private PictureBox pictureBox1;
-        private FontAwesome.Sharp.IconButton BtnDashboard;
         private FontAwesome.Sharp.IconButton BtnUsuarios;
         private FontAwesome.Sharp.IconButton BtnCompras;
         private Panel panel1;

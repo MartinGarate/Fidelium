@@ -490,8 +490,8 @@ vbCrLf &amp;
         <DataSetName>DSComprasPendientes</DataSetName>
         <Top>0.17639cm</Top>
         <Left>0.00001cm</Left>
-        <Height>1.36701cm</Height>
-        <Width>21cm</Width>
+        <Height>1.36702cm</Height>
+        <Width>21.00001cm</Width>
         <Style>
           <Border>
             <Style>Solid</Style>
@@ -507,7 +507,7 @@ vbCrLf &amp;
       <BackgroundColor>White</BackgroundColor>
     </Style>
   </Body>
-  <Width>21cm</Width>
+  <Width>21.00002cm</Width>
   <Page>
     <PageHeader>
       <Height>3.68745cm</Height>
