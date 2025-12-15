@@ -41,9 +41,6 @@
                     }
                 </div>
                 <div class="header-actions">
-                    <NavLink href="/reviews" class="btn-reviews">
-                        💬 Gestionar Opiniones
-                    </NavLink>
                     <button type="button" class="btn-refresh" @onclick="RefreshData" disabled="@isLoading">
                         @if (isLoading)
                         {
@@ -51,10 +48,14 @@
                         }
                         else
                         {
-                            <span>🔄</span>
+                            <span class="title-icon">🔄</span>
                         }
                         Actualizar
                     </button>
+                    <NavLink href="/reviews" class="btn-refresh">
+                        <span class="title-icon">💬</span>
+                        Gestionar Opiniones
+                    </NavLink>
                 </div>
             </div>
 
@@ -256,7 +257,7 @@
                         </div>
                     </div>
                     <h3>No tienes compras registradas</h3>
-                    <p>Las compras aparecerán aquí cuando nuestro equipo las registre en el sistema.</p>
+                    <p>Las compras aparecerán aquí cuando nuestro equipo lasregistre en el sistema.</p>
                     <p class="empty-note">Si realizaste una compra recientemente, puede tomar unos minutos en aparecer.</p>
                     <div class="empty-actions">
                         <button type="button" class="btn-primary" @onclick="RefreshData">

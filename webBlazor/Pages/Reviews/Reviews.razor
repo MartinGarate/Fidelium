@@ -37,12 +37,6 @@
                     }
                 </div>
                 <div class="header-actions">
-                    <NavLink href="/reviews/create" class="btn-create">
-                        ➕ Nueva Opinión
-                    </NavLink>
-                    <NavLink href="/compras" class="btn-back">
-                        📦 Ver Compras
-                    </NavLink>
                     <button type="button" class="btn-refresh" @onclick="RefreshData" disabled="@isLoading">
                         @if (isLoading)
                         {
@@ -50,10 +44,18 @@
                         }
                         else
                         {
-                            <span>🔄</span>
+                            <span class="title-icon">🔄</span>
                         }
                         Actualizar
                     </button>
+                    <NavLink href="/reviews/create" class="btn-refresh">
+                        <span class="title-icon">➕</span>
+                        Nueva Opinión
+                    </NavLink>
+                    <NavLink href="/compras" class="btn-refresh">
+                        <span class="title-icon">🛒</span>
+                        Ver Compras
+                    </NavLink>
                 </div>
             </div>
 
