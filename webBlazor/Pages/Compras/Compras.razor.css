@@ -20,12 +20,35 @@
   backdrop-filter: blur(20px);
   border: 1px solid rgba(122, 60, 255, 0.2);
   border-radius: 20px;
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.3),
-    0 0 60px rgba(122, 60, 255, 0.1),
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 60px rgba(122, 60, 255, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   padding: 40px;
   animation: slideUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.compras-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(122, 60, 255, 0.15), transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: orb 8s ease-in-out infinite;
+}
+
+@keyframes orb {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(100px, 100px) scale(1.2);
+  }
 }
 
 @keyframes slideUp {
@@ -56,8 +79,12 @@
 }
 
 @keyframes bounce {
-  from { transform: translateY(0); }
-  to { transform: translateY(-10px); }
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-10px);
+  }
 }
 
 .access-denied h2 {
@@ -108,6 +135,17 @@
 .title-icon {
   font-size: 2.2rem;
   filter: drop-shadow(0 0 10px rgba(122, 60, 255, 0.5));
+  animation: float 3s ease-in-out infinite, glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px rgba(122, 60, 255, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(191, 77, 255, 0.7));
+  }
 }
 
 .page-subtitle {
@@ -123,7 +161,8 @@
   flex-wrap: wrap;
 }
 
-.client-badge, .purchases-count {
+.client-badge,
+.purchases-count {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -142,7 +181,8 @@
   align-items: flex-start;
 }
 
-.btn-reviews, .btn-refresh {
+.btn-reviews,
+.btn-refresh {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -161,6 +201,23 @@
   background: linear-gradient(135deg, #22c55e, #16a34a);
   color: white;
   box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-reviews::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left 0.3s ease;
+}
+
+.btn-reviews:hover::before {
+  left: 100%;
 }
 
 .btn-reviews:hover {
@@ -299,7 +356,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-section h3 {
@@ -338,33 +397,69 @@
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    rgba(122, 60, 255, 0.05),
+    rgba(255, 255, 255, 0.02)
+  );
 }
 
 .stat-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent-color),
+    transparent
+  );
   opacity: 0;
   transition: opacity 0.3s ease;
+}
+
+.stat-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: -50px;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, var(--accent-color), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .stat-card:hover::before {
   opacity: 1;
 }
 
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+.stat-card:hover::after {
+  opacity: 0.15;
 }
 
-.stat-card.primary { --accent-color: #7a3cff; }
-.stat-card.success { --accent-color: #22c55e; }
-.stat-card.warning { --accent-color: #f59e0b; }
-.stat-card.info { --accent-color: #3b82f6; }
+.stat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25), 0 0 20px rgba(122, 60, 255, 0.15);
+  border-color: var(--accent-color);
+}
+
+.stat-card.primary {
+  --accent-color: #7a3cff;
+}
+.stat-card.success {
+  --accent-color: #22c55e;
+}
+.stat-card.warning {
+  --accent-color: #f59e0b;
+}
+.stat-card.info {
+  --accent-color: #3b82f6;
+}
 
 .stat-icon {
   font-size: 2rem;
@@ -436,7 +531,7 @@
 }
 
 .purchase-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -444,6 +539,19 @@
   height: 100%;
   background: var(--status-color);
   transition: all 0.3s ease;
+}
+
+.purchase-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(122, 60, 255, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .purchase-card.has-opinion {
@@ -454,9 +562,13 @@
   --status-color: #f59e0b;
 }
 
+.purchase-card:hover::after {
+  opacity: 1;
+}
+
 .purchase-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2), 0 0 20px rgba(122, 60, 255, 0.15);
   border-color: var(--status-color);
 }
 
@@ -485,7 +597,7 @@
   font-size: 0.8rem;
   color: #a8a8a8;
   font-weight: 500;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
 }
 
 .purchase-date {
@@ -548,7 +660,11 @@
 }
 
 .feedback-preview {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.1),
+    rgba(34, 197, 94, 0.05)
+  );
   border: 1px solid rgba(34, 197, 94, 0.2);
   border-radius: 12px;
   padding: 16px;
@@ -634,6 +750,26 @@
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-action::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-action:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .btn-action.primary {
@@ -693,8 +829,13 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .empty-circles {
@@ -718,6 +859,7 @@
   top: 20%;
   left: 10%;
   animation-delay: 0s;
+  animation: orbiting 4s ease-in-out infinite;
 }
 
 .circle-2 {
@@ -726,6 +868,7 @@
   top: 50%;
   right: 15%;
   animation-delay: 0.7s;
+  animation: orbiting 5s ease-in-out infinite reverse;
 }
 
 .circle-3 {
@@ -734,10 +877,24 @@
   bottom: 10%;
   left: 50%;
   animation-delay: 1.4s;
+  animation: orbiting 6s ease-in-out infinite;
+}
+
+@keyframes orbiting {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(20px, 20px) scale(1.2);
+    opacity: 0.6;
+  }
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 0.3;
   }
@@ -775,7 +932,8 @@
   flex-wrap: wrap;
 }
 
-.btn-primary, .btn-secondary {
+.btn-primary,
+.btn-secondary {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -787,6 +945,25 @@
   font-size: 1rem;
   border: none;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before,
+.btn-secondary::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: left 0.3s ease;
+}
+
+.btn-primary:hover::before,
+.btn-secondary:hover::before {
+  left: 100%;
 }
 
 .btn-primary {
@@ -819,7 +996,7 @@
   .compras-container {
     padding: 70px 16px 30px 16px;
   }
-  
+
   .compras-card {
     padding: 30px;
   }
@@ -846,7 +1023,8 @@
     justify-content: space-between;
   }
 
-  .btn-reviews, .btn-refresh {
+  .btn-reviews,
+  .btn-refresh {
     flex: 1;
     justify-content: center;
   }
@@ -995,11 +1173,11 @@
   .compras-card {
     border-color: #7a3cff;
   }
-  
+
   .purchase-card {
     border-color: #bf4dff;
   }
-  
+
   .stat-card {
     border-color: #7a3cff;
   }
@@ -1010,4 +1188,26 @@ button:focus,
 a:focus {
   outline: 2px solid #7a3cff;
   outline-offset: 2px;
+}
+
+/* Compras Loading Spinner Container */
+.compras-loading-container {
+  position: relative;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(122, 60, 255, 0.15);
+}
+
+.compras-loading-container .loading-overlay {
+  position: relative;
+  background: transparent;
+}
+
+.compras-loading-container .loading-container {
+  position: relative;
 }

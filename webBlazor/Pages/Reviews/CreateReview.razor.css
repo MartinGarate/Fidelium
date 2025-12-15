@@ -20,12 +20,35 @@
   backdrop-filter: blur(20px);
   border: 1px solid rgba(122, 60, 255, 0.2);
   border-radius: 20px;
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.3),
-    0 0 60px rgba(122, 60, 255, 0.1),
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 60px rgba(122, 60, 255, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   padding: 40px;
   animation: slideUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.create-review-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(122, 60, 255, 0.2), transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: orb 8s ease-in-out infinite;
+}
+
+@keyframes orb {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(100px, 100px) scale(1.2);
+  }
 }
 
 @keyframes slideUp {
@@ -56,8 +79,15 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.8; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
 }
 
 .access-denied h2 {
@@ -108,12 +138,27 @@
 .title-icon {
   font-size: 2rem;
   filter: drop-shadow(0 0 10px rgba(122, 60, 255, 0.5));
-  animation: float 3s ease-in-out infinite;
+  animation: float 3s ease-in-out infinite, glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px rgba(122, 60, 255, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(191, 77, 255, 0.7));
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 .page-subtitle {
@@ -163,6 +208,23 @@
   text-decoration: none;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-back::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(122, 60, 255, 0.15);
+  transition: left 0.3s ease;
+}
+
+.btn-back:hover::before {
+  left: 100%;
 }
 
 .btn-back:hover {
@@ -175,12 +237,14 @@
 /* === ERROR & SUCCESS SECTIONS === */
 /* ========================================================= */
 
-.error-section, .success-section {
+.error-section,
+.success-section {
   margin-bottom: 30px;
   animation: slideDown 0.4s ease;
 }
 
-.error-alert, .success-alert {
+.error-alert,
+.success-alert {
   display: flex;
   align-items: flex-start;
   gap: 16px;
@@ -200,22 +264,26 @@
   color: #22c55e;
 }
 
-.error-icon, .success-icon {
+.error-icon,
+.success-icon {
   font-size: 1.2rem;
   margin-top: 2px;
 }
 
-.error-content, .success-content {
+.error-content,
+.success-content {
   flex: 1;
 }
 
-.error-content strong, .success-content strong {
+.error-content strong,
+.success-content strong {
   display: block;
   font-weight: 700;
   margin-bottom: 4px;
 }
 
-.error-content p, .success-content p {
+.error-content p,
+.success-content p {
   margin: 0;
   opacity: 0.9;
 }
@@ -284,7 +352,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-section h3 {
@@ -304,31 +374,40 @@
 /* === NOT FOUND & NO PURCHASES SECTIONS === */
 /* ========================================================= */
 
-.not-found-section, .no-purchases-section {
+.not-found-section,
+.no-purchases-section {
   text-align: center;
   padding: 60px 20px;
   animation: fadeIn 0.6s ease;
 }
 
-.not-found-icon, .no-purchases-icon {
+.not-found-icon,
+.no-purchases-icon {
   font-size: 3.5rem;
   margin-bottom: 24px;
   animation: bounce 2s ease-in-out infinite;
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
-.not-found-section h3, .no-purchases-section h3 {
+.not-found-section h3,
+.no-purchases-section h3 {
   font-size: 1.6rem;
   color: #e4e4e4;
   margin: 0 0 16px 0;
   font-weight: 600;
 }
 
-.not-found-section p, .no-purchases-section p {
+.not-found-section p,
+.no-purchases-section p {
   color: #a8a8a8;
   font-size: 1rem;
   margin: 0 0 16px 0;
@@ -342,7 +421,8 @@
   margin-bottom: 32px !important;
 }
 
-.not-found-actions, .no-purchases-actions {
+.not-found-actions,
+.no-purchases-actions {
   display: flex;
   gap: 16px;
   justify-content: center;
@@ -366,11 +446,34 @@
   border-radius: 16px;
   padding: 24px;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.form-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(122, 60, 255, 0.5),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .form-section:hover {
   background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(122, 60, 255, 0.25);
+  border-color: rgba(122, 60, 255, 0.35);
+}
+
+.form-section:hover::before {
+  opacity: 1;
 }
 
 .section-title {
@@ -395,10 +498,59 @@
 /* ========================================================= */
 
 .purchase-info-card {
-  background: linear-gradient(135deg, rgba(122, 60, 255, 0.1), rgba(122, 60, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(122, 60, 255, 0.1),
+    rgba(122, 60, 255, 0.05)
+  );
   border: 1px solid rgba(122, 60, 255, 0.3);
   border-radius: 12px;
   padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.purchase-info-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #7a3cff, transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.purchase-info-card::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  right: -50px;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(122, 60, 255, 0.2), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.purchase-info-card:hover {
+  border-color: #7a3cff;
+  background: linear-gradient(
+    135deg,
+    rgba(122, 60, 255, 0.15),
+    rgba(122, 60, 255, 0.08)
+  );
+  box-shadow: 0 4px 15px rgba(122, 60, 255, 0.2);
+}
+
+.purchase-info-card:hover::before {
+  opacity: 1;
+}
+
+.purchase-info-card:hover::after {
+  opacity: 1;
 }
 
 .purchase-header {
@@ -420,7 +572,7 @@
   font-size: 0.8rem;
   color: #a8a8a8;
   font-weight: 500;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   background: rgba(255, 255, 255, 0.1);
   padding: 4px 8px;
   border-radius: 8px;
@@ -481,7 +633,8 @@
   color: #bf4dff;
 }
 
-.form-select, .form-textarea {
+.form-select,
+.form-textarea {
   background: rgba(255, 255, 255, 0.05);
   border: 1.5px solid rgba(122, 60, 255, 0.3);
   border-radius: 10px;
@@ -490,6 +643,7 @@
   font-size: 0.95rem;
   transition: all 0.3s ease;
   resize: vertical;
+  position: relative;
 }
 
 .form-select {
@@ -503,11 +657,14 @@
   min-height: 150px;
 }
 
-.form-select:focus, .form-textarea:focus {
+.form-select:focus,
+.form-textarea:focus {
   outline: none;
   background: rgba(255, 255, 255, 0.08);
   border-color: #7a3cff;
-  box-shadow: 0 0 0 3px rgba(122, 60, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(122, 60, 255, 0.15),
+    inset 0 0 10px rgba(122, 60, 255, 0.1);
+  transform: translateY(-2px);
 }
 
 .form-footer {
@@ -530,7 +687,7 @@
   background: rgba(255, 255, 255, 0.05);
   padding: 4px 8px;
   border-radius: 8px;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
 }
 
 .char-counter.warning {
@@ -544,11 +701,29 @@
 
 .preview-section {
   margin-top: 20px;
-  background: rgba(255, 255, 255, 0.03);
+  background: linear-gradient(
+    135deg,
+    rgba(191, 77, 255, 0.05),
+    rgba(122, 60, 255, 0.05)
+  );
   border: 1px solid rgba(122, 60, 255, 0.2);
   border-radius: 12px;
   padding: 16px;
   animation: slideDown 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #7a3cff, #bf4dff);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .preview-title {
@@ -592,7 +767,8 @@
   border-top: 1px solid rgba(122, 60, 255, 0.2);
 }
 
-.btn-cancel, .btn-submit {
+.btn-cancel,
+.btn-submit {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -606,12 +782,29 @@
   transition: all 0.3s ease;
   min-width: 140px;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-cancel {
   background: rgba(255, 255, 255, 0.08);
   color: #e4e4e4;
   border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-cancel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transition: left 0.3s ease;
+}
+
+.btn-cancel:hover::before {
+  left: 100%;
 }
 
 .btn-cancel:hover {
@@ -623,6 +816,21 @@
   background: linear-gradient(135deg, #7a3cff, #bf4dff);
   color: white;
   box-shadow: 0 4px 15px rgba(191, 77, 255, 0.3);
+}
+
+.btn-submit::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left 0.3s ease;
+}
+
+.btn-submit:hover:not(:disabled)::before {
+  left: 100%;
 }
 
 .btn-submit:hover:not(:disabled) {
@@ -650,7 +858,9 @@
 /* === BUTTON STYLES === */
 /* ========================================================= */
 
-.btn-primary, .btn-secondary, .btn-tertiary {
+.btn-primary,
+.btn-secondary,
+.btn-tertiary {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -663,6 +873,27 @@
   border: none;
   cursor: pointer;
   white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before,
+.btn-secondary::before,
+.btn-tertiary::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: left 0.3s ease;
+}
+
+.btn-primary:hover::before,
+.btn-secondary:hover::before,
+.btn-tertiary:hover::before {
+  left: 100%;
 }
 
 .btn-primary {
@@ -706,7 +937,7 @@
   .create-review-container {
     padding: 70px 16px 30px 16px;
   }
-  
+
   .create-review-card {
     padding: 30px;
   }
@@ -735,7 +966,8 @@
     align-items: stretch;
   }
 
-  .btn-cancel, .btn-submit {
+  .btn-cancel,
+  .btn-submit {
     justify-content: center;
     min-width: auto;
   }
@@ -750,7 +982,8 @@
     align-self: flex-start;
   }
 
-  .not-found-actions, .no-purchases-actions {
+  .not-found-actions,
+  .no-purchases-actions {
     flex-direction: column;
     align-items: stretch;
   }
@@ -877,11 +1110,11 @@
   .create-review-card {
     border-color: #7a3cff;
   }
-  
+
   .form-section {
     border-color: #bf4dff;
   }
-  
+
   .purchase-info-card {
     border-color: #7a3cff;
   }
@@ -894,4 +1127,37 @@ select:focus,
 textarea:focus {
   outline: 2px solid #7a3cff;
   outline-offset: 2px;
+}
+
+/* ========================================================= */
+/* === ENHANCED INTERACTIONS === */
+/* ========================================================= */
+
+.form-group {
+  position: relative;
+}
+
+.form-group:focus-within .form-label {
+  color: #7a3cff;
+  text-shadow: 0 0 10px rgba(122, 60, 255, 0.3);
+}
+
+.context-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(122, 60, 255, 0.1);
+  border: 1px solid rgba(122, 60, 255, 0.2);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: #bf4dff;
+  animation: slideDown 0.4s ease;
+  transition: all 0.3s ease;
+}
+
+.context-info:hover {
+  background: rgba(122, 60, 255, 0.15);
+  border-color: rgba(122, 60, 255, 0.4);
+  box-shadow: 0 4px 12px rgba(122, 60, 255, 0.15);
 }

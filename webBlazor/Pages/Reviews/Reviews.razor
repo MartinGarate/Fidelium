@@ -1,4 +1,5 @@
 ﻿@page "/reviews"
+@using Components
 @inject FirebaseAuthService authService
 @inject NavigationManager navigationManager
 @inject IGenericService<Usuario> usuarioService
@@ -30,8 +31,8 @@
                     @if (clienteInfo != null && opiniones.Count > 0)
                     {
                         <div class="client-info">
-                            <span class="client-badge">👤 {clienteInfo.Nombre}</span>
-                            <span class="opinions-count">💭 {opiniones.Count} opiniones</span>
+                            <span class="client-badge">👤 @clienteInfo.Nombre</span>
+                            <span class="opinions-count">💭 @opiniones.Count opiniones</span>
                         </div>
                     }
                 </div>
@@ -74,14 +75,8 @@
 
             @if (isLoading)
             {
-                <div class="loading-section">
-                    <div class="loading-spinner">
-                        <div class="spinner-ring"></div>
-                        <div class="spinner-ring spinner-ring-2"></div>
-                        <div class="spinner-ring spinner-ring-3"></div>
-                    </div>
-                    <h3>Cargando opiniones...</h3>
-                    <p>Obteniendo tus comentarios y reseñas</p>
+                <div class="reviews-loading-container">
+                    <LoadingSpinner IsVisible="true" LoadingText="Cargando opiniones..." />
                 </div>
             }
             else if (opiniones.Any())

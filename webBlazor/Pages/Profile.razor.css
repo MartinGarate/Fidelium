@@ -143,6 +143,28 @@
   font-size: 0.95rem;
 }
 
+/* Profile Loading Spinner Container */
+.profile-loading-container {
+  position: relative;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(122, 60, 255, 0.15);
+}
+
+.profile-loading-container .loading-overlay {
+  position: relative;
+  background: transparent;
+}
+
+.profile-loading-container .loading-container {
+  position: relative;
+}
+
 /* Form Styles */
 .settings-form {
   animation: fadeInDown 0.6s ease 0.2s both;
