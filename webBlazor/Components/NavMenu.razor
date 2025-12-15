@@ -21,17 +21,17 @@
             @if (isAuthenticated)
             {
                 <li role="none">
-                    <NavLink role="menuitem" href="/compras" class="nav-link-item">
+                    <NavLink role="menuitem" href="/compras" class="nav-link-item" Match="NavLinkMatch.Prefix">
                         Mis Compras
                     </NavLink>
                 </li>
                 <li role="none">
-                    <NavLink role="menuitem" href="/reviews" class="nav-link-item">
+                    <NavLink role="menuitem" href="/reviews" class="nav-link-item" Match="NavLinkMatch.All">
                         Mis Opiniones
                     </NavLink>
                 </li>
                 <li role="none">
-                    <NavLink role="menuitem" href="/reviews/create" class="nav-link-item">
+                    <NavLink role="menuitem" href="/reviews/create" class="nav-link-item" Match="NavLinkMatch.All">
                         Nueva Opinión
                     </NavLink>
                 </li>
@@ -39,7 +39,7 @@
             else
             {
                 <li role="none">
-                    <NavLink role="menuitem" href="/reviews" class="nav-link-item">
+                    <NavLink role="menuitem" href="/reviews" class="nav-link-item" Match="NavLinkMatch.All">
                         Opiniones
                     </NavLink>
                 </li>

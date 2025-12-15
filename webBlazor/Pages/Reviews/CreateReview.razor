@@ -1,5 +1,6 @@
 ﻿@page "/reviews/create"
 @page "/reviews/edit/{id:int}"
+@using Components
 @inject FirebaseAuthService authService
 @inject NavigationManager navigationManager
 @inject IGenericService<Usuario> usuarioService
@@ -83,14 +84,8 @@
 
             @if (isLoading)
             {
-                <div class="loading-section">
-                    <div class="loading-spinner">
-                        <div class="spinner-ring"></div>
-                        <div class="spinner-ring spinner-ring-2"></div>
-                        <div class="spinner-ring spinner-ring-3"></div>
-                    </div>
-                    <h3>@(isEditing ? "Cargando opinión..." : "Cargando información...")</h3>
-                    <p>@(isEditing ? "Obteniendo los datos de tu opinión" : "Preparando el formulario")</p>
+                <div class="create-review-loading-container">
+                    <LoadingSpinner IsVisible="true" LoadingText="@(isEditing ? "Cargando opinión..." : "Cargando información...")" />
                 </div>
             }
             else if (isEditing && compraActual == null)

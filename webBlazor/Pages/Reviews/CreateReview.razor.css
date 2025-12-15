@@ -1161,3 +1161,25 @@ textarea:focus {
   border-color: rgba(122, 60, 255, 0.4);
   box-shadow: 0 4px 12px rgba(122, 60, 255, 0.15);
 }
+
+/* Create Review Loading Spinner Container */
+.create-review-loading-container {
+  position: relative;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(122, 60, 255, 0.15);
+}
+
+.create-review-loading-container .loading-overlay {
+  position: relative;
+  background: transparent;
+}
+
+.create-review-loading-container .loading-container {
+  position: relative;
+}
