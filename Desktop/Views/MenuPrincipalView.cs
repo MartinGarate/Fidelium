@@ -18,6 +18,11 @@ namespace Desktop
             ConfigureMenuButtons();
         }
 
+        private void MenuPrincipalView_Load(object sender, EventArgs e)
+        {
+            BtnUsuarios.PerformClick();
+        }
+
         private void ConfigureMenuButtons()
         {
             // Establecer el Dashboard como botón seleccionado por defecto
@@ -26,7 +31,6 @@ namespace Desktop
             BtnUsuarios.ForeColor = Color.White;
             BtnUsuarios.IconColor = Color.White;
         }
-
         private void CloseCurrentView()
         {
             // Cerrar y disponer la vista actual si existe
@@ -37,7 +41,6 @@ namespace Desktop
                 currentOpenView = null;
             }
         }
-
         private void ButtonSeleccionado(object sender, EventArgs e)
         {
             Button clickedButton = (Button)sender;
@@ -69,12 +72,7 @@ namespace Desktop
             currentSelectedButton = clickedButton;
         }
 
-        private void BtnDashboard_Click(object sender, EventArgs e)
-        {
-            ButtonSeleccionado(sender, e);
-            CloseCurrentView();
-            // Tu lógica específica del Dashboard aquí
-        }
+
 
         private void BtnUsuarios_Click(object sender, EventArgs e)
         {
@@ -85,7 +83,6 @@ namespace Desktop
             usuariosView.Show();
             currentOpenView = usuariosView;
         }
-
         private void BtnCompras_Click(object sender, EventArgs e)
         {
             ButtonSeleccionado(sender, e);
@@ -96,10 +93,6 @@ namespace Desktop
             currentOpenView = seguimientoVentasView;
         }
 
-        private void MenuPrincipalView_Load(object sender, EventArgs e)
-        {
-            BtnUsuarios.PerformClick();
-        }
 
 
     }
