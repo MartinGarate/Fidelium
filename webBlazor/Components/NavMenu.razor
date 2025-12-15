@@ -162,6 +162,7 @@
         await _firebaseAuthService.SignOut();
         isAuthenticated = false;
         userDisplayName = "Usuario";
+        _navigationManager.NavigateTo("/");
         StateHasChanged();
     }
 

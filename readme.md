@@ -4,7 +4,6 @@
 ![C#](https://img.shields.io/badge/C%23-12.0-purple.svg)
 ![Blazor](https://img.shields.io/badge/Blazor-WebAssembly-green.svg)
 ![WinForms](https://img.shields.io/badge/WinForms-Desktop-orange.svg)
-![MAUI](https://img.shields.io/badge/MAUI-Mobile-red.svg)
 ![Firebase](https://img.shields.io/badge/Firebase-Auth-yellow.svg)
 ![SQL Server](https://img.shields.io/badge/SQL%20Server-Database-lightblue.svg)
 
@@ -25,17 +24,17 @@
 ## 🏗️ Arquitectura del Sistema
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   WinForms      │    │   Blazor WASM   │    │   .NET MAUI     │
-│  (Escritorio)   │    │     (Web)       │    │   (Mobile)      │
-│                 │    │                 │    │                 │
-│ • Administrador │    │ • Empleado      │    │ • Empleado      │
-│ • CRUD Completo │    │ • Registro      │    │ • Consulta      │
-│ • Reportes      │    │ • Feedback      │    │ • Feedback      │
-│ • Papelera      │    │ • Notificaciones│    │ • Móvil         │
-└─────────┬───────┘    └─────────┬───────┘    └─────────┬───────┘
-          │                      │                      │
-          │                      │                      │
+┌─────────────────┐    ┌─────────────────┐
+│   WinForms      │    │   Blazor WASM   │
+│  (Escritorio)   │    │     (Web)       │
+│                 │    │                 │
+│ • Administrador │    │ • Empleado      │
+│ • CRUD Completo │    │ • Registro      │
+│ • Reportes      │    │ • Feedback      │
+│ • Papelera      │    │ • Notificaciones│
+└─────────┬───────┘    └─────────┬───────┘
+          │                      │
+          │                      │
           └──────────────────────┼──────────────────────┘
                                  │
                          ┌───────▼───────┐
@@ -77,16 +76,19 @@
 - **SQL Server** - Base de datos principal
 - **ASP.NET Core Web API** - API RESTful
 - **Firebase Authentication** - Sistema de autenticación
+- **Swagger** - Documentación interactiva de API
+- **MySQL** - Soporte adicional para bases de datos
 
 ### Frontend
 - **WinForms** - Aplicación de escritorio (Administradores)
 - **Blazor WebAssembly** - Aplicación web (Empleados)
-- **MAUI** - Aplicación móvil multiplataforma (Empleados móviles)
 
 ### Servicios y Utilidades
 - **Generic Services** - Servicios reutilizables para CRUD
 - **Soft Delete Pattern** - Eliminación lógica de registros
 - **Auto-calculated Notifications** - Notificaciones automáticas
+- **Radzen.Blazor** - Componentes UI avanzados
+- **SweetAlert2** - Alertas modernas
 
 ---
 
@@ -96,42 +98,21 @@
 Fidelium/
 ├── Backend/                    # API Backend (.NET 8)
 │   ├── Controllers/           # Controladores REST
-│   │   ├── ClientesController.cs
-│   │   ├── ComprasServiciosController.cs
-│   │   ├── NotificacionesController.cs
-│   │   └── UsuariosController.cs
 │   ├── DataContext/           # Entity Framework Context
-│   │   └── FideliumContext.cs
 │   └── Program.cs             # Configuración de la API
 │
 ├── Service/                   # Modelos y Servicios Compartidos
 │   ├── Models/               # Modelos de datos
-│   │   ├── Cliente.cs
-│   │   ├── CompraServicio.cs
-│   │   ├── Notificacion.cs
-│   │   ├── Usuario.cs
-│   │   └── Login/
-│   │       └── FirebaseUser.cs
-│   ├── Enums/               # Enumeraciones
-│   │   ├── EstadoNotificacion.cs
-│   │   └── TipoUsuarioEnum.cs
-│   ├── Services/            # Servicios genéricos
-│   └── Utils/               # Utilidades y endpoints
-│       └── ApiEndpoints.cs
+│   ├── Enums/                # Enumeraciones
+│   ├── Services/             # Servicios genéricos
+│   └── Utils/                # Utilidades y endpoints
 │
 ├── Desktop/                  # Aplicación WinForms
 │   ├── Views/               # Formularios Windows
-│   │   ├── LoginView.cs
-│   │   ├── MenuPrincipalView.cs
-│   │   ├── UsuariosView.cs
-│   │   └── SeguimientoVentasView.cs
 │   └── Utils/               # Utilidades de escritorio
 │
 ├── webBlazor/               # Aplicación Web Blazor
 │   ├── Pages/              # Páginas Blazor
-│   │   ├── Login/
-│   │   ├── Compras/
-│   │   └── Reviews/
 │   ├── Services/           # Servicios específicos de Blazor
 │   └── wwwroot/           # Archivos estáticos
 │
@@ -141,132 +122,21 @@ Fidelium/
 
 ---
 
-## 📊 Modelo de Datos
+## 📈 Roadmap y Funcionalidades Futuras
 
-### Entidades Principales
+### Version 2.0 (Próximamente)
+- [ ] **Dashboard Analytics**: Métricas avanzadas y KPIs
+- [ ] **API Mobile**: Endpoints optimizados para móviles
+- [ ] **Notificaciones Push**: Alertas en tiempo real
+- [ ] **Integración WhatsApp**: Comunicación automatizada
+- [ ] **Reportes Avanzados**: Análisis predictivo
 
-#### 👤 Usuario
-```csharp
-public class Usuario
-{
-    public int ID { get; set; }
-    public string? DNI { get; set; }
-    public string Nombre { get; set; }
-    public string? Email { get; set; }
-    public TipoUsuarioEnum TipoUsuario { get; set; }
-    public bool IsDeleted { get; set; }
-    public DateTime DeleteDate { get; set; }
-}
-```
-
-#### 🤝 Cliente
-```csharp
-public class Cliente
-{
-    public int ID { get; set; }
-    public int UsuarioID { get; set; }
-    public Usuario? Usuario { get; set; }
-    public string? Telefono { get; set; }
-    public string? Instagram { get; set; }
-    public bool IsDeleted { get; set; }
-    public DateTime DeleteDate { get; set; }
-}
-```
-
-#### 🛍️ CompraServicio
-```csharp
-public class CompraServicio
-{
-    public int ID { get; set; }
-    public int ClienteID { get; set; }
-    public Cliente? Cliente { get; set; }
-    public string Nombre { get; set; }
-    public string? Descripcion { get; set; }
-    public string NotasVentaInternas { get; set; }
-    public DateTime FechaCompra { get; set; }
-    public DateTime FechaRecordatorio { get; set; }
-    public bool FeedbackRecibido { get; set; }
-    public string ComentarioFeedback { get; set; }
-    public int EmpleadoID { get; set; }
-    public Usuario? Empleado { get; set; }
-    public bool IsDeleted { get; set; }
-    public DateTime CreatedAt { get; set; }
-}
-```
-
-#### 🔔 Notificación
-```csharp
-public class Notificacion
-{
-    public int ID { get; set; }
-    public int CompraServicioID { get; set; }
-    public CompraServicio? CompraServicio { get; set; }
-    public EstadoNotificacion Estado { get; set; }
-    public DateTime FechaGenerada { get; set; }
-    public bool IsDeleted { get; set; }
-}
-```
-
-### Diagrama de Relaciones
-
-```
-                 ┌─────────────┐
-                 │   Usuario   │
-                 │ ----------- │
-                 │ + ID (PK)   │
-                 │ + DNI       │
-                 │ + Nombre    │
-                 │ + Email     │
-                 │ + Tipo      │
-                 └──────┬──────┘
-                        │
-                        │ 1:1
-                        ▼
-                 ┌─────────────┐
-                 │   Cliente   │
-                 │ ----------- │
-                 │ + ID (PK)   │
-                 │ + UsuarioID │◄──┐
-                 │ + Telefono  │   │
-                 │ + Instagram │   │ 1:N
-                 └──────┬──────┘   │
-                        │          │
-                        │ 1:N      │
-                        ▼          │
-              ┌──────────────────┐ │
-              │  CompraServicio  │ │
-              │ ---------------- │ │
-              │ + ID (PK)        │ │
-              │ + ClienteID (FK) │─┘
-              │ + EmpleadoID(FK) │─┐
-              │ + Nombre         │ │ N:1
-              │ + Descripcion    │ │
-              │ + FechaCompra    │ │
-              │ + Feedback...    │ │
-              └─────────┬────────┘ │
-                        │          │
-                        │ 1:1      │
-                        ▼          │
-                ┌─────────────┐    │
-                │Notificacion │    │
-                │ ----------- │    │
-                │ + ID (PK)   │    │
-                │ + CompraID  │    │
-                │ + Estado    │    │
-                │ + Fecha...  │    │
-                └─────────────┘    │
-                                   │
-                            ┌──────▼──────┐
-                            │   Usuario   │
-                            │ (Empleado)  │
-                            │ ----------- │
-                            │ + ID (PK)   │
-                            │ + Nombre    │
-                            │ + Tipo =    │
-                            │   Empleado/ │
-                            │   Admin     │
-                            └─────────────┘
-```
+### Version 3.0 (A largo plazo)
+- [ ] **Machine Learning**: Predicción de satisfacción del cliente
+- [ ] **Microservicios**: Arquitectura distribuida
+- [ ] **Docker**: Contenedores para deployment
+- [ ] **Cloud Native**: Migración completa a Azure
+- [ ] **Multi-tenancy**: Soporte para múltiples empresas
 
 ---
 
@@ -286,92 +156,6 @@ public class Notificacion
 - **OAuth Google**: Autenticación social
 - **Email Verification**: Verificación obligatoria de correo
 - **Password Reset**: Recuperación de contraseña
-
----
-
-## 🎨 Interfaces de Usuario
-
-### 💻 Desktop (WinForms) - Administradores
-- **Vista Principal**: Dashboard con resumen de datos
-- **Gestión de Usuarios**: CRUD completo de usuarios y roles
-- **Seguimiento de Ventas**: Gestión completa de compras/servicios
-- **Notificaciones**: Sistema de seguimiento automatizado
-- **Papelera**: Recuperación de registros eliminados
-- **Reportes**: Análisis y métricas del negocio
-
-### 🌐 Web (Blazor) - Empleados y Clientes
-- **Sistema de Login**: Autenticación moderna con Firebase
-- **Dashboard**: Vista personalizada según el rol
-- **Registro de Compras**: Formularios intuitivos para ventas
-- **Gestión de Feedback**: Recolección de opiniones del cliente
-- **Historial**: Consulta de transacciones anteriores
-
-### 📱 Mobile (MAUI) - Empleados Móviles
-- **Consulta Rápida**: Acceso a datos desde el teléfono
-- **Registro de Feedback**: Captura inmediata de opiniones
-- **Notificaciones Push**: Alertas automáticas de seguimiento
-
----
-
-## 🔔 Sistema de Notificaciones
-
-### Funcionalidad Automatizada
-1. **Generación Automática**: Al registrar una compra/servicio
-2. **Cálculo de Recordatorios**: Basado en `DiasParaRecordatorio`
-3. **Estados de Seguimiento**: Pendiente → Atendida
-4. **Alertas Programadas**: Notificaciones por fecha
-
-### Flujo de Notificaciones
-
-```
-Registro Compra → Cálculo Automático → Notificación Generada
-      ↓                    ↓                    ↓
- FechaCompra      +DiasRecordatorio      FechaRecordatorio
-      ↓                    ↓                    ↓
-  2025-01-15         +7 días              2025-01-22
-                                               ↓
-                                    Estado: Pendiente
-                                               ↓
-                              Empleado atiende al cliente
-                                               ↓
-                                     Estado: Atendida
-```
-
----
-
-## 📊 Características Técnicas Avanzadas
-
-### 🗑️ Soft Delete Pattern
-- **Preservación de Datos**: Los registros no se eliminan físicamente
-- **Auditoría Completa**: Histórico de cambios y eliminaciones
-- **Recuperación**: Posibilidad de restaurar registros eliminados
-- **Filtros Automáticos**: Los registros eliminados se ocultan por defecto
-
-### 🔄 Servicios Genéricos
-```csharp
-public class GenericService<T> where T : class
-{
-    Task<List<T>> GetAllAsync(string filter);
-    Task<T> GetByIdAsync(int id);
-    Task<T> AddAsync(T entity);
-    Task<T> UpdateAsync(T entity);
-    Task<bool> DeleteAsync(int id);
-    Task<bool> RestoreAsync(int id);
-    Task<List<T>> GetAllDeletedsAsync(string filter);
-}
-```
-
-### 🏗️ Arquitectura API REST
-
-| Endpoint | Método | Descripción |
-|----------|--------|-------------|
-| `/api/clientes` | GET | Listar clientes activos |
-| `/api/clientes/{id}` | GET | Obtener cliente específico |
-| `/api/clientes` | POST | Crear nuevo cliente |
-| `/api/clientes/{id}` | PUT | Actualizar cliente |
-| `/api/clientes/{id}` | DELETE | Eliminar cliente (soft) |
-| `/api/clientes/restore/{id}` | PUT | Restaurar cliente |
-| `/api/clientes/deleteds` | GET | Listar clientes eliminados |
 
 ---
 
@@ -417,85 +201,7 @@ dotnet run
 # Web
 cd webBlazor
 dotnet run
-
-# Mobile (requiere emulador o dispositivo)
-cd Mobile
-dotnet build -t:Run
 ```
-
----
-
-## 📈 Roadmap y Funcionalidades Futuras
-
-### Version 2.0 (Próximamente)
-- [ ] **Dashboard Analytics**: Métricas avanzadas y KPIs
-- [ ] **API Mobile**: Endpoints optimizados para móviles
-- [ ] **Notificaciones Push**: Alertas en tiempo real
-- [ ] **Integración WhatsApp**: Comunicación automatizada
-- [ ] **Reportes Avanzados**: Análisis predictivo
-
-### Version 3.0 (A largo plazo)
-- [ ] **Machine Learning**: Predicción de satisfacción del cliente
-- [ ] **Microservicios**: Arquitectura distribuida
-- [ ] **Docker**: Contenedores para deployment
-- [ ] **Cloud Native**: Migración completa a Azure
-- [ ] **Multi-tenancy**: Soporte para múltiples empresas
-
----
-
-## 🤝 Contribución
-
-### Guías de Contribución
-1. Fork el proyecto
-2. Crear rama para feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit los cambios (`git commit -m 'Agregar nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Abrir Pull Request
-
-### Estándares de Código
-- **C# Conventions**: Seguir las convenciones estándar de C#
-- **Clean Code**: Código limpio y documentado
-- **SOLID Principles**: Aplicar principios de diseño
-- **Testing**: Incluir pruebas unitarias para nuevas funcionalidades
-
----
-
-## 📝 Licencia
-
-Este proyecto está bajo la licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
-
----
-
-## 👥 Equipo de Desarrollo
-
-| Nombre | Rol | Email | GitHub |
-|--------|-----|-------|--------|
-| **Martín Garate** | Lead Developer | martingarate0@gmail.com | [@MartinGarate](https://github.com/MartinGarate) |
-| **Leonel Arrieta** | Backend Developer | leonelarrieta@gmail.com | - |
-| **Valentino Machado** | Frontend Developer | valentinomachado@gmail.com | - |
-| **Candela Corradi** | QA Engineer | corradicande@gmail.com | - |
-| **Ximena Gorosito** | UI/UX Designer | ximenagorosito0@gmail.com | - |
-
----
-
-## 📞 Contacto y Soporte
-
-- **Email**: martingarate0@gmail.com
-- **Issues**: [GitHub Issues](https://github.com/MartinGarate/Fidelium/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/MartinGarate/Fidelium/discussions)
-
----
-
-## 🔄 Changelog
-
-### Version 1.0.0 (Actual)
-- ✅ Sistema base de autenticación
-- ✅ CRUD completo de entidades
-- ✅ Soft delete implementado
-- ✅ Notificaciones automatizadas
-- ✅ Interfaz WinForms para administradores
-- ✅ Aplicación web Blazor
-- ✅ API REST completa
 
 ---
 
