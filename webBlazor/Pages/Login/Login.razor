@@ -2,8 +2,11 @@
 
 @inject FirebaseAuthService authService
 @inject NavigationManager navigationManager
-@inject HttpClient Http
+@inject IGenericService<Usuario> usuarioService
+@inject IGenericService<Cliente> clienteService
 
+@using Service.Enums
+@using Service.Models
 
 @if (!isAuthenticated)
 {
@@ -14,57 +17,6 @@
                 <h1 class="login-title">Bienvenido</h1>
                 <p class="login-subtitle">Inicia sesión en tu cuenta</p>
             </div>
-
-            <!-- Recuperar Contraseña - Modal State -->
-            @if (showPasswordRecovery)
-            {
-                <div class="recovery-overlay" @onclick="ClosePasswordRecovery">
-                    <div class="recovery-modal" @onclick:stopPropagation="true">
-                        <button class="recovery-close" @onclick="ClosePasswordRecovery">✕</button>
-
-                        <h2 class="recovery-title">Recuperar Contraseña</h2>
-                        <p class="recovery-subtitle">Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña</p>
-
-                        @if (!string.IsNullOrEmpty(recoveryMessage))
-                        {
-                            <div class="@(recoverySuccess ? "success-alert" : "error-alert")">
-                                <span class="@(recoverySuccess ? "success-icon" : "error-icon")">@(recoverySuccess ? "✓" : "⚠️")</span>
-                                <span>@recoveryMessage</span>
-                            </div>
-                        }
-
-                        <form @onsubmit="HandlePasswordRecovery" class="recovery-form">
-                            <div class="form-group">
-                                <label for="recovery-email" class="form-label">Correo Electrónico</label>
-                                <input id="recovery-email"
-                                       type="email"
-                                       class="form-input"
-                                       @bind="recoveryEmail"
-                                       placeholder="tu@email.com"
-                                       required
-                                       disabled="@recoveryLoading" />
-                            </div>
-
-                            <div class="recovery-actions">
-                                <button type="button" class="btn-recovery-cancel" @onclick="ClosePasswordRecovery" disabled="@recoveryLoading">
-                                    Cancelar
-                                </button>
-                                <button type="submit" class="btn-recovery-submit" disabled="@recoveryLoading">
-                                    @if (recoveryLoading)
-                                    {
-                                        <span class="spinner"></span>
-                                        <span>Enviando...</span>
-                                    }
-                                    else
-                                    {
-                                        <span>Enviar Email</span>
-                                    }
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            }
 
             <!-- Tabs Navigation -->
             <div class="login-tabs">
@@ -123,7 +75,6 @@
                             <input type="checkbox" @bind="rememberPassword" />
                             <span>Recuérdame</span>
                         </label>
-                        <button type="button" class="forgot-link" @onclick="() => showPasswordRecovery = true">¿Olvidaste tu contraseña?</button>
                     </div>
 
                     <button type="submit" class="btn-login-submit" disabled="@isLoading">
@@ -144,9 +95,7 @@
                     <span>O continúa con</span>
                 </div>
                 <button class="btn-google" @onclick="LoginWithGoogle" disabled="@isLoading">
-                    <svg class="google-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-brand-google"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 2a9.96 9.96 0 0 1 6.29 2.226a1 1 0 0 1 .04 1.52l-1.51 1.362a1 1 0 0 1 -1.265 .06a6 6 0 1 0 2.103 6.836l.001 -.004h-3.66a1 1 0 0 1 -.992 -.883l-.007 -.117v-2a1 1 0 0 1 1 -1h6.945a1 1 0 0 1 .994 .89c.04 .367 .061 .737 .061 1.11c0 5.523 -4.477 10 -10 10s-10 -4.477 -10 -10s4.477 -10 10 -10z" /></svg>
                     Google
                 </button>
             }
@@ -162,6 +111,16 @@
                                class="form-input"
                                @bind="registerName"
                                placeholder="Tu nombre"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-dni" class="form-label">DNI</label>
+                        <input id="register-dni"
+                               type="text"
+                               class="form-input"
+                               @bind="registerDNI"
+                               placeholder="Ej: 12345678 o X1234567L"
                                required />
                     </div>
 
@@ -236,9 +195,7 @@
                     <span>O regístrate con</span>
                 </div>
                 <button class="btn-google" @onclick="LoginWithGoogle" disabled="@isLoading">
-                    <svg class="google-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-brand-google"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 2a9.96 9.96 0 0 1 6.29 2.226a1 1 0 0 1 .04 1.52l-1.51 1.362a1 1 0 0 1 -1.265 .06a6 6 0 1 0 2.103 6.836l.001 -.004h-3.66a1 1 0 0 1 -.992 -.883l-.007 -.117v-2a1 1 0 0 1 1 -1h6.945a1 1 0 0 1 .994 .89c.04 .367 .061 .737 .061 1.11c0 5.523 -4.477 10 -10 10s-10 -4.477 -10 -10s4.477 -10 10 -10z" /></svg>
                     Google
                 </button>
             }
@@ -281,12 +238,6 @@ else
 }
 
 @code {
-    private readonly string _apiBaseUrl = "https://apifidelium.azurewebsites.net";
-    private readonly System.Text.Json.JsonSerializerOptions _jsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     private bool isAuthenticated = false;
     private string userDisplayName = "Usuario";
     private bool isLoginTab = true;
@@ -301,6 +252,7 @@ else
 
     // Register fields
     private string registerName = "";
+    private string registerDNI = "";
     private string registerEmail = "";
     private string registerPassword = "";
     private string registerConfirmPassword = "";
@@ -308,12 +260,6 @@ else
     private string registerInstagram = "";
     private bool agreeTerms = false;
 
-    // Password Recovery fields
-    private bool showPasswordRecovery = false;
-    private string recoveryEmail = "";
-    private bool recoveryLoading = false;
-    private string recoveryMessage = "";
-    private bool recoverySuccess = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -378,9 +324,10 @@ else
 
         if (string.IsNullOrWhiteSpace(registerEmail) ||
             string.IsNullOrWhiteSpace(registerPassword) ||
-            string.IsNullOrWhiteSpace(registerName))
+            string.IsNullOrWhiteSpace(registerName) ||
+            string.IsNullOrWhiteSpace(registerDNI))
         {
-            errorMessage = "Por favor completa todos los campos";
+            errorMessage = "Por favor completa todos los campos obligatorios (Nombre, DNI, Email, Contraseña)";
             return;
         }
 
@@ -402,6 +349,21 @@ else
             return;
         }
 
+        // Validar formato del DNI
+        if (!IsValidDNI(registerDNI))
+        {
+            errorMessage = "El formato del DNI no es válido";
+            return;
+        }
+
+        // Verificar que el DNI no esté duplicado
+        var dniExists = await CheckDNIExists(registerDNI);
+        if (dniExists)
+        {
+            errorMessage = "El DNI ingresado ya está registrado en el sistema";
+            return;
+        }
+
         isLoading = true;
 
         try
@@ -411,8 +373,8 @@ else
 
             if (!string.IsNullOrEmpty(userId))
             {
-                // 2. Crear usuario en la BD SQL
-                var usuarioResponse = await CreateUsuarioInDatabase(registerName, registerEmail);
+                // 2. Crear usuario en la BD SQL usando el servicio genérico
+                var usuarioResponse = await CreateUsuarioInDatabase(registerName, registerDNI, registerEmail);
 
                 if (usuarioResponse != null && usuarioResponse.ID > 0)
                 {
@@ -422,13 +384,7 @@ else
                     successMessage = "¡Cuenta creada correctamente! Inicia sesión con tus credenciales";
                     isLoginTab = true;
                     // Limpiar campos del formulario
-                    registerName = "";
-                    registerEmail = "";
-                    registerPassword = "";
-                    registerConfirmPassword = "";
-                    registerPhone = "";
-                    registerInstagram = "";
-                    agreeTerms = false;
+                    ClearRegisterFields();
                     await Task.Delay(2000);
                     StateHasChanged();
                 }
@@ -452,31 +408,55 @@ else
         }
     }
 
-    private async Task<Usuario?> CreateUsuarioInDatabase(string nombre, string email)
+    private async Task<Usuario?> CreateUsuarioInDatabase(string nombre, string dni, string email)
     {
         try
         {
             var usuario = new Usuario
             {
                 Nombre = nombre,
+                DNI = dni,
                 Email = email,
-                TipoUsuario = 0  // TipoUsuarioEnum.Cliente
+                TipoUsuario = TipoUsuarioEnum.Cliente
             };
 
-            var response = await Http.PostAsJsonAsync($"{_apiBaseUrl}/api/usuarios", usuario);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var usuarioJson = await response.Content.ReadAsStringAsync();
-                return System.Text.Json.JsonSerializer.Deserialize<Usuario>(usuarioJson, _jsonOptions);
-            }
+            return await usuarioService.AddAsync(usuario);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error al crear usuario: {ex.Message}");
+            throw;
         }
+    }
 
-        return null;
+    private bool IsValidDNI(string dni)
+    {
+        if (string.IsNullOrWhiteSpace(dni))
+            return false;
+
+        // Eliminar espacios y puntos
+        var cleanDni = dni.Trim().Replace(" ", "").Replace(".", "");
+
+        // Verificar longitud mínima y máxima
+        if (cleanDni.Length < 5 || cleanDni.Length > 20)
+            return false;
+
+        // Permitir números, letras y guiones (para diferentes formatos de DNI/NIE/Pasaporte)
+        return cleanDni.All(c => char.IsLetterOrDigit(c) || c == '-');
+    }
+
+    private async Task<bool> CheckDNIExists(string dni)
+    {
+        try
+        {
+            var usuarios = await usuarioService.GetAllAsync("") ?? new List<Usuario>();
+            return usuarios.Any(u => string.Equals(u.DNI, dni, StringComparison.OrdinalIgnoreCase));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al verificar DNI: {ex.Message}");
+            return false; // En caso de error, permitir continuar
+        }
     }
 
     private async Task CreateClienteInDatabase(int usuarioID)
@@ -490,16 +470,12 @@ else
                 Instagram = string.IsNullOrWhiteSpace(registerInstagram) ? string.Empty : registerInstagram
             };
 
-            var response = await Http.PostAsJsonAsync($"{_apiBaseUrl}/api/clientes", cliente);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                Console.WriteLine($"Error al crear cliente: {response.StatusCode}");
-            }
+            await clienteService.AddAsync(cliente);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error al crear cliente: {ex.Message}");
+            throw;
         }
     }
 
@@ -542,83 +518,77 @@ else
     {
         try
         {
-            // Buscar si el usuario ya existe
-            var usuarios = await Http.GetFromJsonAsync<List<Usuario>>(
-                $"{_apiBaseUrl}/api/usuarios",
-                _jsonOptions);
-
+            // Buscar si el usuario ya existe usando el servicio genérico
+            var usuarios = await usuarioService.GetAllAsync("");
             var usuarioExistente = usuarios?.FirstOrDefault(u => u.Email == email);
 
             if (usuarioExistente == null)
             {
+                // Generar un DNI temporal para usuarios de Google (puede ser cambiado después)
+                var dniTemporal = $"GOOGLE_{DateTime.Now:yyyyMMddHHmmss}";
+                
                 // Crear nuevo usuario
                 var nuevoUsuario = new Usuario
                 {
                     Nombre = displayName ?? "Usuario",
+                    DNI = dniTemporal,
                     Email = email,
-                    TipoUsuario = 0  // TipoUsuarioEnum.Cliente
+                    TipoUsuario = TipoUsuarioEnum.Cliente
                 };
 
-                var usuarioCreado = await Http.PostAsJsonAsync($"{_apiBaseUrl}/api/usuarios", nuevoUsuario);
+                var usuarioCreado = await usuarioService.AddAsync(nuevoUsuario);
 
-                if (usuarioCreado.IsSuccessStatusCode)
+                // Crear cliente para el nuevo usuario
+                if (usuarioCreado?.ID > 0)
                 {
-                    var usuarioJson = await usuarioCreado.Content.ReadAsStringAsync();
-                    var usuario = System.Text.Json.JsonSerializer.Deserialize<Usuario>(usuarioJson, _jsonOptions);
-
-                    // Crear cliente para el nuevo usuario
-                    if (usuario?.ID > 0)
+                    var nuevoCliente = new Cliente
                     {
-                        var nuevoCliente = new Cliente
-                        {
-                            UsuarioID = usuario.ID,
-                            Telefono = string.Empty,
-                            Instagram = string.Empty
-                        };
+                        UsuarioID = usuarioCreado.ID,
+                        Telefono = string.Empty,
+                        Instagram = string.Empty
+                    };
 
-                        await Http.PostAsJsonAsync($"{_apiBaseUrl}/api/clientes", nuevoCliente);
-                    }
+                    await clienteService.AddAsync(nuevoCliente);
                 }
             }
             else
             {
                 // Verificar si tiene cliente asociado
-                try
-                {
-                    var cliente = await Http.GetFromJsonAsync<Cliente>(
-                        $"{_apiBaseUrl}/api/clientes/usuario/{usuarioExistente.ID}",
-                        _jsonOptions);
-
-                    if (cliente == null)
-                    {
-                        // Crear cliente si no existe
-                        var nuevoCliente = new Cliente
-                        {
-                            UsuarioID = usuarioExistente.ID,
-                            Telefono = string.Empty,
-                            Instagram = string.Empty
-                        };
-
-                        await Http.PostAsJsonAsync($"{_apiBaseUrl}/api/clientes", nuevoCliente);
-                    }
-                }
-                catch
-                {
-                    // Si no existe el cliente, crear uno
-                    var nuevoCliente = new Cliente
-                    {
-                        UsuarioID = usuarioExistente.ID,
-                        Telefono = string.Empty,
-                        Instagram = string.Empty
-                    };
-
-                    await Http.PostAsJsonAsync($"{_apiBaseUrl}/api/clientes", nuevoCliente);
-                }
+                await EnsureClienteExists(usuarioExistente.ID);
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error al asegurar usuario en BD: {ex.Message}");
+            throw;
+        }
+    }
+
+    private async Task EnsureClienteExists(int usuarioID)
+    {
+        try
+        {
+            // Obtener todos los clientes y buscar el asociado al usuario
+            var clientes = await clienteService.GetAllAsync("");
+            var clienteExistente = clientes?.FirstOrDefault(c => c.UsuarioID == usuarioID);
+
+            if (clienteExistente == null)
+            {
+                // Crear cliente si no existe
+                var nuevoCliente = new Cliente
+                {
+                    UsuarioID = usuarioID,
+                    Telefono = string.Empty,
+                    Instagram = string.Empty
+                };
+
+                await clienteService.AddAsync(nuevoCliente);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al asegurar cliente: {ex.Message}");
+            throw;
         }
     }
 
@@ -640,49 +610,16 @@ else
         }
     }
 
-    private async Task HandlePasswordRecovery()
+    private void ClearRegisterFields()
     {
-        recoveryMessage = "";
-        recoverySuccess = false;
-
-        if (string.IsNullOrWhiteSpace(recoveryEmail))
-        {
-            recoveryMessage = "Por favor ingresa tu correo electrónico";
-            return;
-        }
-
-        recoveryLoading = true;
-
-        try
-        {
-            var (success, message) = await authService.SendPasswordResetEmail(recoveryEmail);
-            recoverySuccess = success;
-            recoveryMessage = message;
-
-            if (success)
-            {
-                await Task.Delay(3000);
-                ClosePasswordRecovery();
-            }
-        }
-        catch (Exception ex)
-        {
-            recoverySuccess = false;
-            recoveryMessage = "Error: " + ex.Message;
-        }
-        finally
-        {
-            recoveryLoading = false;
-        }
-    }
-
-    private void ClosePasswordRecovery()
-    {
-        showPasswordRecovery = false;
-        recoveryEmail = "";
-        recoveryMessage = "";
-        recoverySuccess = false;
-        recoveryLoading = false;
+        registerName = "";
+        registerDNI = "";
+        registerEmail = "";
+        registerPassword = "";
+        registerConfirmPassword = "";
+        registerPhone = "";
+        registerInstagram = "";
+        agreeTerms = false;
     }
 }
 

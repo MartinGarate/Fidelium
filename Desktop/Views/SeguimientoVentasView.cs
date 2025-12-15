@@ -137,36 +137,28 @@ namespace Desktop.Views
             // Extraemos el valor real del objeto anónimo
             ModoVistaCompra modoSeleccionado = (ModoVistaCompra)comboBoxModoVista.SelectedValue;
 
-            var query = _comprasCache.AsQueryable();
-
-            if (!string.IsNullOrEmpty(filtroTexto))
-            {
-                query = query.Where(cs =>
-                    (cs.Nombre != null && cs.Nombre.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase)) ||
-                    (cs.Cliente != null && cs.Cliente.Usuario != null && cs.Cliente.Usuario.Nombre != null &&
-                     cs.Cliente.Usuario.Nombre.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase)) ||
-                    (cs.Empleado != null && cs.Empleado.Nombre != null &&
-                     cs.Empleado.Nombre.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase))
-                );
-            }
+            // Usar método helper para filtrado cuando hay texto de búsqueda
+            var comprasFiltradas = string.IsNullOrEmpty(filtroTexto) 
+                ? _comprasCache 
+                : _comprasCache.Where(cs => CompraMatchesFilter(cs, filtroTexto));
 
             // 4. Filtro por Estado (Enum)
             switch (modoSeleccionado)
             {
                 case ModoVistaCompra.FeedbacksRecibidos:
-                    query = query.Where(cs => cs.FeedbackRecibido == true);
+                    comprasFiltradas = comprasFiltradas.Where(cs => cs.FeedbackRecibido == true);
                     break;
                 case ModoVistaCompra.FeedbacksPendientes:
-                    query = query.Where(cs => cs.FeedbackRecibido == false);
+                    comprasFiltradas = comprasFiltradas.Where(cs => cs.FeedbackRecibido == false);
                     break;
             }
 
             // 5. Ordenamiento y Binding
-            var comprasFiltradas = query.OrderByDescending(cs => cs.FechaCompra).ToList();
+            var comprasOrdenadas = comprasFiltradas.OrderByDescending(cs => cs.FechaCompra).ToList();
 
             // Limpiamos siempre el DataSource antes para evitar conflictos de columnas
             dataGridViewCompras.DataSource = null;
-            dataGridViewCompras.DataSource = TransformarParaUICompras(comprasFiltradas);
+            dataGridViewCompras.DataSource = TransformarParaUICompras(comprasOrdenadas);
 
             // 6. Lógica de estética y cabeceras (DataGridHelpers)
             if (dataGridViewCompras.ColumnCount > 0)
@@ -181,6 +173,24 @@ namespace Desktop.Views
                 DataGridHelpers.RenameColumn(dataGridViewCompras, "FECHA", "FECHA VENTA");
             }
         }
+
+        private bool CompraMatchesFilter(CompraServicio compra, string filtro)
+        {
+            // Verificación segura del nombre del producto
+            if (compra.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) == true)
+                return true;
+
+            // Verificación segura del nombre del cliente
+            if (compra.Cliente?.Usuario?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) == true)
+                return true;
+
+            // Verificación segura del nombre del empleado
+            if (compra.Empleado?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) == true)
+                return true;
+
+            return false;
+        }
+
         private List<object> TransformarParaUICompras(List<CompraServicio> compras)
         {
             // Obtenemos el modo usando SelectedValue igual que arriba
@@ -227,24 +237,19 @@ namespace Desktop.Views
 
             if (_isSelectingClient)
             {
-                // Filtramos la lista de Clientes
-                var clientesFiltrados = _clientesCache.Where(c =>
-                    string.IsNullOrEmpty(filtro) ||
-                    (c.Usuario?.Nombre.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (c.Usuario?.DNI.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false)
-                ).ToList();
+                // Filtramos la lista de Clientes usando método helper
+                var clientesFiltrados = _clientesCache
+                    .Where(c => ClienteMatchesFilter(c, filtro))
+                    .ToList();
 
                 datosAMostrar = TransformarParaUICliente(clientesFiltrados);
             }
             else
             {
-                // Filtramos la lista de Vendedores (Usuarios puros)
-                var vendedoresFiltrados = _usuariosCache.Where(u =>
-                    u.TipoUsuario != TipoUsuarioEnum.Cliente &&
-                    (string.IsNullOrEmpty(filtro) ||
-                     u.Nombre.Contains(filtro, StringComparison.OrdinalIgnoreCase) ||
-                     u.DNI.Contains(filtro, StringComparison.OrdinalIgnoreCase))
-                ).ToList();
+                // Filtramos la lista de Vendedores usando método helper
+                var vendedoresFiltrados = _usuariosCache
+                    .Where(u => u.TipoUsuario != TipoUsuarioEnum.Cliente && UsuarioMatchesFilter(u, filtro))
+                    .ToList();
 
                 datosAMostrar = TransformarParaUIUsuarioPuro(vendedoresFiltrados);
             }
@@ -259,12 +264,59 @@ namespace Desktop.Views
                 DataGridHelpers.SetupBasicGrid(dataGridViewUsuarios);
             }
         }
+
+        private bool ClienteMatchesFilter(Cliente cliente, string filtro)
+        {
+            if (string.IsNullOrEmpty(filtro))
+                return true;
+
+            // Verificación segura de nombre
+            if (cliente.Usuario?.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) == true)
+                return true;
+
+            // Verificación segura de DNI
+            if (cliente.Usuario?.DNI?.Contains(filtro, StringComparison.OrdinalIgnoreCase) == true)
+                return true;
+
+            // Verificación segura de email
+            if (cliente.Usuario?.Email?.Contains(filtro, StringComparison.OrdinalIgnoreCase) == true)
+                return true;
+
+            // Verificación segura de teléfono
+            if (cliente.Telefono?.Contains(filtro, StringComparison.OrdinalIgnoreCase) == true)
+                return true;
+
+            return false;
+        }
+
+        private bool UsuarioMatchesFilter(Usuario usuario, string filtro)
+        {
+            if (string.IsNullOrEmpty(filtro))
+                return true;
+
+            // Verificación segura de nombre
+            if (usuario.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) == true)
+                return true;
+
+            // Verificación segura de DNI
+            if (usuario.DNI?.Contains(filtro, StringComparison.OrdinalIgnoreCase) == true)
+                return true;
+
+            // Verificación segura de email
+            if (usuario.Email?.Contains(filtro, StringComparison.OrdinalIgnoreCase) == true)
+                return true;
+
+            return false;
+        }
+
         private List<object> TransformarParaUICliente(List<Cliente> origen)
         {
             return origen.Select(c => new
             {
                 NOMBRE = c.Usuario?.Nombre ?? "N/A",
                 DNI = c.Usuario?.DNI ?? "N/A",
+                EMAIL = c.Usuario?.Email ?? "N/A",
+                TELEFONO = c.Telefono ?? "N/A",
                 TIPO = "Cliente",
                 ID = (int)c.ID
             }).Cast<object>().ToList();
@@ -276,10 +328,12 @@ namespace Desktop.Views
             {
                 NOMBRE = u.Nombre ?? "N/A",
                 DNI = u.DNI ?? "N/A",
+                EMAIL = u.Email ?? "N/A",
                 TIPO = u.TipoUsuario.ToString(), // .ToString() evita el error de casting de Enum
                 ID = (int)u.ID
             }).Cast<object>().ToList();
         }
+
         private void DetectarTipoUsuario(bool esCliente)
         {
             var item = dataGridViewUsuarios.CurrentRow?.DataBoundItem;
@@ -481,7 +535,7 @@ namespace Desktop.Views
                 string nombreProducto = (string)row.PRODUCTO;
 
                 // 3. Confirmación semántica al usuario
-                var mensaje = $"¿Desea eliminar el registro de '{nombreProducto}'? \nEsta acción moverá la transacción a la papelera.";
+                var mensaje = $"¿Desea eliminar el registro de '{nombreProducto}'? \nEsta acción moverá la transacción a la papirera.";
                 if (MessageBox.Show(mensaje, "Confirmar Eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                 {
                     bool exito = await _compraServicioService.DeleteAsync(idCompra);

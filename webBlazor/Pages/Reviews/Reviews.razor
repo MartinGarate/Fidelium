@@ -4,108 +4,259 @@
 @inject IGenericService<Usuario> usuarioService
 @inject IGenericService<Cliente> clienteService
 @inject IGenericService<CompraServicio> compraService
-@inject LoadingService loadingService
 
-@if (!isAuthenticated)
-{
-    <div class="reviews-container">
-        <div class="reviews-card">
-            <h2>Acceso Denegado</h2>
-            <p>Debes iniciar sesión para ver tus opiniones.</p>
-            <NavLink href="/login" class="btn-primary">Ir a Login</NavLink>
-        </div>
-    </div>
-}
-
-@if (isAuthenticated)
-{
-    <div class="reviews-container">
-        <div class="reviews-card">
+<div class="reviews-container">
+    <div class="reviews-card">
+        @if (!isAuthenticated)
+        {
+            <div class="access-denied">
+                <div class="access-denied-icon">🔐</div>
+                <h2>Acceso Restringido</h2>
+                <p>Inicia sesión para gestionar tus opiniones sobre compras y servicios.</p>
+                <NavLink href="/login" class="btn-primary">
+                    🚀 Iniciar Sesión
+                </NavLink>
+            </div>
+        }
+        else
+        {
             <div class="reviews-header">
                 <div class="header-content">
-                    <h1>Mis Opiniones</h1>
-                    <p class="reviews-subtitle">Historial de tus opiniones sobre compras y servicios</p>
+                    <h1 class="page-title">
+                        <span class="title-icon">💬</span>
+                        Mis Opiniones
+                    </h1>
+                    <p class="page-subtitle">Gestiona tus comentarios y experiencias sobre compras y servicios</p>
+                    @if (clienteInfo != null && opiniones.Count > 0)
+                    {
+                        <div class="client-info">
+                            <span class="client-badge">👤 {clienteInfo.Nombre}</span>
+                            <span class="opinions-count">💭 {opiniones.Count} opiniones</span>
+                        </div>
+                    }
                 </div>
-                <NavLink href="/reviews/create" class="btn-create-review">
-                    + Nueva Opinión
-                </NavLink>
+                <div class="header-actions">
+                    <NavLink href="/reviews/create" class="btn-create">
+                        ➕ Nueva Opinión
+                    </NavLink>
+                    <NavLink href="/compras" class="btn-back">
+                        📦 Ver Compras
+                    </NavLink>
+                    <button type="button" class="btn-refresh" @onclick="RefreshData" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span class="spinner-small"></span>
+                        }
+                        else
+                        {
+                            <span>🔄</span>
+                        }
+                        Actualizar
+                    </button>
+                </div>
             </div>
 
             @if (!string.IsNullOrEmpty(errorMessage))
             {
-                <div class="error-alert">
-                    <span class="error-icon">⚠️</span>
-                    <span>@errorMessage</span>
-                </div>
-                <div class="empty-state">
-                    <div class="empty-icon">🔄</div>
-                    <h3>Parece que hay un problema</h3>
-                    <p>Intenta recargar la página</p>
-                    <button type="button" class="btn-primary" @onclick="@(async () => await LoadUserOpiniones())">
-                        Reintentar
-                    </button>
-                </div>
-            }
-
-            @if (opiniones.Count > 0)
-            {
-                <div class="opinions-grid">
-                    @foreach (var opinion in opiniones)
-                    {
-                        <div class="opinion-card">
-                            <div class="opinion-header">
-                                <h3>@opinion.Nombre</h3>
-                            </div>
-
-                            <div class="opinion-meta">
-                                <span class="date">📅 @opinion.FechaCompra.ToString("dd/MM/yyyy")</span>
-                                <span class="created-date">📝 @opinion.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
-                            </div>
-
-                            <div class="opinion-feedback">
-                                <p>@opinion.ComentarioFeedback</p>
-                            </div>
-
-                            @if (!string.IsNullOrEmpty(opinion.Descripcion))
-                            {
-                                <div class="opinion-description">
-                                    <small>@opinion.Descripcion</small>
-                                </div>
-                            }
-
-                            <div class="opinion-actions">
-                                <NavLink href="@($"/reviews/edit/{opinion.ID}")" class="btn-edit">
-                                    ✎ Editar
-                                </NavLink>
-                                <button type="button" class="btn-delete" @onclick="@(() => DeleteOpinion(opinion.ID))">
-                                    🗑️ Eliminar
-                                </button>
-                            </div>
+                <div class="error-section">
+                    <div class="error-alert">
+                        <span class="error-icon">⚠️</span>
+                        <div class="error-content">
+                            <strong>Error</strong>
+                            <p>@errorMessage</p>
                         </div>
-                    }
+                        <button class="btn-retry" @onclick="RefreshData">
+                            Reintentar
+                        </button>
+                    </div>
                 </div>
             }
 
-            @if (string.IsNullOrEmpty(errorMessage))
+            @if (isLoading)
             {
-                <div class="empty-state">
-                    <div class="empty-icon">💭</div>
-                    <h3>Aún no tienes opiniones</h3>
-                    <p>Comparte tu experiencia sobre tus compras y servicios</p>
-                    <NavLink href="/reviews/create" class="btn-primary">
-                        Crear tu Primera Opinión
-                    </NavLink>
+                <div class="loading-section">
+                    <div class="loading-spinner">
+                        <div class="spinner-ring"></div>
+                        <div class="spinner-ring spinner-ring-2"></div>
+                        <div class="spinner-ring spinner-ring-3"></div>
+                    </div>
+                    <h3>Cargando opiniones...</h3>
+                    <p>Obteniendo tus comentarios y reseñas</p>
                 </div>
             }
-        </div>
+            else if (opiniones.Any())
+            {
+                <!-- Estadísticas -->
+                <div class="stats-section">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">💬</div>
+                        <div class="stat-content">
+                            <span class="stat-number">@opiniones.Count</span>
+                            <span class="stat-label">Total Opiniones</span>
+                        </div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-content">
+                            <span class="stat-number">@opiniones.Count(o => o.ComentarioFeedback.Length > 50)</span>
+                            <span class="stat-label">Detalladas</span>
+                        </div>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-content">
+                            <span class="stat-number">@opiniones.Count(o => o.FeedbackRecibido)</span>
+                            <span class="stat-label">Procesadas</span>
+                        </div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-content">
+                            <span class="stat-number">@GetRecentOpinionsCount()</span>
+                            <span class="stat-label">Este Mes</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Opiniones -->
+                <div class="opinions-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">💭</span>
+                        Tus Comentarios y Reseñas
+                    </h2>
+                    
+                    <div class="opinions-grid">
+                        @foreach (var opinion in opiniones.OrderByDescending(o => o.CreatedAt))
+                        {
+                            <div class="opinion-card @GetOpinionCardClass(opinion)">
+                                <div class="opinion-header">
+                                    <div class="opinion-title">
+                                        <h3>@opinion.Nombre</h3>
+                                        <span class="opinion-id">#@opinion.ID</span>
+                                    </div>
+                                    <div class="opinion-status">
+                                        @if (opinion.FeedbackRecibido)
+                                        {
+                                            <span class="status-badge processed">
+                                                <span class="badge-icon">✅</span>
+                                                Procesada
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-badge pending">
+                                                <span class="badge-icon">⏳</span>
+                                                Pendiente
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(opinion.Descripcion))
+                                {
+                                    <div class="opinion-description">
+                                        <span class="description-label">📝 Producto/Servicio:</span>
+                                        <p>@opinion.Descripcion</p>
+                                    </div>
+                                }
+
+                                <div class="opinion-content">
+                                    <div class="content-header">
+                                        <span class="content-icon">💭</span>
+                                        <span class="content-title">Tu Opinión</span>
+                                        <span class="content-length">@opinion.ComentarioFeedback.Length caracteres</span>
+                                    </div>
+                                    <div class="content-text">
+                                        <p>@opinion.ComentarioFeedback</p>
+                                    </div>
+                                </div>
+
+                                <div class="opinion-meta">
+                                    <div class="meta-item">
+                                        <span class="meta-icon">📅</span>
+                                        <span class="meta-label">Compra:</span>
+                                        <span class="meta-value">@opinion.FechaCompra.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span class="meta-icon">✍️</span>
+                                        <span class="meta-label">Opinión:</span>
+                                        <span class="meta-value">@opinion.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                                    </div>
+                                    @if (opinion.FechaRecordatorio > DateTime.MinValue)
+                                    {
+                                        <div class="meta-item">
+                                            <span class="meta-icon">🔔</span>
+                                            <span class="meta-label">Recordatorio:</span>
+                                            <span class="meta-value">@opinion.FechaRecordatorio.ToString("dd/MM/yyyy")</span>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="opinion-actions">
+                                    <NavLink href="@($"/reviews/edit/{opinion.ID}")" class="btn-action edit">
+                                        <span class="btn-icon">✏️</span>
+                                        Editar
+                                    </NavLink>
+                                    <button type="button" class="btn-action danger" @onclick="@(() => DeleteOpinion(opinion.ID))">
+                                        <span class="btn-icon">🗑️</span>
+                                        Eliminar
+                                    </button>
+                                    <NavLink href="@($"/compras")" class="btn-action secondary">
+                                        <span class="btn-icon">📦</span>
+                                        Ver Compra
+                                    </NavLink>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="empty-section">
+                    <div class="empty-illustration">
+                        <div class="empty-icon">💭</div>
+                        <div class="empty-bubbles">
+                            <div class="bubble bubble-1"></div>
+                            <div class="bubble bubble-2"></div>
+                            <div class="bubble bubble-3"></div>
+                        </div>
+                    </div>
+                    <h3>Aún no tienes opiniones</h3>
+                    <p>Comparte tu experiencia sobre tus compras y servicios para ayudar a mejorar nuestro servicio.</p>
+                    <p class="empty-note">Las opiniones que escribas nos ayudan a brindarte un mejor servicio personalizado.</p>
+                    <div class="empty-actions">
+                        <NavLink href="/reviews/create" class="btn-primary">
+                            <span class="btn-icon">💬</span>
+                            Crear Primera Opinión
+                        </NavLink>
+                        <NavLink href="/compras" class="btn-secondary">
+                            <span class="btn-icon">📦</span>
+                            Ver Mis Compras
+                        </NavLink>
+                        <button type="button" class="btn-tertiary" @onclick="RefreshData">
+                            <span class="btn-icon">🔄</span>
+                            Actualizar Lista
+                        </button>
+                    </div>
+                </div>
+            }
+        }
     </div>
-}
+</div>
 
 @code {
+    // Estado de la aplicación
     private bool isAuthenticated = false;
+    private bool isLoading = false;
     private string errorMessage = "";
 
+    // Datos del usuario y opiniones
+    private Usuario? clienteInfo = null;
     private List<CompraServicio> opiniones = new();
+    
+    // Información del usuario autenticado
+    private string userEmail = "";
     private int clienteID = 0;
 
     protected override async Task OnInitializedAsync()
@@ -113,134 +264,179 @@
         try
         {
             isAuthenticated = await authService.IsUserAuthenticated();
-
+            
             if (!isAuthenticated)
             {
                 navigationManager.NavigateTo("/login");
                 return;
             }
 
-            await LoadUserOpiniones();
+            await LoadUserOpinions();
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error en inicialización: {ex.Message}";
-            Console.WriteLine($"OnInitialized Error: {ex}");
+            HandleError("Error al inicializar la página", ex);
         }
     }
 
-    private async Task LoadUserOpiniones()
+    private async Task LoadUserOpinions()
     {
+        isLoading = true;
         errorMessage = "";
+        StateHasChanged();
 
         try
         {
-            await loadingService.ShowDuring(async () =>
+            // 1. Obtener usuario de Firebase
+            var firebaseUser = await authService.GetUserFirebase();
+            if (firebaseUser?.Email == null)
             {
-                var firebaseUser = await authService.GetUserFirebase();
-                if (firebaseUser == null || string.IsNullOrEmpty(firebaseUser.Email))
-                {
-                    errorMessage = "No se pudo obtener tus datos de autenticación";
-                    return;
-                }
+                throw new Exception("No se pudo obtener la información de autenticación");
+            }
 
-                try
-                {
-                    var usuarios = await usuarioService.GetAllAsync("");
-                    if (usuarios == null || usuarios.Count == 0)
-                    {
-                        errorMessage = "No se encontraron usuarios en el sistema";
-                        return;
-                    }
+            userEmail = firebaseUser.Email;
+            Console.WriteLine($"[Reviews] Cargando opiniones para: {userEmail}");
 
-                    var usuario = usuarios.FirstOrDefault(u => u.Email == firebaseUser.Email);
-                    if (usuario == null || usuario.ID <= 0)
-                    {
-                        errorMessage = "No se encontró tu perfil de usuario";
-                        return;
-                    }
+            // 2. Cargar usuarios del sistema
+            var todosLosUsuarios = await usuarioService.GetAllAsync("") ?? new List<Usuario>();
+            Console.WriteLine($"[Reviews] Usuarios cargados: {todosLosUsuarios.Count}");
 
-                    var clientes = await clienteService.GetAllAsync("");
-                    var cliente = clientes?.FirstOrDefault(c => c.UsuarioID == usuario.ID);
+            if (!todosLosUsuarios.Any())
+            {
+                throw new Exception("No hay usuarios en el sistema");
+            }
 
-                    if (cliente == null || cliente.ID <= 0)
-                    {
-                        errorMessage = "No se encontró tu perfil de cliente";
-                        return;
-                    }
+            // 3. Buscar usuario por email
+            var usuario = todosLosUsuarios.FirstOrDefault(u => 
+                string.Equals(u.Email, userEmail, StringComparison.OrdinalIgnoreCase));
 
-                    clienteID = cliente.ID;
+            if (usuario == null)
+            {
+                throw new Exception($"Usuario no encontrado para el email: {userEmail}");
+            }
 
-                    var todasLasCompras = await compraService.GetAllAsync("");
-                    opiniones = todasLasCompras?
-                        .Where(c => c.ClienteID == clienteID &&
-                                   !c.IsDeleted &&
-                                   !string.IsNullOrEmpty(c.ComentarioFeedback))
-                        .OrderByDescending(c => c.FechaCompra)
-                        .ToList() ?? new();
+            clienteInfo = usuario;
+            Console.WriteLine($"[Reviews] Usuario encontrado: {usuario.Nombre} (ID: {usuario.ID})");
 
-                    if (opiniones.Count == 0)
-                    {
-                        Console.WriteLine($"Cliente {clienteID} no tiene opiniones registradas");
-                    }
-                }
-                catch (HttpRequestException ex)
-                {
-                    errorMessage = $"Error de conexión: {ex.Message}";
-                    Console.WriteLine($"HttpRequestException: {ex}");
-                }
-                catch (System.Text.Json.JsonException ex)
-                {
-                    errorMessage = $"Error al procesar datos: {ex.Message}";
-                    Console.WriteLine($"JsonException: {ex}");
-                }
-                catch (Exception ex)
-                {
-                    errorMessage = $"Error al obtener datos: {ex.Message}";
-                    Console.WriteLine($"Service Error: {ex}");
-                }
-            }, "Cargando tus opiniones...");
+            // 4. Buscar cliente asociado
+            var clientes = await clienteService.GetAllAsync("") ?? new List<Cliente>();
+            var cliente = clientes.FirstOrDefault(c => c.UsuarioID == usuario.ID && !c.IsDeleted);
+
+            if (cliente == null)
+            {
+                throw new Exception("Perfil de cliente no encontrado. Contacta con soporte.");
+            }
+
+            clienteID = cliente.ID;
+            Console.WriteLine($"[Reviews] Cliente encontrado: ID {clienteID}");
+
+            // 5. Cargar opiniones del cliente
+            await LoadOpinions();
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error inesperado: {ex.Message}";
-            Console.WriteLine($"Error: {ex}");
+            HandleError("Error al cargar las opiniones", ex);
         }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadOpinions()
+    {
+        try
+        {
+            // Cargar todas las compras
+            var todasLasCompras = await compraService.GetAllAsync("") ?? new List<CompraServicio>();
+            Console.WriteLine($"[Reviews] Total compras en sistema: {todasLasCompras.Count}");
+
+            // Filtrar solo las que tienen opiniones del cliente
+            opiniones = todasLasCompras
+                .Where(c => c.ClienteID == clienteID && 
+                           !c.IsDeleted && 
+                           !string.IsNullOrWhiteSpace(c.ComentarioFeedback))
+                .ToList();
+
+            Console.WriteLine($"[Reviews] Opiniones del cliente: {opiniones.Count}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error al cargar las opiniones", ex);
+        }
+    }
+
+    private async Task RefreshData()
+    {
+        await LoadUserOpinions();
     }
 
     private async Task DeleteOpinion(int compraId)
     {
-        if (!await JSRuntime.InvokeAsync<bool>("confirm", "¿Estás seguro de que deseas eliminar esta opinión?"))
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", 
+            "¿Estás seguro de que deseas eliminar esta opinión?\n\nEsta acción limpiará tu comentario pero mantendrá el registro de compra."))
         {
             return;
         }
 
         try
         {
-            await loadingService.ShowDuring(async () =>
+            var compra = opiniones.FirstOrDefault(c => c.ID == compraId);
+            if (compra == null)
             {
-                var compra = opiniones.FirstOrDefault(o => o.ID == compraId);
-                if (compra == null)
-                {
-                    errorMessage = "La opinión no fue encontrada";
-                    return;
-                }
+                throw new Exception("La opinión no fue encontrada");
+            }
 
-                // Solo limpiar el feedback, no eliminar la compra completa
-                compra.ComentarioFeedback = string.Empty;
+            Console.WriteLine($"[Reviews] Eliminando opinión: {compra.Nombre}");
 
-                await compraService.UpdateAsync(compra);
+            // Limpiar feedback
+            compra.ComentarioFeedback = string.Empty;
+            compra.FeedbackRecibido = false;
+
+            // Actualizar en la base de datos
+            bool success = await compraService.UpdateAsync(compra);
+            
+            if (success)
+            {
+                // Remover de la lista local
                 opiniones.RemoveAll(o => o.ID == compraId);
+                Console.WriteLine($"[Reviews] Opinión eliminada exitosamente");
                 StateHasChanged();
-            }, "Eliminando opinión...");
+            }
+            else
+            {
+                throw new Exception("No se pudo actualizar la compra");
+            }
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error al eliminar opinión: {ex.Message}";
-            Console.WriteLine($"Delete Error: {ex}");
+            HandleError("Error al eliminar la opinión", ex);
         }
     }
 
-    [Inject]
-    private IJSRuntime? JSRuntime { get; set; }
+    private void HandleError(string context, Exception ex)
+    {
+        errorMessage = $"{context}: {ex.Message}";
+        Console.WriteLine($"[Reviews] {context}: {ex}");
+    }
+
+    private string GetOpinionCardClass(CompraServicio opinion)
+    {
+        if (opinion.FeedbackRecibido)
+            return "processed";
+        
+        if (opinion.ComentarioFeedback.Length > 100)
+            return "detailed";
+            
+        return "standard";
+    }
+
+    private int GetRecentOpinionsCount()
+    {
+        var oneMonthAgo = DateTime.Now.AddMonths(-1);
+        return opiniones.Count(o => o.CreatedAt >= oneMonthAgo);
+    }
+
+    [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
 }

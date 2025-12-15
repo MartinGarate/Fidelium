@@ -4,133 +4,294 @@
 @inject IGenericService<Usuario> usuarioService
 @inject IGenericService<Cliente> clienteService
 @inject IGenericService<CompraServicio> compraService
+@inject IGenericService<Notificacion> notificacionService
 
-@if (!isAuthenticated)
-{
-    <div class="compras-container">
-        <div class="compras-card">
-            <h2>Acceso Denegado</h2>
-            <p>Debes iniciar sesión para ver tus compras.</p>
-            <NavLink href="/login" class="btn-primary">Ir a Login</NavLink>
-        </div>
-    </div>
-}
-else
-{
-    <div class="compras-container">
-        <div class="compras-card">
+@using Service.Enums
+@using Service.Models
+
+<div class="compras-container">
+    <div class="compras-card">
+        @if (!isAuthenticated)
+        {
+            <div class="access-denied">
+                <div class="access-denied-icon">🔒</div>
+                <h2>Acceso Restringido</h2>
+                <p>Debes iniciar sesión para ver tu historial de compras.</p>
+                <NavLink href="/login" class="btn-primary">
+                    🚀 Iniciar Sesión
+                </NavLink>
+            </div>
+        }
+        else
+        {
             <div class="compras-header">
                 <div class="header-content">
-                    <h1>Mis Compras/Servicios</h1>
-                    <p class="compras-subtitle">Historial de tus compras y servicios registrados</p>
+                    <h1 class="page-title">
+                        <span class="title-icon">🛍️</span>
+                        Mis Compras & Servicios
+                    </h1>
+                    <p class="page-subtitle">Historial de tus compras registradas por nuestro equipo</p>
+                    @if (clienteInfo != null && compras.Count > 0)
+                    {
+                        <div class="client-info">
+                            <span class="client-badge">👤 {clienteInfo.Nombre}</span>
+                            <span class="purchases-count">📦 {compras.Count} compras</span>
+                        </div>
+                    }
                 </div>
-                <NavLink href="/compras/crear" class="btn-create-compra">
-                    + Nueva Compra
-                </NavLink>
+                <div class="header-actions">
+                    <NavLink href="/reviews" class="btn-reviews">
+                        💬 Gestionar Opiniones
+                    </NavLink>
+                    <button type="button" class="btn-refresh" @onclick="RefreshData" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span class="spinner-small"></span>
+                        }
+                        else
+                        {
+                            <span>🔄</span>
+                        }
+                        Actualizar
+                    </button>
+                </div>
             </div>
 
             @if (!string.IsNullOrEmpty(errorMessage))
             {
-                <div class="error-alert">
-                    <span class="error-icon">⚠️</span>
-                    <span>@errorMessage</span>
-                </div>
-                <div class="empty-state">
-                    <div class="empty-icon">🔄</div>
-                    <h3>Parece que hay un problema</h3>
-                    <p>Intenta recargar la página</p>
-                    <button type="button" class="btn-primary" @onclick="@(async () => await LoadUserCompras())">
-                        Reintentar
-                    </button>
-                </div>
-            }
-            else if (isLoading)
-            {
-                <div class="loading-container">
-                    <div class="spinner"></div>
-                    <p>Cargando tus compras...</p>
-                </div>
-            }
-            else if (compras.Count > 0)
-            {
-                <div class="compras-grid">
-                    @foreach (var compra in compras)
-                    {
-                        <div class="compra-card">
-                            <div class="compra-header">
-                                <h3>@compra.Nombre</h3>
-                                <span class="compra-date">📅 @compra.FechaCompra.ToString("dd/MM/yyyy")</span>
-                            </div>
-
-                            @if (!string.IsNullOrEmpty(compra.Descripcion))
-                            {
-                                <div class="compra-description">
-                                    <p>@compra.Descripcion</p>
-                                </div>
-                            }
-
-                            <div class="compra-meta">
-                                @if (compra.Empleado != null && compra.EmpleadoID > 0)
-                                {
-                                    <div class="meta-item">
-                                        <span class="meta-label">👤 Vendedor:</span>
-                                        <span class="meta-value">@compra.Empleado.Nombre</span>
-                                    </div>
-                                }
-
-                                @if (!string.IsNullOrEmpty(compra.ComentarioFeedback))
-                                {
-                                    <div class="meta-item">
-                                        <span class="meta-label">💬 Comentario:</span>
-                                        <span class="meta-value">@(compra.ComentarioFeedback.Length > 50 ? compra.ComentarioFeedback.Substring(0, 50) + "..." : compra.ComentarioFeedback)</span>
-                                    </div>
-                                }
-                            </div>
-
-                            <div class="compra-status">
-                                @if (!string.IsNullOrEmpty(compra.ComentarioFeedback) && compra.ComentarioFeedback.Length > 10)
-                                {
-                                    <span class="status-badge reviewed">✓ Con Opinión</span>
-                                }
-                                else
-                                {
-                                    <span class="status-badge pending">◯ Sin Opinión</span>
-                                }
-                            </div>
-
-                            <div class="compra-actions">
-                                <NavLink href="@($"/compras/editar/{compra.ID}")" class="btn-review">
-                                    📝 Editar
-                                </NavLink>
-                                <button type="button" class="btn-delete" @onclick="@(() => DeleteCompra(compra.ID))">
-                                    🗑️ Eliminar
-                                </button>
-                            </div>
+                <div class="error-section">
+                    <div class="error-alert">
+                        <span class="error-icon">⚠️</span>
+                        <div class="error-content">
+                            <strong>Error</strong>
+                            <p>@errorMessage</p>
                         </div>
-                    }
+                        <button class="btn-retry" @onclick="RefreshData">
+                            Reintentar
+                        </button>
+                    </div>
+                </div>
+            }
+
+            @if (isLoading)
+            {
+                <div class="loading-section">
+                    <div class="loading-spinner">
+                        <div class="spinner-ring"></div>
+                        <div class="spinner-ring spinner-ring-2"></div>
+                        <div class="spinner-ring spinner-ring-3"></div>
+                    </div>
+                    <h3>Cargando tu historial...</h3>
+                    <p>Obteniendo tus compras y servicios</p>
+                </div>
+            }
+            else if (compras.Any())
+            {
+                <!-- Estadísticas -->
+                <div class="stats-section">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <span class="stat-number">@compras.Count</span>
+                            <span class="stat-label">Total Compras</span>
+                        </div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-icon">💬</div>
+                        <div class="stat-content">
+                            <span class="stat-number">@compras.Count(c => HasValidFeedback(c))</span>
+                            <span class="stat-label">Con Opinión</span>
+                        </div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <span class="stat-number">@compras.Count(c => !HasValidFeedback(c))</span>
+                            <span class="stat-label">Sin Opinión</span>
+                        </div>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <span class="stat-number">@compras.Count(c => c.FeedbackRecibido)</span>
+                            <span class="stat-label">Procesadas</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Compras -->
+                <div class="purchases-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">📦</span>
+                        Historial de Compras
+                    </h2>
+                    
+                    <div class="purchases-grid">
+                        @foreach (var compra in compras.OrderByDescending(c => c.FechaCompra))
+                        {
+                            <div class="purchase-card @GetCardStatusClass(compra)">
+                                <div class="purchase-header">
+                                    <div class="purchase-title">
+                                        <h3>@compra.Nombre</h3>
+                                        <span class="purchase-id">#@compra.ID</span>
+                                    </div>
+                                    <div class="purchase-date">
+                                        <span class="date-label">📅</span>
+                                        <span class="date-value">@compra.FechaCompra.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(compra.Descripcion))
+                                {
+                                    <div class="purchase-description">
+                                        <p>@compra.Descripcion</p>
+                                    </div>
+                                }
+
+                                <div class="purchase-details">
+                                    @if (GetEmpleadoNombre(compra) != "No especificado")
+                                    {
+                                        <div class="detail-item">
+                                            <span class="detail-icon">👤</span>
+                                            <span class="detail-label">Vendedor:</span>
+                                            <span class="detail-value">@GetEmpleadoNombre(compra)</span>
+                                        </div>
+                                    }
+
+                                    @if (compra.FechaRecordatorio > DateTime.MinValue)
+                                    {
+                                        <div class="detail-item">
+                                            <span class="detail-icon">🔔</span>
+                                            <span class="detail-label">Recordatorio:</span>
+                                            <span class="detail-value">@compra.FechaRecordatorio.ToString("dd/MM/yyyy")</span>
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(compra.NotasVentaInternas))
+                                    {
+                                        <div class="detail-item notes">
+                                            <span class="detail-icon">📝</span>
+                                            <span class="detail-label">Notas:</span>
+                                            <span class="detail-value">@(compra.NotasVentaInternas.Length > 80 ? compra.NotasVentaInternas.Substring(0, 80) + "..." : compra.NotasVentaInternas)</span>
+                                        </div>
+                                    }
+
+                                    <div class="detail-item">
+                                        <span class="detail-icon">📅</span>
+                                        <span class="detail-label">Registrada:</span>
+                                        <span class="detail-value">@compra.CreatedAt.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                </div>
+
+                                @if (HasValidFeedback(compra))
+                                {
+                                    <div class="feedback-preview">
+                                        <div class="feedback-header">
+                                            <span class="feedback-icon">💭</span>
+                                            <span class="feedback-title">Tu Opinión</span>
+                                        </div>
+                                        <div class="feedback-content">
+                                            <p>@(compra.ComentarioFeedback.Length > 150 ? compra.ComentarioFeedback.Substring(0, 150) + "..." : compra.ComentarioFeedback)</p>
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="purchase-status">
+                                    @if (HasValidFeedback(compra))
+                                    {
+                                        <span class="status-badge success">
+                                            <span class="badge-icon">✓</span>
+                                            Con Opinión
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge pending">
+                                            <span class="badge-icon">◯</span>
+                                            Pendiente Opinión
+                                        </span>
+                                    }
+
+                                    @if (compra.FeedbackRecibido)
+                                    {
+                                        <span class="status-badge processed">
+                                            <span class="badge-icon">📋</span>
+                                            Procesada
+                                        </span>
+                                    }
+                                </div>
+
+                                <div class="purchase-actions">
+                                    @if (HasValidFeedback(compra))
+                                    {
+                                        <NavLink href="@($"/reviews/edit/{compra.ID}")" class="btn-action edit">
+                                            <span class="btn-icon">✏️</span>
+                                            Editar Opinión
+                                        </NavLink>
+                                        <button type="button" class="btn-action danger" @onclick="@(() => RemoveOpinion(compra.ID))">
+                                            <span class="btn-icon">🗑️</span>
+                                            Borrar Opinión
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <NavLink href="@($"/reviews/create?compraId={compra.ID}")" class="btn-action primary">
+                                            <span class="btn-icon">💬</span>
+                                            Agregar Opinión
+                                        </NavLink>
+                                        <div class="action-note">
+                                            <small>📝 Solo puedes gestionar tus opiniones</small>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
             }
             else
             {
-                <div class="empty-state">
-                    <div class="empty-icon">🛍️</div>
-                    <h3>Aún no tienes compras registradas</h3>
-                    <p>Comienza a registrar tus compras y servicios para mantener un historial</p>
-                    <NavLink href="/compras/crear" class="btn-primary">
-                        Registrar Tu Primera Compra
-                    </NavLink>
+                <div class="empty-section">
+                    <div class="empty-illustration">
+                        <div class="empty-icon">🛒</div>
+                        <div class="empty-circles">
+                            <div class="circle circle-1"></div>
+                            <div class="circle circle-2"></div>
+                            <div class="circle circle-3"></div>
+                        </div>
+                    </div>
+                    <h3>No tienes compras registradas</h3>
+                    <p>Las compras aparecerán aquí cuando nuestro equipo las registre en el sistema.</p>
+                    <p class="empty-note">Si realizaste una compra recientemente, puede tomar unos minutos en aparecer.</p>
+                    <div class="empty-actions">
+                        <button type="button" class="btn-primary" @onclick="RefreshData">
+                            <span class="btn-icon">🔄</span>
+                            Actualizar Lista
+                        </button>
+                        <NavLink href="/" class="btn-secondary">
+                            <span class="btn-icon">🏠</span>
+                            Ir al Inicio
+                        </NavLink>
+                    </div>
                 </div>
             }
-        </div>
+        }
     </div>
-}
+</div>
 
 @code {
+    // Estado de la aplicación
     private bool isAuthenticated = false;
-    private bool isLoading = true;
+    private bool isLoading = false;
     private string errorMessage = "";
 
+    // Datos del usuario y compras
+    private Usuario? clienteInfo = null;
     private List<CompraServicio> compras = new();
+    private List<Usuario> todosLosUsuarios = new();
+
+    // Información del usuario autenticado
+    private string userEmail = "";
     private int clienteID = 0;
 
     protected override async Task OnInitializedAsync()
@@ -138,112 +299,127 @@ else
         try
         {
             isAuthenticated = await authService.IsUserAuthenticated();
-
+            
             if (!isAuthenticated)
             {
                 navigationManager.NavigateTo("/login");
                 return;
             }
 
-            await LoadUserCompras();
+            await LoadUserData();
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error en inicialización: {ex.Message}";
-            Console.WriteLine($"OnInitialized Error: {ex}");
+            HandleError("Error al inicializar la página", ex);
         }
     }
 
-    private async Task LoadUserCompras()
+    private async Task LoadUserData()
     {
+        isLoading = true;
         errorMessage = "";
+        StateHasChanged();
 
         try
         {
-            isLoading = true;
-
-            // Obtener datos del usuario autenticado desde Firebase
+            // 1. Obtener usuario de Firebase
             var firebaseUser = await authService.GetUserFirebase();
-            if (firebaseUser == null || string.IsNullOrEmpty(firebaseUser.Email))
+            if (firebaseUser?.Email == null)
             {
-                errorMessage = "No se pudo obtener tus datos de autenticación";
-                return;
+                throw new Exception("No se pudo obtener la información de autenticación");
             }
 
-            try
+            userEmail = firebaseUser.Email;
+            Console.WriteLine($"[Compras] Cargando datos para: {userEmail}");
+
+            // 2. Cargar usuarios del sistema
+            todosLosUsuarios = await usuarioService.GetAllAsync("") ?? new List<Usuario>();
+            Console.WriteLine($"[Compras] Usuarios cargados: {todosLosUsuarios.Count}");
+
+            if (!todosLosUsuarios.Any())
             {
-                // Buscar usuario por email usando GenericService
-                var usuarios = await usuarioService.GetAllAsync("");
-
-                if (usuarios == null || usuarios.Count == 0)
-                {
-                    errorMessage = "No se encontraron usuarios en el sistema";
-                    return;
-                }
-
-                var usuario = usuarios.FirstOrDefault(u => u.Email == firebaseUser.Email);
-                if (usuario == null || usuario.ID <= 0)
-                {
-                    errorMessage = "No se encontró tu perfil de usuario";
-                    return;
-                }
-
-                // Obtener cliente por UsuarioID usando GenericService
-                var clientes = await clienteService.GetAllAsync("");
-                var cliente = clientes?.FirstOrDefault(c => c.UsuarioID == usuario.ID);
-
-                if (cliente == null || cliente.ID <= 0)
-                {
-                    errorMessage = "No se encontró tu perfil de cliente";
-                    return;
-                }
-
-                clienteID = cliente.ID;
-
-                // Obtener todas las compras/servicios usando GenericService
-                var todasLasCompras = await compraService.GetAllAsync("");
-
-                // Filtrar solo las compras del cliente actual que no estén eliminadas
-                compras = todasLasCompras?
-                    .Where(c => c.ClienteID == clienteID && !c.IsDeleted)
-                    .OrderByDescending(c => c.FechaCompra)
-                    .ToList() ?? new();
-
-                if (compras.Count == 0)
-                {
-                    Console.WriteLine($"Cliente {clienteID} no tiene compras registradas - Esto NO es un error");
-                }
+                throw new Exception("No hay usuarios en el sistema");
             }
-            catch (HttpRequestException ex)
+
+            // 3. Buscar usuario por email
+            var usuario = todosLosUsuarios.FirstOrDefault(u => 
+                string.Equals(u.Email, userEmail, StringComparison.OrdinalIgnoreCase));
+
+            if (usuario == null)
             {
-                errorMessage = $"Error de conexión con el servidor: {ex.Message}";
-                Console.WriteLine($"HttpRequestException: {ex}");
+                throw new Exception($"Usuario no encontrado para el email: {userEmail}");
             }
-            catch (System.Text.Json.JsonException ex)
+
+            clienteInfo = usuario;
+            Console.WriteLine($"[Compras] Usuario encontrado: {usuario.Nombre} (ID: {usuario.ID})");
+
+            // 4. Buscar cliente asociado
+            var clientes = await clienteService.GetAllAsync("") ?? new List<Cliente>();
+            var cliente = clientes.FirstOrDefault(c => c.UsuarioID == usuario.ID && !c.IsDeleted);
+
+            if (cliente == null)
             {
-                errorMessage = $"Error al procesar datos: {ex.Message}";
-                Console.WriteLine($"JsonException: {ex}");
+                throw new Exception("Perfil de cliente no encontrado. Contacta con soporte.");
             }
-            catch (Exception ex)
-            {
-                errorMessage = $"Error al obtener datos del servidor: {ex.Message}";
-                Console.WriteLine($"Service Error: {ex}");
-            }
+
+            clienteID = cliente.ID;
+            Console.WriteLine($"[Compras] Cliente encontrado: ID {clienteID}");
+
+            // 5. Cargar compras del cliente
+            await LoadPurchases();
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error inesperado: {ex.Message}";
-            Console.WriteLine($"Unexpected Error: {ex}");
+            HandleError("Error al cargar los datos del usuario", ex);
         }
         finally
         {
             isLoading = false;
+            StateHasChanged();
         }
     }
 
-    private async Task DeleteCompra(int compraId)
+    private async Task LoadPurchases()
     {
-        if (!await JSRuntime.InvokeAsync<bool>("confirm", "¿Estás seguro de que deseas eliminar esta compra?"))
+        try
+        {
+            // Cargar todas las compras
+            var todasLasCompras = await compraService.GetAllAsync("") ?? new List<CompraServicio>();
+            Console.WriteLine($"[Compras] Total compras en sistema: {todasLasCompras.Count}");
+
+            // Filtrar compras del cliente
+            compras = todasLasCompras
+                .Where(c => c.ClienteID == clienteID && !c.IsDeleted)
+                .ToList();
+
+            Console.WriteLine($"[Compras] Compras del cliente: {compras.Count}");
+
+            // Cargar relaciones de empleados
+            foreach (var compra in compras)
+            {
+                if (compra.EmpleadoID > 0)
+                {
+                    compra.Empleado = todosLosUsuarios.FirstOrDefault(u => u.ID == compra.EmpleadoID);
+                }
+            }
+
+            Console.WriteLine($"[Compras] Datos cargados exitosamente");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error al cargar el historial de compras", ex);
+        }
+    }
+
+    private async Task RefreshData()
+    {
+        await LoadUserData();
+    }
+
+    private async Task RemoveOpinion(int compraId)
+    {
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", 
+            "¿Estás seguro de que deseas eliminar tu opinión?\n\nEsta acción no se puede deshacer."))
         {
             return;
         }
@@ -253,25 +429,113 @@ else
             var compra = compras.FirstOrDefault(c => c.ID == compraId);
             if (compra == null)
             {
-                errorMessage = "La compra no fue encontrada";
-                return;
+                throw new Exception("La compra no fue encontrada");
             }
 
-            // Soft delete: marcar como eliminada en lugar de eliminar físicamente
-            compra.IsDeleted = true;
-           
+            Console.WriteLine($"[Compras] Eliminando opinión: {compra.Nombre}");
 
-            await compraService.UpdateAsync(compra);
-            compras.RemoveAll(c => c.ID == compraId);
-            StateHasChanged();
+            // Limpiar feedback y marcar como no recibido
+            compra.ComentarioFeedback = string.Empty;
+            compra.FeedbackRecibido = false;
+
+            // Actualizar en la base de datos
+            bool success = await compraService.UpdateAsync(compra);
+            
+            if (success)
+            {
+                // Restaurar el estado de la notificación a Pendiente
+                await RestaurarNotificacionAPendiente(compraId);
+
+                Console.WriteLine($"[Compras] Opinión eliminada exitosamente");
+                StateHasChanged();
+            }
+            else
+            {
+                throw new Exception("No se pudo actualizar la compra");
+            }
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error al eliminar compra: {ex.Message}";
-            Console.WriteLine($"Delete Error: {ex}");
+            HandleError("Error al eliminar la opinión", ex);
         }
     }
 
-    [Inject]
-    private IJSRuntime? JSRuntime { get; set; }
+    private async Task RestaurarNotificacionAPendiente(int compraServicioID)
+    {
+        try
+        {
+            Console.WriteLine($"[Compras] Restaurando notificación para CompraServicioID: {compraServicioID}");
+
+            // Obtener todas las notificaciones
+            var todasLasNotificaciones = await notificacionService.GetAllAsync("") ?? new List<Notificacion>();
+
+            // Buscar la notificación específica para esta compra
+            var notificacion = todasLasNotificaciones.FirstOrDefault(n => 
+                n.CompraServicioID == compraServicioID && 
+                !n.IsDeleted);
+
+            if (notificacion != null)
+            {
+                Console.WriteLine($"[Compras] Encontrada notificación ID: {notificacion.ID}, estado actual: {notificacion.Estado}");
+
+                // Cambiar el estado de vuelta a Pendiente
+                notificacion.Estado = EstadoNotificacion.Pendiente;
+
+                // Actualizar la notificación
+                bool notificacionActualizada = await notificacionService.UpdateAsync(notificacion);
+
+                if (notificacionActualizada)
+                {
+                    Console.WriteLine($"[Compras] Notificación restaurada a estado Pendiente exitosamente");
+                }
+                else
+                {
+                    Console.WriteLine($"[Compras] Warning: No se pudo restaurar la notificación");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[Compras] No se encontró notificación para CompraServicioID: {compraServicioID}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Compras] Error al restaurar notificación: {ex.Message}");
+            // No lanzamos la excepción para no afectar el flujo principal
+        }
+    }
+
+    private void HandleError(string context, Exception ex)
+    {
+        errorMessage = $"{context}: {ex.Message}";
+        Console.WriteLine($"[Compras] {context}: {ex}");
+    }
+
+    private string GetEmpleadoNombre(CompraServicio compra)
+    {
+        if (compra.Empleado?.Nombre != null)
+            return compra.Empleado.Nombre;
+
+        if (compra.EmpleadoID > 0)
+        {
+            var empleado = todosLosUsuarios?.FirstOrDefault(u => u.ID == compra.EmpleadoID);
+            return empleado?.Nombre ?? $"Empleado #{compra.EmpleadoID}";
+        }
+
+        return "No especificado";
+    }
+
+    private bool HasValidFeedback(CompraServicio compra)
+    {
+        return !string.IsNullOrWhiteSpace(compra.ComentarioFeedback);
+    }
+
+    private string GetCardStatusClass(CompraServicio compra)
+    {
+        if (HasValidFeedback(compra))
+            return "has-opinion";
+        return "needs-opinion";
+    }
+
+    [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
 }

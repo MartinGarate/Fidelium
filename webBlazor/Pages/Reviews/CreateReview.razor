@@ -5,169 +5,307 @@
 @inject IGenericService<Usuario> usuarioService
 @inject IGenericService<Cliente> clienteService
 @inject IGenericService<CompraServicio> compraService
+@inject IGenericService<Notificacion> notificacionService
 
-@if (!isAuthenticated)
-{
-    <div class="reviews-container">
-        <div class="reviews-card">
-            <h2>Acceso Denegado</h2>
-            <p>Debes iniciar sesión para @(isEditing ? "editar" : "crear") una opinión.</p>
-            <NavLink href="/login" class="btn-primary">Ir a Login</NavLink>
-        </div>
-    </div>
-}
-else
-{
-    <div class="reviews-container">
-        <div class="reviews-card">
-            <div class="reviews-header">
-                <h1>@(isEditing ? "Editar" : "Crear") Opinión</h1>
-                <p class="reviews-subtitle">@(isEditing ? "Actualiza tu experiencia" : "Comparte tu experiencia") sobre tu compra o servicio</p>
+@using Service.Enums
+@using Service.Models
+
+<div class="create-review-container">
+    <div class="create-review-card">
+        @if (!isAuthenticated)
+        {
+            <div class="access-denied">
+                <div class="access-denied-icon">🔐</div>
+                <h2>Acceso Restringido</h2>
+                <p>Inicia sesión para @(isEditing ? "editar" : "crear") una opinión.</p>
+                <NavLink href="/login" class="btn-primary">
+                    🚀 Iniciar Sesión
+                </NavLink>
+            </div>
+        }
+        else
+        {
+            <div class="form-header">
+                <div class="header-content">
+                    <h1 class="page-title">
+                        <span class="title-icon">@(isEditing ? "✏️" : "💬")</span>
+                        @(isEditing ? "Editar Opinión" : "Nueva Opinión")
+                    </h1>
+                    <p class="page-subtitle">
+                        @(isEditing ? "Actualiza tu experiencia y comentarios" : "Comparte tu experiencia sobre tu compra o servicio")
+                    </p>
+                    @if (compraActual != null)
+                    {
+                        <div class="context-info">
+                            <span class="context-icon">📦</span>
+                            <span class="context-text">
+                                @(isCreatingForSpecificCompra ? "Creando opinión para:" : "Editando opinión de:")
+                                <strong>@compraActual.Nombre</strong>
+                            </span>
+                        </div>
+                    }
+                </div>
+                <div class="header-actions">
+                    <button type="button" class="btn-back" @onclick="NavigateBack">
+                        ← Volver
+                    </button>
+                </div>
             </div>
 
             @if (!string.IsNullOrEmpty(errorMessage))
             {
-                <div class="error-alert">
-                    <span class="error-icon">⚠️</span>
-                    <span>@errorMessage</span>
+                <div class="error-section">
+                    <div class="error-alert">
+                        <span class="error-icon">⚠️</span>
+                        <div class="error-content">
+                            <strong>Error</strong>
+                            <p>@errorMessage</p>
+                        </div>
+                        <button class="btn-retry" @onclick="LoadInitialData">
+                            Reintentar
+                        </button>
+                    </div>
                 </div>
             }
 
             @if (!string.IsNullOrEmpty(successMessage))
             {
-                <div class="success-alert">
-                    <span class="success-icon">✓</span>
-                    <span>@successMessage</span>
+                <div class="success-section">
+                    <div class="success-alert">
+                        <span class="success-icon">✅</span>
+                        <div class="success-content">
+                            <strong>¡Éxito!</strong>
+                            <p>@successMessage</p>
+                        </div>
+                    </div>
                 </div>
             }
 
             @if (isLoading)
             {
-                <div class="loading-container">
-                    <div class="spinner"></div>
-                    <p>Cargando @(isEditing ? "opinión" : "tus compras")...</p>
+                <div class="loading-section">
+                    <div class="loading-spinner">
+                        <div class="spinner-ring"></div>
+                        <div class="spinner-ring spinner-ring-2"></div>
+                        <div class="spinner-ring spinner-ring-3"></div>
+                    </div>
+                    <h3>@(isEditing ? "Cargando opinión..." : "Cargando información...")</h3>
+                    <p>@(isEditing ? "Obteniendo los datos de tu opinión" : "Preparando el formulario")</p>
                 </div>
             }
             else if (isEditing && compraActual == null)
             {
-                <div class="empty-state">
-                    <div class="empty-icon">❌</div>
-                    <h3>Opinión no encontrada</h3>
-                    <p>La opinión que intentas editar no existe o no tienes permiso para editarla</p>
-                    <NavLink href="/reviews" class="btn-secondary">
-                        Volver a Mis Opiniones
-                    </NavLink>
+                <div class="not-found-section">
+                    <div class="not-found-icon">❌</div>
+                    <h3>Opinión No Encontrada</h3>
+                    <p>La opinión que intentas editar no existe o no tienes permisos para modificarla.</p>
+                    <div class="not-found-actions">
+                        <NavLink href="/reviews" class="btn-primary">
+                            Ver Mis Opiniones
+                        </NavLink>
+                        <NavLink href="/compras" class="btn-secondary">
+                            Ver Mis Compras
+                        </NavLink>
+                    </div>
                 </div>
             }
-            else if (!isEditing && comprasServicios.Count == 0)
+            else if (!isEditing && !isCreatingForSpecificCompra && !comprasDisponibles.Any())
             {
-                <div class="empty-state">
-                    <div class="empty-icon">📦</div>
-                    <h3>No tienes compras o servicios</h3>
-                    <p>Para crear una opinión, primero debes tener al menos una compra o servicio registrado</p>
-                    <div class="empty-state-actions">
-                        <NavLink href="/compras/crear" class="btn-primary">
-                            Registrar Compra
+                <div class="no-purchases-section">
+                    <div class="no-purchases-icon">📦</div>
+                    <h3>No Hay Compras Disponibles</h3>
+                    <p>Todas tus compras ya tienen opinión o no tienes compras registradas.</p>
+                    <p class="note-text">Las compras son registradas automáticamente por nuestro equipo.</p>
+                    <div class="no-purchases-actions">
+                        <NavLink href="/compras" class="btn-primary">
+                            Ver Mis Compras
                         </NavLink>
-                        <NavLink href="/" class="btn-secondary">
-                            Volver al Inicio
+                        <NavLink href="/reviews" class="btn-secondary">
+                            Mis Opiniones
+                        </NavLink>
+                        <NavLink href="/" class="btn-tertiary">
+                            Ir al Inicio
+                        </NavLink>
+                    </div>
+                </div>
+            }
+            else if (!isEditing && isCreatingForSpecificCompra && compraActual == null)
+            {
+                <div class="not-found-section">
+                    <div class="not-found-icon">🔍</div>
+                    <h3>Compra No Encontrada</h3>
+                    <p>La compra para la cual intentas crear una opinión no fue encontrada o ya no está disponible.</p>
+                    <div class="not-found-actions">
+                        <NavLink href="/compras" class="btn-primary">
+                            Ver Mis Compras
+                        </NavLink>
+                        <NavLink href="/reviews" class="btn-secondary">
+                            Mis Opiniones
                         </NavLink>
                     </div>
                 </div>
             }
             else
             {
-                <form @onsubmit="SubmitReview" class="reviews-form">
+                <form @onsubmit="SubmitReview" @onsubmit:preventDefault="true" class="review-form">
+                    <!-- Información de la Compra -->
                     <div class="form-section">
-                        <h2 class="section-title">Información de la Compra</h2>
+                        <h2 class="section-title">
+                            <span class="section-icon">📦</span>
+                            Información de la Compra
+                        </h2>
 
-                        <div class="form-group">
-                            @if (isEditing)
-                            {
-                                <label class="form-label">Compra/Servicio</label>
-                                <div class="form-input-disabled">
-                                    @compraActual?.Nombre - @compraActual?.FechaCompra.ToString("dd/MM/yyyy")
+                        @if (isEditing || isCreatingForSpecificCompra)
+                        {
+                            <div class="purchase-info-card">
+                                <div class="purchase-header">
+                                    <h3>@compraActual?.Nombre</h3>
+                                    <span class="purchase-id">#@compraActual?.ID</span>
                                 </div>
-                            }
-                            else
-                            {
-                                <label for="compra-select" class="form-label">Selecciona una Compra/Servicio</label>
+                                <div class="purchase-details">
+                                    <div class="detail-item">
+                                        <span class="detail-icon">📅</span>
+                                        <span class="detail-label">Fecha de compra:</span>
+                                        <span class="detail-value">@compraActual?.FechaCompra.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(compraActual?.Descripcion))
+                                    {
+                                        <div class="detail-item">
+                                            <span class="detail-icon">📝</span>
+                                            <span class="detail-label">Descripción:</span>
+                                            <span class="detail-value">@compraActual.Descripcion</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group">
+                                <label for="compra-select" class="form-label">
+                                    <span class="label-icon">🛒</span>
+                                    Selecciona una Compra/Servicio
+                                </label>
                                 <select id="compra-select"
-                                        class="form-input"
+                                        class="form-select"
                                         @bind="selectedCompraServicioID"
                                         required>
-                                    <option value="0">-- Selecciona una compra --</option>
-                                    @foreach (var compra in comprasServicios)
+                                    <option value="0">-- Selecciona una compra sin opinión --</option>
+                                    @foreach (var compra in comprasDisponibles.OrderByDescending(c => c.FechaCompra))
                                     {
-                                        <option value="@compra.ID">@compra.Nombre - @compra.FechaCompra.ToString("dd/MM/yyyy")</option>
+                                        <option value="@compra.ID">
+                                            @compra.Nombre - @compra.FechaCompra.ToString("dd/MM/yyyy")
+                                        </option>
                                     }
                                 </select>
-                            }
-                        </div>
+                                <small class="form-helper">
+                                    Solo se muestran compras que aún no tienen opinión
+                                </small>
+                            </div>
+                        }
                     </div>
 
+                    <!-- Sección de Opinión -->
                     <div class="form-section">
-                        <h2 class="section-title">Tu Opinión</h2>
+                        <h2 class="section-title">
+                            <span class="section-icon">💬</span>
+                            Tu Experiencia
+                        </h2>
 
                         <div class="form-group">
-                            <label for="opinion-text" class="form-label">Cuéntanos tu experiencia</label>
+                            <label for="opinion-text" class="form-label">
+                                <span class="label-icon">✍️</span>
+                                Cuéntanos tu experiencia
+                            </label>
                             <textarea id="opinion-text"
                                       class="form-textarea"
                                       @bind="opinionText"
-                                      placeholder="Comparte detalles sobre tu experiencia con esta compra o servicio..."
+                                      @oninput="OnOpinionTextChanged"
+                                      placeholder="Comparte detalles sobre tu experiencia con esta compra o servicio. ¿Cómo fue la atención? ¿El producto cumplió tus expectativas? ¿Recomendarías el servicio?"
                                       rows="6"
-                                      maxlength="500"
+                                      maxlength="1000"
                                       required></textarea>
-                            <small class="form-helper">@opinionText.Length / 500 caracteres</small>
+                            <div class="form-footer">
+                                <small class="form-helper">
+                                    Mínimo 10 caracteres. Sé específico y constructivo.
+                                </small>
+                                <span class="char-counter @(opinionText.Length > 800 ? "warning" : "")">
+                                    @opinionText.Length / 1000
+                                </span>
+                            </div>
                         </div>
+
+                        @if (!string.IsNullOrEmpty(opinionText) && opinionText.Length >= 10)
+                        {
+                            <div class="preview-section">
+                                <h3 class="preview-title">
+                                    <span class="preview-icon">👁️</span>
+                                    Vista Previa
+                                </h3>
+                                <div class="opinion-preview">
+                                    <p>@opinionText</p>
+                                </div>
+                            </div>
+                        }
                     </div>
 
+                    <!-- Botones de Acción -->
                     <div class="form-actions">
-                        <button type="button" class="btn-secondary" @onclick="CancelReview">
-                            Cancelar
+                        <button type="button" class="btn-cancel" @onclick="NavigateBack">
+                            ❌ Cancelar
                         </button>
-                        <button type="submit" class="btn-primary" disabled="@(isSaving || (!isEditing && selectedCompraServicioID == 0) || string.IsNullOrWhiteSpace(opinionText))">
+                        <button type="submit" 
+                                class="btn-submit" 
+                                disabled="@(isSaving || !IsFormValid())">
                             @if (isSaving)
                             {
-                                <span class="spinner"></span>
-                                <span>@(isEditing ? "Actualizando" : "Enviando") Opinión...</span>
+                                <span class="spinner-small"></span>
+                                <span>@(isEditing ? "Actualizando" : "Enviando")...</span>
                             }
                             else
                             {
-                                <span>@(isEditing ? "Actualizar" : "Enviar") Opinión</span>
+                                <span class="btn-icon">@(isEditing ? "💾" : "📤")</span>
+                                <span>@(isEditing ? "Actualizar Opinión" : "Enviar Opinión")</span>
                             }
                         </button>
                     </div>
                 </form>
             }
-        </div>
+        }
     </div>
-}
+</div>
 
 @code {
-    [Parameter]
-    public int id { get; set; }
+    [Parameter] public int id { get; set; }
+    [SupplyParameterFromQuery(Name = "compraId")] public int CompraIdFromQuery { get; set; } = 0;
 
+    // Estado de la aplicación
     private bool isAuthenticated = false;
-    private bool isLoading = true;
+    private bool isLoading = false;
     private bool isSaving = false;
     private string errorMessage = "";
     private string successMessage = "";
 
-    private List<CompraServicio> comprasServicios = new();
+    // Datos del formulario
     private CompraServicio? compraActual;
+    private List<CompraServicio> comprasDisponibles = new();
     private int selectedCompraServicioID = 0;
     private string opinionText = "";
-    private int clienteID = 0;
 
+    // Información del usuario
+    private int clienteID = 0;
+    private string userEmail = "";
+
+    // Estados derivados
     private bool isEditing => id > 0;
+    private bool isCreatingForSpecificCompra => !isEditing && CompraIdFromQuery > 0;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             isAuthenticated = await authService.IsUserAuthenticated();
-
+            
             if (!isAuthenticated)
             {
                 navigationManager.NavigateTo("/login");
@@ -178,175 +316,294 @@ else
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error en inicialización: {ex.Message}";
-            Console.WriteLine($"OnInitialized Error: {ex}");
+            HandleError("Error al inicializar la página", ex);
         }
     }
 
     private async Task LoadInitialData()
     {
+        isLoading = true;
         errorMessage = "";
+        StateHasChanged();
 
         try
         {
-            isLoading = true;
-
-            // Obtener datos del usuario autenticado desde Firebase
+            // 1. Obtener usuario de Firebase
             var firebaseUser = await authService.GetUserFirebase();
-            if (firebaseUser == null || string.IsNullOrEmpty(firebaseUser.Email))
+            if (firebaseUser?.Email == null)
             {
-                errorMessage = "No se pudo obtener tus datos de autenticación";
-                return;
+                throw new Exception("No se pudo obtener la información de autenticación");
             }
 
-            try
+            userEmail = firebaseUser.Email;
+            Console.WriteLine($"[CreateReview] Cargando datos para: {userEmail}");
+
+            // 2. Cargar usuarios y encontrar el cliente
+            var todosLosUsuarios = await usuarioService.GetAllAsync("") ?? new List<Usuario>();
+            var usuario = todosLosUsuarios.FirstOrDefault(u => 
+                string.Equals(u.Email, userEmail, StringComparison.OrdinalIgnoreCase));
+
+            if (usuario == null)
             {
-                // Buscar usuario por email usando GenericService
-                var usuarios = await usuarioService.GetAllAsync("");
-
-                if (usuarios == null || usuarios.Count == 0)
-                {
-                    errorMessage = "No se encontraron usuarios en el sistema";
-                    return;
-                }
-
-                var usuario = usuarios.FirstOrDefault(u => u.Email == firebaseUser.Email);
-                if (usuario == null || usuario.ID <= 0)
-                {
-                    errorMessage = "No se encontró tu perfil de usuario";
-                    return;
-                }
-
-                // Obtener cliente por UsuarioID
-                var clientes = await clienteService.GetAllAsync("");
-                var cliente = clientes?.FirstOrDefault(c => c.UsuarioID == usuario.ID);
-
-                if (cliente == null || cliente.ID <= 0)
-                {
-                    errorMessage = "No se encontró tu perfil de cliente";
-                    return;
-                }
-
-                clienteID = cliente.ID;
-
-                // Obtener todas las compras/servicios
-                var todasLasCompras = await compraService.GetAllAsync("");
-
-                if (isEditing)
-                {
-                    // Modo edición: cargar opinión específica
-                    compraActual = todasLasCompras?.FirstOrDefault(c => c.ID == id);
-
-                    if (compraActual == null)
-                    {
-                        errorMessage = "La opinión no fue encontrada";
-                        return;
-                    }
-
-                    // Verificar permisos
-                    if (compraActual.ClienteID != clienteID)
-                    {
-                        errorMessage = "No tienes permiso para editar esta opinión";
-                        compraActual = null;
-                        return;
-                    }
-
-                    opinionText = compraActual.ComentarioFeedback ?? string.Empty;
-                    selectedCompraServicioID = compraActual.ID;
-                }
-                else
-                {
-                    // Modo creación: filtrar compras disponibles
-                    comprasServicios = todasLasCompras?
-                        .Where(c => c.ClienteID == clienteID && !c.IsDeleted)
-                        .OrderByDescending(c => c.FechaCompra)
-                        .ToList() ?? new List<CompraServicio>();
-                }
+                throw new Exception($"Usuario no encontrado para el email: {userEmail}");
             }
-            catch (HttpRequestException ex)
+
+            var clientes = await clienteService.GetAllAsync("") ?? new List<Cliente>();
+            var cliente = clientes.FirstOrDefault(c => c.UsuarioID == usuario.ID && !c.IsDeleted);
+
+            if (cliente == null)
             {
-                errorMessage = $"Error de conexión: {ex.Message}";
-                Console.WriteLine($"HttpRequestException: {ex}");
+                throw new Exception("Perfil de cliente no encontrado");
             }
-            catch (System.Text.Json.JsonException ex)
+
+            clienteID = cliente.ID;
+            Console.WriteLine($"[CreateReview] Cliente encontrado: ID {clienteID}");
+
+            // 3. Cargar datos específicos según el modo
+            if (isEditing)
             {
-                errorMessage = $"Error al procesar datos: {ex.Message}";
-                Console.WriteLine($"JsonException: {ex}");
+                await LoadOpinionForEdit();
             }
-            catch (Exception ex)
+            else if (isCreatingForSpecificCompra)
             {
-                errorMessage = $"Error al obtener datos del servidor: {ex.Message}";
-                Console.WriteLine($"Service Error: {ex}");
+                await LoadSpecificPurchase();
+            }
+            else
+            {
+                await LoadAvailablePurchases();
             }
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error al cargar datos: {ex.Message}";
-            Console.WriteLine($"Error: {ex}");
+            HandleError("Error al cargar los datos", ex);
         }
         finally
         {
             isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadOpinionForEdit()
+    {
+        try
+        {
+            var todasLasCompras = await compraService.GetAllAsync("") ?? new List<CompraServicio>();
+            compraActual = todasLasCompras.FirstOrDefault(c => 
+                c.ID == id && 
+                c.ClienteID == clienteID && 
+                !c.IsDeleted);
+
+            if (compraActual == null)
+            {
+                throw new Exception("Opinión no encontrada o sin permisos");
+            }
+
+            // Verificar que tiene opinión
+            if (string.IsNullOrWhiteSpace(compraActual.ComentarioFeedback))
+            {
+                throw new Exception("Esta compra no tiene opinión para editar");
+            }
+
+            opinionText = compraActual.ComentarioFeedback;
+            Console.WriteLine($"[CreateReview] Cargada opinión para editar: {compraActual.Nombre}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error al cargar la opinión: {ex.Message}");
+        }
+    }
+
+    private async Task LoadSpecificPurchase()
+    {
+        try
+        {
+            var todasLasCompras = await compraService.GetAllAsync("") ?? new List<CompraServicio>();
+            compraActual = todasLasCompras.FirstOrDefault(c => 
+                c.ID == CompraIdFromQuery && 
+                c.ClienteID == clienteID && 
+                !c.IsDeleted);
+
+            if (compraActual == null)
+            {
+                throw new Exception("Compra no encontrada");
+            }
+
+            // Verificar que no tenga opinión
+            if (!string.IsNullOrWhiteSpace(compraActual.ComentarioFeedback))
+            {
+                throw new Exception("Esta compra ya tiene una opinión. Puedes editarla desde la página de opiniones.");
+            }
+
+            Console.WriteLine($"[CreateReview] Cargada compra específica: {compraActual.Nombre}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error al cargar la compra: {ex.Message}");
+        }
+    }
+
+    private async Task LoadAvailablePurchases()
+    {
+        try
+        {
+            var todasLasCompras = await compraService.GetAllAsync("") ?? new List<CompraServicio>();
+            
+            comprasDisponibles = todasLasCompras
+                .Where(c => c.ClienteID == clienteID && 
+                           !c.IsDeleted && 
+                           string.IsNullOrWhiteSpace(c.ComentarioFeedback))
+                .ToList();
+
+            Console.WriteLine($"[CreateReview] Compras disponibles: {comprasDisponibles.Count}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error al cargar compras disponibles: {ex.Message}");
         }
     }
 
     private async Task SubmitReview()
     {
-        errorMessage = "";
-        successMessage = "";
-
-        // Validaciones
-        if (!isEditing && selectedCompraServicioID == 0)
+        if (!IsFormValid())
         {
-            errorMessage = "Debes seleccionar una compra o servicio";
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(opinionText))
-        {
-            errorMessage = "Debes escribir tu opinión";
             return;
         }
 
         isSaving = true;
+        errorMessage = "";
+        successMessage = "";
+        StateHasChanged();
 
         try
         {
             CompraServicio compraAActualizar;
 
-            if (isEditing)
+            if (isEditing || isCreatingForSpecificCompra)
             {
                 compraAActualizar = compraActual!;
             }
             else
             {
-                compraAActualizar = comprasServicios.First(c => c.ID == selectedCompraServicioID);
+                compraAActualizar = comprasDisponibles.First(c => c.ID == selectedCompraServicioID);
             }
 
-            // Actualizar opinión
-            compraAActualizar.ComentarioFeedback = opinionText;
+            Console.WriteLine($"[CreateReview] Actualizando compra: {compraAActualizar.Nombre}");
 
-            await compraService.UpdateAsync(compraAActualizar);
+            // Actualizar opinión y marcar como recibida
+            compraAActualizar.ComentarioFeedback = opinionText.Trim();
+            compraAActualizar.FeedbackRecibido = true; // Marcar automáticamente como recibido
 
-            successMessage = isEditing 
-                ? "¡Tu opinión ha sido actualizada correctamente!" 
-                : "¡Tu opinión ha sido enviada correctamente!";
-            await Task.Delay(2000);
-            navigationManager.NavigateTo("/reviews");
+            bool success = await compraService.UpdateAsync(compraAActualizar);
+
+            if (success)
+            {
+                // Buscar y actualizar la notificación relacionada
+                await ActualizarNotificacionRelacionada(compraAActualizar.ID);
+
+                successMessage = isEditing 
+                    ? "¡Tu opinión ha sido actualizada correctamente!"
+                    : "¡Tu opinión ha sido enviada correctamente!";
+
+                Console.WriteLine($"[CreateReview] Opinión {(isEditing ? "actualizada" : "creada")} exitosamente");
+
+                // Esperar un momento y redirigir
+                await Task.Delay(2000);
+                navigationManager.NavigateTo("/reviews");
+            }
+            else
+            {
+                throw new Exception("No se pudo guardar la opinión");
+            }
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error al enviar opinión: {ex.Message}";
-            Console.WriteLine($"Error: {ex}");
+            HandleError("Error al enviar la opinión", ex);
         }
         finally
         {
             isSaving = false;
+            StateHasChanged();
         }
     }
 
-    private void CancelReview()
+    private async Task ActualizarNotificacionRelacionada(int compraServicioID)
     {
-        navigationManager.NavigateTo("/reviews");
+        try
+        {
+            Console.WriteLine($"[CreateReview] Buscando notificación para CompraServicioID: {compraServicioID}");
+
+            // Obtener todas las notificaciones
+            var todasLasNotificaciones = await notificacionService.GetAllAsync("") ?? new List<Notificacion>();
+
+            // Buscar la notificación específica para esta compra
+            var notificacion = todasLasNotificaciones.FirstOrDefault(n => 
+                n.CompraServicioID == compraServicioID && 
+                !n.IsDeleted);
+
+            if (notificacion != null)
+            {
+                Console.WriteLine($"[CreateReview] Encontrada notificación ID: {notificacion.ID}, estado actual: {notificacion.Estado}");
+
+                // Cambiar el estado a Atendida
+                notificacion.Estado = EstadoNotificacion.Atendida;
+
+                // Actualizar la notificación
+                bool notificacionActualizada = await notificacionService.UpdateAsync(notificacion);
+
+                if (notificacionActualizada)
+                {
+                    Console.WriteLine($"[CreateReview] Notificación marcada como atendida exitosamente");
+                }
+                else
+                {
+                    Console.WriteLine($"[CreateReview] Warning: No se pudo actualizar la notificación");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[CreateReview] No se encontró notificación para CompraServicioID: {compraServicioID}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[CreateReview] Error al actualizar notificación: {ex.Message}");
+            // No lanzamos la excepción para no afectar el flujo principal del feedback
+        }
+    }
+
+    private void NavigateBack()
+    {
+        if (isCreatingForSpecificCompra)
+        {
+            navigationManager.NavigateTo("/compras");
+        }
+        else
+        {
+            navigationManager.NavigateTo("/reviews");
+        }
+    }
+
+    private void OnOpinionTextChanged(ChangeEventArgs e)
+    {
+        opinionText = e.Value?.ToString() ?? "";
+        StateHasChanged();
+    }
+
+    private bool IsFormValid()
+    {
+        if (string.IsNullOrWhiteSpace(opinionText) || opinionText.Trim().Length < 10)
+            return false;
+
+        if (!isEditing && !isCreatingForSpecificCompra && selectedCompraServicioID == 0)
+            return false;
+
+        return true;
+    }
+
+    private void HandleError(string context, Exception ex)
+    {
+        errorMessage = $"{context}: {ex.Message}";
+        Console.WriteLine($"[CreateReview] {context}: {ex}");
     }
 }
