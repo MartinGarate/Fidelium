@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Firebase.Auth;
 using Firebase.Auth.Providers;
@@ -33,7 +33,7 @@ namespace MovilApp.ViewModels.Login
         private string password = string.Empty;
 
         [ObservableProperty]
-        private bool recordarContraseña;
+        private bool recordarContrase�a;
 
         [ObservableProperty]
         private bool estaDescargando;
@@ -118,7 +118,7 @@ namespace MovilApp.ViewModels.Login
             }
             catch (Exception ex)
             {
-                ShowError($"Error al verificar sesión guardada: {ex.Message}");
+                ShowError($"Error al verificar sesi�n guardada: {ex.Message}");
                 // Limpiar datos corruptos
                 try
                 {
@@ -132,7 +132,7 @@ namespace MovilApp.ViewModels.Login
         {
             try
             {
-                // Verificar si el credential tiene información válida
+                // Verificar si el credential tiene informaci�n v�lida
                 return credential != null && !string.IsNullOrEmpty(credential.IdToken);
             }
             catch
@@ -176,13 +176,13 @@ namespace MovilApp.ViewModels.Login
                 
                 if (userCredential?.User?.Info == null)
                 {
-                    ShowError("Error en la autenticación. Intente nuevamente.");
+                    ShowError("Error en la autenticaci�n. Intente nuevamente.");
                     return;
                 }
 
                 if (!userCredential.User.Info.IsEmailVerified)
                 {
-                    ShowError("Debe verificar su correo electrónico antes de iniciar sesión.");
+                    ShowError("Debe verificar su correo electr�nico antes de iniciar sesi�n.");
                     return;
                 }
 
@@ -190,7 +190,7 @@ namespace MovilApp.ViewModels.Login
                 await EnsureUserExistsInDatabase(userCredential.User.Info.Email, userCredential.User.Info.DisplayName);
 
                 // Guardar credenciales si el usuario lo desea
-                if (RecordarContraseña)
+                if (RecordarContrase�a)
                 {
                     try
                     {
@@ -241,10 +241,10 @@ namespace MovilApp.ViewModels.Login
                 return (false, "El email es requerido");
 
             if (string.IsNullOrWhiteSpace(Password))
-                return (false, "La contraseña es requerida");
+                return (false, "La contrase�a es requerida");
 
             if (!IsValidEmail(Email))
-                return (false, "El formato del email no es válido");
+                return (false, "El formato del email no es v�lido");
 
             return (true, string.Empty);
         }
@@ -281,7 +281,7 @@ namespace MovilApp.ViewModels.Login
                 }
                 else
                 {
-                    // Reset después del tiempo de bloqueo
+                    // Reset despu�s del tiempo de bloqueo
                     _failedAttempts = 0;
                     IsBlocked = false;
                     RemainingTime = 0;
@@ -345,7 +345,7 @@ namespace MovilApp.ViewModels.Login
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al verificar/crear usuario en BD: {ex.Message}");
-                // No lanzamos la excepción para no interrumpir el flujo de login
+                // No lanzamos la excepci�n para no interrumpir el flujo de login
             }
         }
 
@@ -353,12 +353,12 @@ namespace MovilApp.ViewModels.Login
         {
             return reason switch
             {
-                AuthErrorReason.InvalidEmailAddress => "Email o contrasena no válido",
+                AuthErrorReason.InvalidEmailAddress => "Email o contrasena no v�lido",
                 AuthErrorReason.UserNotFound => "Usuario no encontrado",
-                AuthErrorReason.WrongPassword => "Contraseña incorrecta",
+                AuthErrorReason.WrongPassword => "Contrase�a incorrecta",
                 AuthErrorReason.UserDisabled => "Cuenta deshabilitada",
                 AuthErrorReason.TooManyAttemptsTryLater => "Demasiados intentos. Espere unos minutos",
-                _ => "Error de autenticación. Intente nuevamente"
+                _ => "Error de autenticaci�n. Intente nuevamente"
             };
         }
 
