@@ -7,6 +7,7 @@ using Service.Enums;
 using Service.Models;
 using Service.Services;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 
 namespace MovilApp.ViewModels.Login
 {
@@ -22,30 +23,32 @@ namespace MovilApp.ViewModels.Login
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(RegistrarseCommand))]
-        private string name;
+        private string name = string.Empty;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(RegistrarseCommand))]
-        private string lastname;
+        private string dni = string.Empty;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(RegistrarseCommand))]
-        private string dni;
+        private string email = string.Empty;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(RegistrarseCommand))]
-        private string email;
+        private string password = string.Empty;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(RegistrarseCommand))]
-        private string password;
-
-        [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(RegistrarseCommand))]
-        private string verifyPassword;
+        private string verifyPassword = string.Empty;
 
         [ObservableProperty]
         private bool estaDescargando;
+
+        [ObservableProperty]
+        private string errorMessage = string.Empty;
+
+        [ObservableProperty]
+        private bool hasError;
 
         public SignInViewModel()
         {
@@ -69,102 +72,98 @@ namespace MovilApp.ViewModels.Login
 
         private bool PermitirRegistrarse()
         {
-            return !string.IsNullOrEmpty(Name) && 
-                   !string.IsNullOrEmpty(Email) && 
-                   !string.IsNullOrEmpty(Password) && 
-                   !string.IsNullOrEmpty(VerifyPassword) && 
-                   !string.IsNullOrEmpty(Dni) && 
-                   !string.IsNullOrEmpty(Lastname);
+            return !string.IsNullOrWhiteSpace(Name) && 
+                   !string.IsNullOrWhiteSpace(Email) && 
+                   !string.IsNullOrWhiteSpace(Password) && 
+                   !string.IsNullOrWhiteSpace(VerifyPassword) && 
+                   !string.IsNullOrWhiteSpace(Dni) && 
+                   !EstaDescargando;
         }
 
         private async Task Volver()
         {
-            if (Application.Current?.MainPage is AgoraShell shell)
+            try
             {
-                await shell.GoToAsync("//Login");
+                ClearError();
+                if (Application.Current?.MainPage is AgoraShell shell)
+                {
+                    await shell.GoToAsync("//Login");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError($"Error al navegar: {ex.Message}");
             }
         }
 
         private async Task Registrarse()
         {
-            // Validaciones básicas
-            if (string.IsNullOrEmpty(name) || 
-                string.IsNullOrEmpty(lastname) || 
-                string.IsNullOrEmpty(dni) || 
-                string.IsNullOrEmpty(email) || 
-                string.IsNullOrEmpty(password) || 
-                string.IsNullOrEmpty(verifyPassword))
-            {
-                await Application.Current.MainPage.DisplayAlert("Registrarse", "Por favor complete todos los campos obligatorios", "Ok");
-                return;
-            }
-
-            // Validar formato del DNI
-            if (!IsValidDNI(dni))
-            {
-                await Application.Current.MainPage.DisplayAlert("Registrarse", "El formato del DNI no es válido", "Ok");
-                return;
-            }
-
-            // Verificar que el DNI no esté duplicado
-            var dniExists = await CheckDNIExists(dni);
-            if (dniExists)
-            {
-                await Application.Current.MainPage.DisplayAlert("Registrarse", "El DNI ingresado ya está registrado en el sistema", "Ok");
-                return;
-            }
-
-            // Validar que las contraseñas coincidan
-            if (password != verifyPassword)
-            {
-                await Application.Current.MainPage.DisplayAlert("Registrarse", "Las contraseñas ingresadas no coinciden", "Ok");
-                return;
-            }
-
-            // Validar longitud mínima de contraseña
-            if (password.Length < 6)
-            {
-                await Application.Current.MainPage.DisplayAlert("Registrarse", "La contraseña debe tener mínimo 6 caracteres", "Ok");
-                return;
-            }
-
-            EstaDescargando = true;
+            ClearError();
 
             try
             {
-                var fullname = name + " " + lastname;
-                
-                // 1. Crear usuario en Firebase
-                var user = await _clientAuth.CreateUserWithEmailAndPasswordAsync(email, password, fullname);
-                
-                // 2. Crear usuario en la base de datos SQL como EMPLEADO
-                var usuarioResponse = await CreateEmpleadoInDatabase(fullname, dni, email);
-                
-                if (usuarioResponse != null && usuarioResponse.ID > 0)
+                // Validaciones mejoradas
+                var validationResult = ValidateRegistrationData();
+                if (!validationResult.IsValid)
                 {
-                    // 3. Enviar email de verificación
-                    await SendVerificationEmailAsync(user.User.GetIdTokenAsync().Result);
+                    ShowError(validationResult.ErrorMessage);
+                    return;
+                }
+
+                EstaDescargando = true;
+
+                var fullname = Name.Trim();
+                var emailTrimmed = Email.Trim().ToLowerInvariant();
+                var dniTrimmed = Dni.Trim().ToUpperInvariant();
+
+                // Crear en Firebase (validará email duplicado)
+                try
+                {
+                    var user = await _clientAuth.CreateUserWithEmailAndPasswordAsync(emailTrimmed, Password, fullname);
                     
-                    await Application.Current.MainPage.DisplayAlert("Registrarse", "¡Cuenta de empleado creada correctamente! Por favor verifica tu correo electrónico.", "Ok");
-                    
-                    // Volver al login
-                    if (Application.Current?.MainPage is AgoraShell shell)
+                    // Si Firebase fue exitoso, crear en la base de datos SQL
+                    var usuario = new Usuario
                     {
-                        await shell.GoToAsync("//Login");
+                        Nombre = fullname,
+                        DNI = dniTrimmed,
+                        Email = emailTrimmed,
+                        TipoUsuario = TipoUsuarioEnum.Empleado
+                    };
+
+                    var usuarioResponse = await _usuarioService.AddAsync(usuario);
+                    
+                    if (usuarioResponse != null && usuarioResponse.ID > 0)
+                    {
+                        // Enviar email de verificación
+                        var idToken = await user.User.GetIdTokenAsync();
+                        await SendVerificationEmailAsync(idToken);
+                        
+                        await Application.Current.MainPage.DisplayAlert("Registro Exitoso", 
+                            "¡Cuenta de empleado creada correctamente!\nPor favor verifica tu correo electrónico antes de iniciar sesión.", "Entendido");
+                        
+                        // Limpiar campos
+                        ClearFields();
+                        
+                        // Volver al login
+                        if (Application.Current?.MainPage is AgoraShell shell)
+                        {
+                            await shell.GoToAsync("//Login");
+                        }
+                    }
+                    else
+                    {
+                        ShowError("Error al registrar en la base de datos. Intente nuevamente.");
                     }
                 }
-                else
+                catch (FirebaseAuthException firebaseError)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Registrarse", "Error al registrar en la base de datos", "Ok");
+                    ShowError(GetFirebaseErrorMessage(firebaseError.Reason));
                 }
-            }
-            catch (FirebaseAuthException error)
-            {
-                await Application.Current.MainPage.DisplayAlert("Registrarse", "Ocurrió un problema: " + error.Reason, "Ok");
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Registrarse", "Error al registrarse: " + ex.Message, "Ok");
+                ShowError($"Error inesperado: {ex.Message}");
+                Console.WriteLine($"Error en Registrarse: {ex}");
             }
             finally
             {
@@ -172,25 +171,77 @@ namespace MovilApp.ViewModels.Login
             }
         }
 
-        private async Task<Usuario?> CreateEmpleadoInDatabase(string nombre, string dni, string email)
+        private (bool IsValid, string ErrorMessage) ValidateRegistrationData()
+        {
+            // Validar campos requeridos
+            if (string.IsNullOrWhiteSpace(Name))
+                return (false, "El nombre es requerido");
+            
+            if (string.IsNullOrWhiteSpace(Dni))
+                return (false, "El DNI es requerido");
+            
+            if (string.IsNullOrWhiteSpace(Email))
+                return (false, "El email es requerido");
+            
+            if (string.IsNullOrWhiteSpace(Password))
+                return (false, "La contraseña es requerida");
+            
+            if (string.IsNullOrWhiteSpace(VerifyPassword))
+                return (false, "Debe confirmar la contraseña");
+
+            // Validar nombre
+            if (Name.Trim().Length < 2)
+                return (false, "El nombre debe tener al menos 2 caracteres");
+
+         
+
+            // Validar formato del email
+            if (!IsValidEmail(Email))
+                return (false, "El formato del email no es válido");
+
+            // Validar formato del DNI
+            if (!IsValidDNI(Dni))
+                return (false, "El formato del DNI no es válido");
+
+            // Validar contraseña
+            var passwordValidation = ValidatePassword(Password);
+            if (!passwordValidation.IsValid)
+                return (false, passwordValidation.ErrorMessage);
+
+            // Verificar que las contraseñas coincidan
+            if (Password != VerifyPassword)
+                return (false, "Las contraseñas no coinciden");
+
+            return (true, string.Empty);
+        }
+
+        private (bool IsValid, string ErrorMessage) ValidatePassword(string password)
+        {
+            if (password.Length < 8)
+                return (false, "La contraseña debe tener al menos 8 caracteres");
+
+            if (!password.Any(char.IsUpper))
+                return (false, "La contraseña debe contener al menos una mayúscula");
+
+            if (!password.Any(char.IsLower))
+                return (false, "La contraseña debe contener al menos una minúscula");
+
+            if (!password.Any(char.IsDigit))
+                return (false, "La contraseña debe contener al menos un número");
+
+            return (true, string.Empty);
+        }
+
+        private bool IsValidEmail(string email)
         {
             try
             {
-                // Crear usuario con rol de EMPLEADO (orientado a la app móvil)
-                var usuario = new Usuario
-                {
-                    Nombre = nombre,
-                    DNI = dni,
-                    Email = email,
-                    TipoUsuario = TipoUsuarioEnum.Empleado  // Rol de Empleado para usuarios de la app móvil
-                };
-
-                return await _usuarioService.AddAsync(usuario);
+                var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+                return emailRegex.IsMatch(email?.Trim() ?? string.Empty);
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine($"Error al crear empleado: {ex.Message}");
-                throw;
+                return false;
             }
         }
 
@@ -199,15 +250,12 @@ namespace MovilApp.ViewModels.Login
             if (string.IsNullOrWhiteSpace(dni))
                 return false;
 
-            // Eliminar espacios y puntos
-            var cleanDni = dni.Trim().Replace(" ", "").Replace(".", "");
+            var cleanDni = dni.Trim().Replace(" ", "").Replace(".", "").Replace("-", "");
 
-            // Verificar longitud mínima y máxima
-            if (cleanDni.Length < 5 || cleanDni.Length > 20)
+            if (cleanDni.Length < 6 || cleanDni.Length > 20)
                 return false;
 
-            // Permitir números, letras y guiones (para diferentes formatos de DNI/NIE/Pasaporte)
-            return cleanDni.All(c => char.IsLetterOrDigit(c) || c == '-');
+            return cleanDni.All(c => char.IsLetterOrDigit(c));
         }
 
         private async Task<bool> CheckDNIExists(string dni)
@@ -215,27 +263,73 @@ namespace MovilApp.ViewModels.Login
             try
             {
                 var usuarios = await _usuarioService.GetAllAsync("") ?? new List<Usuario>();
-                return usuarios.Any(u => string.Equals(u.DNI, dni, StringComparison.OrdinalIgnoreCase));
+                return usuarios.Any(u => string.Equals(u.DNI?.Trim(), dni.Trim(), StringComparison.OrdinalIgnoreCase));
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al verificar DNI: {ex.Message}");
-                return false; // En caso de error, permitir continuar
+                return false;
+            }
+        }
+
+        private async Task<bool> CheckEmailExists(string email)
+        {
+            try
+            {
+                var usuarios = await _usuarioService.GetAllAsync("") ?? new List<Usuario>();
+                return usuarios.Any(u => string.Equals(u.Email?.Trim(), email.Trim(), StringComparison.OrdinalIgnoreCase));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al verificar email: {ex.Message}");
+                return false;
             }
         }
 
         public async Task SendVerificationEmailAsync(string idToken)
         {
-            using (var client = new HttpClient())
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.Timeout = TimeSpan.FromSeconds(30);
+
+            var content = new StringContent($"{{\"requestType\":\"VERIFY_EMAIL\",\"idToken\":\"{idToken}\"}}");
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await client.PostAsync(RequestUri, content);
+            response.EnsureSuccessStatusCode();
+        }
+
+        private string GetFirebaseErrorMessage(AuthErrorReason reason)
+        {
+            return reason switch
             {
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                AuthErrorReason.EmailExists => "Este email ya está registrado",
+                AuthErrorReason.InvalidEmailAddress => "El email no es válido",
+                AuthErrorReason.WeakPassword => "La contraseña es muy débil",
+                AuthErrorReason.TooManyAttemptsTryLater => "Demasiados intentos. Espere unos minutos",
+                _ => $"Error de autenticación: {reason}"
+            };
+        }
 
-                var content = new StringContent("{\"requestType\":\"VERIFY_EMAIL\",\"idToken\":\"" + idToken + "\"}");
-                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+        private void ShowError(string message)
+        {
+            ErrorMessage = message;
+            HasError = true;
+        }
 
-                var response = await client.PostAsync(RequestUri, content);
-                response.EnsureSuccessStatusCode();
-            }
+        private void ClearError()
+        {
+            ErrorMessage = string.Empty;
+            HasError = false;
+        }
+
+        private void ClearFields()
+        {
+            Name = string.Empty;
+            Dni = string.Empty;
+            Email = string.Empty;
+            Password = string.Empty;
+            VerifyPassword = string.Empty;
         }
     }
 }

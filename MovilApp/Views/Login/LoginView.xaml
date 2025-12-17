@@ -3,45 +3,132 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MovilApp.Views.Login.LoginView"
              xmlns:viewModels="clr-namespace:MovilApp.ViewModels.Login"
-             NavigationPage.HasNavigationBar="False">
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#0d0617">
+
     <ContentPage.BindingContext>
         <viewModels:LoginViewModel />
     </ContentPage.BindingContext>
+
     <ScrollView>
-        <VerticalStackLayout  VerticalOptions="Start" Padding="30">
-            <Grid ColumnSpacing="10" RowSpacing="10" RowDefinitions="2*,2*,2*,*,*" ColumnDefinitions="auto,*">
-                <Label Grid.Row="0" Grid.Column="0" 
-                       HorizontalOptions="End"
-                       VerticalOptions="Center">Email:</Label>
-                <Entry Grid.Row="0" Grid.Column="1" 
-                       Text="{Binding Email}"></Entry>
+        <VerticalStackLayout Spacing="25" Padding="30" VerticalOptions="Center">
 
-                <Label Grid.Row="1" Grid.Column="0" 
-                       HorizontalOptions="End"
-                       VerticalOptions="Center">Contraseña:</Label>
-                <Entry Grid.Row="1" Grid.Column="1" 
-                       Text="{Binding Password}"
-                        IsPassword="True"></Entry>
-                <CheckBox IsChecked="{Binding RecordarContraseña}"
-                          Grid.Row="2" Grid.Column="0"
-                          HorizontalOptions="End"></CheckBox>
-                <Label Grid.Row="2" Grid.Column="1"
-                       VerticalOptions="Center"
-                       >Recordar contraseña</Label>
+            <VerticalStackLayout Spacing="10" Margin="0,30,0,20">
+                <Frame HeightRequest="90" WidthRequest="90"
+                       CornerRadius="20" Padding="0"
+                       BackgroundColor="#1a0824"
+                       BorderColor="#7a3cff"
+                       HorizontalOptions="Center">
+                    <Label Text="🏢" FontSize="50" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Frame>
 
-                <Button Text="Iniciar sesión"
-                        x:Name="btnIniciarSesion"
-                        Grid.Row="3" Grid.Column="0"
+                <Label Text="Fidelium"
+                       FontSize="36"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalTextAlignment="Center"/>
+
+                <Label Text="Software de Gestión"
+                       FontSize="14"
+                       TextColor="#bf4dff"
+                       HorizontalTextAlignment="Center"
+                       CharacterSpacing="2"/>
+            </VerticalStackLayout>
+
+            <Border IsVisible="{Binding HasError}"
+                    Stroke="#ff3c3c"
+                    BackgroundColor="#2a1034"
+                    Padding="15"
+                    StrokeShape="RoundRectangle 10">
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="#ff3c3c"
+                       FontSize="13"
+                       HorizontalTextAlignment="Center"/>
+            </Border>
+
+            <Border IsVisible="{Binding IsBlocked}"
+                    Stroke="#f59e0b"
+                    BackgroundColor="#2a1a08"
+                    Padding="15"
+                    StrokeShape="RoundRectangle 10">
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="⚠️ ACCESO RESTRINGIDO"
+                           TextColor="#f59e0b"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center"/>
+                    <Label Text="{Binding RemainingTime, StringFormat='Reintento en: {0} segundos'}"
+                           TextColor="White"
+                           FontSize="13"
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <VerticalStackLayout Spacing="18">
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="EMAIL EMPRESARIAL" FontSize="11" FontAttributes="Bold" TextColor="#bf4dff" Margin="5,0"/>
+                    <Border Stroke="#7a3cff" StrokeThickness="1" BackgroundColor="#1a0824" Padding="15,0" StrokeShape="RoundRectangle 10">
+                        <Entry Text="{Binding Email}" Keyboard="Email" Placeholder="nombre@fidelium.com" 
+                               TextColor="White" PlaceholderColor="#495057" HeightRequest="50" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="CONTRASEÑA" FontSize="11" FontAttributes="Bold" TextColor="#bf4dff" Margin="5,0"/>
+                    <Border Stroke="#7a3cff" StrokeThickness="1" BackgroundColor="#1a0824" Padding="15,0" StrokeShape="RoundRectangle 10">
+                        <Entry Text="{Binding Password}" IsPassword="True" Placeholder="••••••••" 
+                               TextColor="White" PlaceholderColor="#495057" HeightRequest="50" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout Spacing="10" Margin="5,0">
+                    <CheckBox IsChecked="{Binding RecordarContraseña}" Color="#7a3cff" />
+                    <Label Text="Mantener sesión iniciada" TextColor="LightGray" VerticalOptions="Center" FontSize="14"/>
+                </HorizontalStackLayout>
+
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="15" Margin="0,10,0,0">
+
+                <Button Text="INICIAR SESIÓN"
                         Command="{Binding IniciarSesionCommand}"
-                        Grid.ColumnSpan="2"></Button>
+                        BackgroundColor="#7a3cff"
+                        TextColor="White"
+                        HeightRequest="55"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        CornerRadius="10"/>
 
-                <Button Text="Registrarse"
-                        x:Name="btnRegistrarse"
-                        Grid.Row="4" Grid.Column="0"
+                <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="15" VerticalOptions="Center">
+                    <BoxView Grid.Column="0" HeightRequest="1" BackgroundColor="#2a1034" VerticalOptions="Center"/>
+                    <Label Grid.Column="1" Text="O" TextColor="#495057" FontSize="12" VerticalOptions="Center"/>
+                    <BoxView Grid.Column="2" HeightRequest="1" BackgroundColor="#2a1034" VerticalOptions="Center"/>
+                </Grid>
+
+                <Button Text="CREAR CUENTA NUEVA"
                         Command="{Binding RegistrarseCommand}"
-                        Grid.ColumnSpan="2"></Button>
-            </Grid>
-            <ActivityIndicator IsRunning="{Binding EstaDescargando}"/>
+                        BackgroundColor="Transparent"
+                        TextColor="White"
+                        BorderColor="#7a3cff"
+                        BorderWidth="1"
+                        HeightRequest="50"
+                        FontSize="14"
+                        CornerRadius="10"/>
+
+            </VerticalStackLayout>
+
+            <ActivityIndicator IsRunning="{Binding EstaDescargando}"
+                               Color="#bf4dff"
+                               HorizontalOptions="Center"
+                               Margin="0,10"/>
+
+            <Label Text="¿Olvidaste tu acceso? Contacta a soporte"
+                   FontSize="12"
+                   TextColor="#495057"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,20,0,20"/>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

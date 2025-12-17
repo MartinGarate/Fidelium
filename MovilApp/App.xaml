@@ -2,6 +2,7 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:MovilApp"
+             xmlns:converters="clr-namespace:MovilApp.Converters"
              x:Class="MovilApp.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -9,6 +10,16 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            
+            <!-- Convertidores globales -->
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:FeedbackColorConverter x:Key="FeedbackColorConverter" />
+            <converters:FeedbackTextConverter x:Key="FeedbackTextConverter" />
+            <converters:StringNotEmptyConverter x:Key="StringNotEmptyConverter" />
+            <converters:StringNotNullConverter x:Key="StringNotNullConverter" />
+            <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+            <converters:DateTimeToStringConverter x:Key="DateTimeToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

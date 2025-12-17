@@ -3,77 +3,115 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:login="clr-namespace:MovilApp.ViewModels.Login"
              x:Class="MovilApp.Views.Login.SignInView"
-             NavigationPage.HasNavigationBar="False">
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#0d0617">
     <ContentPage.BindingContext>
         <login:SignInViewModel />
     </ContentPage.BindingContext>
+
     <ScrollView>
-        <VerticalStackLayout VerticalOptions="Start" Padding="10">
-            <!-- Botón volver -->
+        <VerticalStackLayout Spacing="0" Padding="25" VerticalOptions="Start">
+
             <Button Text="←"
-                 Command="{Binding VolverCommand}"
-                 BackgroundColor="#f0f0f0"
-                 TextColor="Black"
-                 FontSize="24"
-                 HorizontalOptions="Start"
-                 VerticalOptions="Center"
-                 WidthRequest="50"
-                 HeightRequest="50"
-                 Margin="0,0,0,20"
-                    Padding="0,0,0,10"/>
-            <Grid ColumnSpacing="10" RowSpacing="10" RowDefinitions="2*,2*,2*,2*,2*,2*,*" ColumnDefinitions="auto,*">
-                <Label Grid.Row="0" Grid.Column="0" 
-                    HorizontalOptions="End"
-                    VerticalOptions="Center"
-                    >Nombre:</Label>
-                <Entry Grid.Row="0" Grid.Column="1" 
-                    Text="{Binding Name}"
-                    ></Entry>
-                <Label Grid.Row="1" Grid.Column="0" 
-                    HorizontalOptions="End"
-                    VerticalOptions="Center"
-                   >Apellido:</Label>
-                <Entry Grid.Row="1" Grid.Column="1" 
-                    Text="{Binding Lastname}"
-                    ></Entry>
-                <Label Grid.Row="2" Grid.Column="0" 
-                    HorizontalOptions="End"
-                    VerticalOptions="Center"
-                    >DNI:</Label>
-                <Entry Grid.Row="2" Grid.Column="1" 
-                    Text="{Binding Dni}"
-                    ></Entry>
-                <Label Grid.Row="3" Grid.Column="0" 
-                    HorizontalOptions="End"
-                    VerticalOptions="Center"
-                    >Email:</Label>
-                <Entry Grid.Row="3" Grid.Column="1" 
-                    Text="{Binding Email}"
-                    ></Entry>
+                    Command="{Binding VolverCommand}"
+                    BackgroundColor="#1a0824"
+                    TextColor="#7a3cff"
+                    FontSize="24"
+                    HeightRequest="45"
+                    WidthRequest="45"
+                    CornerRadius="22"
+                    HorizontalOptions="Start"
+                    Margin="0,10,0,20" />
 
-                <Label Grid.Row="4" Grid.Column="0" 
-                    HorizontalOptions="End"
-                    VerticalOptions="Center"
-                    >Contraseña:</Label>
-                <Entry Grid.Row="4" Grid.Column="1" 
-                    Text="{Binding Password}"
-                     IsPassword="True"></Entry>
+            <Label Text="Crear Cuenta"
+                   FontSize="32"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   Margin="0,0,0,5"/>
 
-                <Label Grid.Row="5" Grid.Column="0" 
-                    HorizontalOptions="End"
-                    VerticalOptions="Center"
-                    >Verificar&#10;Contraseña:</Label>
-                <Entry Grid.Row="5" Grid.Column="1" 
-                    Text="{Binding VerifyPassword}"
-                     IsPassword="True"></Entry>
+            <Label Text="Regístrate para continuar"
+                   FontSize="14"
+                   TextColor="#bf4dff" 
+                   Margin="0,0,0,30"/>
 
-                <Button Text="Registrarse"
-                     Command="{Binding RegistrarseCommand}"
-                     Grid.Row="6" Grid.Column="0"
-                     Grid.ColumnSpan="2"
-                     Margin="20,15,20,0"
-                     />
-            </Grid>
+            <Frame IsVisible="{Binding HasError}"
+                   BackgroundColor="#2a1034"
+                   BorderColor="#ff3c3c"
+                   CornerRadius="8"
+                   Padding="12"
+                   HasShadow="False"
+                   Margin="0,0,0,20">
+                <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                    <Label Text="⚠️" VerticalOptions="Center"/>
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="#ff3c3c"
+                           FontSize="13"
+                           VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </Frame>
+
+            <VerticalStackLayout Spacing="15">
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="NOMBRE" FontSize="11" FontAttributes="Bold" TextColor="#bf4dff" Margin="5,0"/>
+                    <Border Stroke="#7a3cff" StrokeThickness="1" BackgroundColor="#1a0824" Padding="15,0" StrokeShape="RoundRectangle 8">
+                        <Entry Text="{Binding Name}" Placeholder="Ingresa tu nombre" TextColor="White" PlaceholderColor="#495057" HeightRequest="48" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="CORREO ELECTRÓNICO" FontSize="11" FontAttributes="Bold" TextColor="#bf4dff" Margin="5,0"/>
+                    <Border Stroke="#7a3cff" StrokeThickness="1" BackgroundColor="#1a0824" Padding="15,0" StrokeShape="RoundRectangle 8">
+                        <Entry Text="{Binding Email}" Keyboard="Email" Placeholder="ejemplo@correo.com" TextColor="White" PlaceholderColor="#495057" HeightRequest="48" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="DNI / DOCUMENTO" FontSize="11" FontAttributes="Bold" TextColor="#bf4dff" Margin="5,0"/>
+                    <Border Stroke="#7a3cff" StrokeThickness="1" BackgroundColor="#1a0824" Padding="15,0" StrokeShape="RoundRectangle 8">
+                        <Entry Text="{Binding Dni}" Keyboard="Numeric" Placeholder="12345678" TextColor="White" PlaceholderColor="#495057" HeightRequest="48" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="CONTRASEÑA" FontSize="11" FontAttributes="Bold" TextColor="#bf4dff" Margin="5,0"/>
+                    <Border Stroke="#7a3cff" StrokeThickness="1" BackgroundColor="#1a0824" Padding="15,0" StrokeShape="RoundRectangle 8">
+                        <Entry Text="{Binding Password}" IsPassword="True" Placeholder="••••••••" TextColor="White" PlaceholderColor="#495057" HeightRequest="48" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="CONFIRMAR CONTRASEÑA" FontSize="11" FontAttributes="Bold" TextColor="#bf4dff" Margin="5,0"/>
+                    <Border Stroke="#7a3cff" StrokeThickness="1" BackgroundColor="#1a0824" Padding="15,0" StrokeShape="RoundRectangle 8">
+                        <Entry Text="{Binding VerifyPassword}" IsPassword="True" Placeholder="••••••••" TextColor="White" PlaceholderColor="#495057" HeightRequest="48" />
+                    </Border>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+
+            <Button Text="CREAR CUENTA"
+                    Command="{Binding RegistrarseCommand}"
+                    Margin="0,35,0,15"
+                    BackgroundColor="#7a3cff"
+                    TextColor="White"
+                    HeightRequest="55"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    CornerRadius="8"
+                    IsEnabled="{Binding EstaDescargando, Converter={StaticResource InverseBoolConverter}}">
+            </Button>
+
+            <ActivityIndicator IsRunning="{Binding EstaDescargando}"
+                               Color="#bf4dff"
+                               HorizontalOptions="Center"
+                               HeightRequest="40"/>
+
+            <Label Text="Al registrarte, aceptas los términos y condiciones del servicio."
+                   FontSize="11"
+                   TextColor="LightGray"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,10,0,30"/>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
