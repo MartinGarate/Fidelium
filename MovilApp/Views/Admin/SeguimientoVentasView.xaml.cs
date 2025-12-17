@@ -20,21 +20,21 @@ namespace MovilApp.Views.Admin
                 // DECISIÓN INTELIGENTE: Feedback recibido o contacto pendiente
                 if (compra.FeedbackRecibido)
                 {
-                    // ? TIENE FEEDBACK - Mostrar opinión del cliente
+                    // TIENE FEEDBACK - Mostrar opinión del cliente
                     if (!string.IsNullOrWhiteSpace(compra.ComentarioFeedback))
                     {
                         await DisplayAlert(
-                            $"?? Feedback - {compra.Nombre}",
-                            $"?? Fecha: {compra.FechaCompra:dd/MM/yyyy}\n\n" +
-                            $"?? Cliente: {compra.Cliente?.Usuario?.Nombre ?? "N/A"}\n\n" +
-                            $"?? Comentario:\n\n{compra.ComentarioFeedback}",
+                            $"Feedback - {compra.Nombre}",
+                            $"Fecha: {compra.FechaCompra:dd/MM/yyyy}\n\n" +
+                            $"Cliente: {compra.Cliente?.Usuario?.Nombre ?? "N/A"}\n\n" +
+                            $"Comentario:\n\n{compra.ComentarioFeedback}",
                             "Cerrar"
                         );
                     }
                     else
                     {
                         await DisplayAlert(
-                            "? Feedback Recibido",
+                            "Feedback Recibido",
                             "El cliente marcó el feedback como recibido pero no dejó comentarios escritos.",
                             "OK"
                         );
@@ -42,30 +42,30 @@ namespace MovilApp.Views.Admin
                 }
                 else
                 {
-                    // ? FEEDBACK PENDIENTE - Mostrar medios de contacto
+                    // FEEDBACK PENDIENTE - Mostrar medios de contacto
                     var cliente = compra.Cliente;
                     if (cliente != null)
                     {
-                        var contactInfo = $"?? Cliente: {cliente.Usuario?.Nombre ?? "N/A"}\n\n";
+                        var contactInfo = $"Cliente: {cliente.Usuario?.Nombre ?? "N/A"}\n\n";
                         
                         // Teléfono
                         if (!string.IsNullOrWhiteSpace(cliente.Telefono))
-                            contactInfo += $"?? Teléfono:\n{cliente.Telefono}\n\n";
+                            contactInfo += $"Teléfono:\n{cliente.Telefono}\n\n";
                         
                         // Email
                         if (!string.IsNullOrWhiteSpace(cliente.Usuario?.Email))
-                            contactInfo += $"?? Email:\n{cliente.Usuario.Email}\n\n";
+                            contactInfo += $"Email:\n{cliente.Usuario.Email}\n\n";
                         
                         // Instagram
                         if (!string.IsNullOrWhiteSpace(cliente.Instagram))
-                            contactInfo += $"?? Instagram:\n{cliente.Instagram}\n\n";
+                            contactInfo += $"Instagram:\n{cliente.Instagram}\n\n";
                         
                         // DNI
                         if (!string.IsNullOrWhiteSpace(cliente.Usuario?.DNI))
-                            contactInfo += $"?? DNI:\n{cliente.Usuario.DNI}";
+                            contactInfo += $"DNI:\n{cliente.Usuario.DNI}";
 
                         await DisplayAlert(
-                            $"?? Contactar - {compra.Nombre}",
+                            $"Contactar - {compra.Nombre}",
                             contactInfo.TrimEnd(),
                             "Cerrar"
                         );
