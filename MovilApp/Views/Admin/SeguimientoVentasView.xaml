@@ -20,10 +20,9 @@
           Padding="20"
           RowSpacing="20">
 
-        <!-- Título mejorado -->
         <Frame Grid.Row="0"
                Padding="20,16"
-               CornerRadius="16"
+               CornerRadius="8"
                BackgroundColor="#1a0824"
                BorderColor="#7a3cff"
                HasShadow="False">
@@ -31,7 +30,7 @@
                 <Frame Grid.Column="0"
                        HeightRequest="50"
                        WidthRequest="50"
-                       CornerRadius="25"
+                       CornerRadius="6"
                        Padding="0"
                        BackgroundColor="#7a3cff"
                        HasShadow="False">
@@ -54,31 +53,28 @@
             </Grid>
         </Frame>
 
-        <!-- Filtro mejorado CON ESPACIOS -->
         <Frame Grid.Row="1"
                BorderColor="#7a3cff"
                Padding="20"
-               CornerRadius="16"
+               CornerRadius="8"
                BackgroundColor="#1a0824"
                HasShadow="False">
             <Grid RowDefinitions="Auto,Auto" RowSpacing="14">
                 <HorizontalStackLayout Grid.Row="0" Spacing="10">
-                    <Label Text="🔍"
-                           FontSize="20"
-                           VerticalOptions="Center"/>
+                    <Label Text="🔍" FontSize="20" VerticalOptions="Center"/>
                     <Label Text="Filtrar por estado:" 
                            FontAttributes="Bold"
                            FontSize="17"
                            TextColor="White"
                            VerticalOptions="Center"/>
                 </HorizontalStackLayout>
-                
+
                 <Border Grid.Row="1"
                         Stroke="#7a3cff"
                         StrokeThickness="2"
                         BackgroundColor="#2a1034"
                         Padding="12,8"
-                        StrokeShape="RoundRectangle 10">
+                        StrokeShape="RoundRectangle 6">
                     <Picker SelectedItem="{Binding ModoVistaSeleccionadoTexto}"
                             TextColor="White"
                             BackgroundColor="Transparent"
@@ -91,7 +87,6 @@
             </Grid>
         </Frame>
 
-        <!-- Tabla de Compras mejorada -->
         <RefreshView Grid.Row="2"
                      IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding RefreshCommand}"
@@ -99,93 +94,43 @@
             <ScrollView>
                 <CollectionView ItemsSource="{Binding Compras}"
                                 SelectionMode="None">
-                    
-                    <!-- Vista vacía mejorada -->
+
                     <CollectionView.EmptyView>
                         <Frame Padding="40"
                                BackgroundColor="#1a0824"
                                BorderColor="#7a3cff"
-                               CornerRadius="20"
+                               CornerRadius="10"
                                Margin="20">
-                            <VerticalStackLayout HorizontalOptions="Center"
-                                                 VerticalOptions="Center"
-                                                 Spacing="20">
-                                <Frame HeightRequest="100"
-                                       WidthRequest="100"
-                                       CornerRadius="50"
-                                       Padding="0"
-                                       BackgroundColor="#2a1034"
-                                       BorderColor="#7a3cff"
-                                       HasShadow="False">
-                                    <Label Text="📦"
-                                           FontSize="50"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"/>
+                            <VerticalStackLayout HorizontalOptions="Center" Spacing="20">
+                                <Frame HeightRequest="80" WidthRequest="80"
+                                       CornerRadius="8" Padding="0"
+                                       BackgroundColor="#2a1034" BorderColor="#7a3cff">
+                                    <Label Text="📦" FontSize="40" HorizontalOptions="Center" VerticalOptions="Center"/>
                                 </Frame>
-                                <Label Text="No hay compras para mostrar"
-                                       FontSize="20"
-                                       FontAttributes="Bold"
-                                       HorizontalOptions="Center"
-                                       TextColor="White"/>
-                                <Label Text="Cambia el filtro o actualiza la lista"
-                                       FontSize="14"
-                                       HorizontalOptions="Center"
-                                       TextColor="LightGray"/>
-                                <Button Text="🔄 Actualizar Lista"
-                                        Command="{Binding RefreshCommand}"
-                                        BackgroundColor="#7a3cff"
-                                        TextColor="White"
-                                        CornerRadius="12"
-                                        Padding="30,12"
-                                        FontSize="15"
-                                        FontAttributes="Bold"
-                                        Margin="0,10,0,0"/>
+                                <Label Text="No hay compras" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"/>
+                                <Button Text="🔄 Actualizar" Command="{Binding RefreshCommand}"
+                                        BackgroundColor="#7a3cff" CornerRadius="6"/>
                             </VerticalStackLayout>
                         </Frame>
                     </CollectionView.EmptyView>
 
-                    <!-- Encabezado de tabla mejorado -->
                     <CollectionView.Header>
                         <Frame Padding="16,12"
                                BackgroundColor="#2a1034"
-                               CornerRadius="12,12,0,0"
+                               CornerRadius="6"
                                BorderColor="#7a3cff"
                                HasShadow="False"
                                Margin="0,0,0,-1">
-                            <Grid ColumnDefinitions="2*,2*,1.5*,Auto,Auto"
-                                  ColumnSpacing="12">
-                                <Label Grid.Column="0" 
-                                       Text="PRODUCTO/SERVICIO" 
-                                       FontAttributes="Bold" 
-                                       FontSize="11"
-                                       TextColor="#bf4dff"/>
-                                <Label Grid.Column="1" 
-                                       Text="CLIENTE/VENDEDOR" 
-                                       FontAttributes="Bold" 
-                                       FontSize="11"
-                                       TextColor="#bf4dff"/>
-                                <Label Grid.Column="2" 
-                                       Text="FECHAS" 
-                                       FontAttributes="Bold" 
-                                       FontSize="11"
-                                       TextColor="#bf4dff"/>
-                                <Label Grid.Column="3" 
-                                       Text="ESTADO" 
-                                       FontAttributes="Bold" 
-                                       FontSize="11"
-                                       TextColor="#bf4dff"
-                                       HorizontalTextAlignment="Center"/>
-                                <Label Grid.Column="4" 
-                                       Text="ACCIÓN" 
-                                       FontAttributes="Bold" 
-                                       FontSize="11"
-                                       TextColor="#bf4dff"
-                                       HorizontalTextAlignment="Center"/>
+                            <Grid ColumnDefinitions="2*,2*,1.8*,Auto,Auto" ColumnSpacing="12">
+                                <Label Grid.Column="0" Text="PRODUCTO" FontAttributes="Bold" FontSize="11" TextColor="#bf4dff"/>
+                                <Label Grid.Column="1" Text="CLIENTE" FontAttributes="Bold" FontSize="11" TextColor="#bf4dff"/>
+                                <Label Grid.Column="2" Text="FECHAS (Vta/Rec)" FontAttributes="Bold" FontSize="11" TextColor="#bf4dff"/>
+                                <Label Grid.Column="3" Text="ESTADO" FontAttributes="Bold" FontSize="11" TextColor="#bf4dff" HorizontalTextAlignment="Center"/>
+                                <Label Grid.Column="4" Text="ACC" FontAttributes="Bold" FontSize="11" TextColor="#bf4dff"/>
                             </Grid>
                         </Frame>
                     </CollectionView.Header>
 
-                    <!-- Filas de la tabla mejoradas SIN OVALADAS -->
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Padding="16"
@@ -194,157 +139,40 @@
                                    CornerRadius="0"
                                    HasShadow="False"
                                    Margin="0,0,0,1">
-                                <Grid ColumnDefinitions="2*,2*,1.5*,Auto,Auto"
-                                      ColumnSpacing="12"
-                                      RowSpacing="6">
-                                    
-                                    <!-- Separador superior -->
-                                    <BoxView Grid.ColumnSpan="5"
-                                             HeightRequest="1"
-                                             Color="#7a3cff"
-                                             Opacity="0.15"
-                                             VerticalOptions="Start"
-                                             Margin="0,0,0,8"/>
-
-                                    <!-- Producto/Servicio -->
-                                    <VerticalStackLayout Grid.Column="0" 
-                                                         Spacing="6"
-                                                         VerticalOptions="Center">
-                                        <Label Text="{Binding Nombre}" 
-                                               FontSize="15"
-                                               FontAttributes="Bold"
-                                               TextColor="White"
-                                               LineBreakMode="TailTruncation"
-                                               MaxLines="2"/>
-                                        <Frame Padding="6,3"
-                                               CornerRadius="6"
-                                               BackgroundColor="#2a1034"
-                                               HasShadow="False"
-                                               IsVisible="{Binding Descripcion, Converter={StaticResource StringNotNullConverter}}">
-                                            <Label Text="{Binding Descripcion}" 
-                                                   FontSize="11"
-                                                   TextColor="LightGray"
-                                                   LineBreakMode="TailTruncation"
-                                                   MaxLines="1"/>
-                                        </Frame>
+                                <Grid ColumnDefinitions="2*,2*,1.8*,Auto,Auto" ColumnSpacing="12">
+                                    <VerticalStackLayout Grid.Column="0" Spacing="4" VerticalOptions="Center">
+                                        <Label Text="{Binding Nombre}" FontSize="14" FontAttributes="Bold" TextColor="White" LineBreakMode="TailTruncation"/>
+                                        <Label Text="{Binding Descripcion}" FontSize="10" TextColor="LightGray" MaxLines="1"/>
                                     </VerticalStackLayout>
 
-                                    <!-- Cliente/Vendedor -->
-                                    <VerticalStackLayout Grid.Column="1" 
-                                                         Spacing="8"
-                                                         VerticalOptions="Center">
-                                        <HorizontalStackLayout Spacing="6">
-                                            <Frame HeightRequest="28"
-                                                   WidthRequest="28"
-                                                   CornerRadius="14"
-                                                   Padding="0"
-                                                   BackgroundColor="#7a3cff"
-                                                   HasShadow="False">
-                                                <Label Text="👤"
-                                                       FontSize="14"
-                                                       HorizontalOptions="Center"
-                                                       VerticalOptions="Center"/>
-                                            </Frame>
-                                            <VerticalStackLayout Spacing="2">
-                                                <Label Text="{Binding Cliente.Usuario.Nombre}" 
-                                                       FontSize="13"
-                                                       FontAttributes="Bold"
-                                                       TextColor="White"/>
-                                                <Label Text="Cliente"
-                                                       FontSize="10"
-                                                       TextColor="#bf4dff"/>
-                                            </VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                                        <Label Text="{Binding Cliente.Usuario.Nombre}" FontSize="12" TextColor="White" FontAttributes="Bold"/>
+                                        <Label Text="{Binding Empleado.Nombre}" FontSize="11" TextColor="#22c55e"/>
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Column="2" Spacing="4" VerticalOptions="Center">
+                                        <HorizontalStackLayout Spacing="5">
+                                            <Label Text="Vta:" FontSize="9" TextColor="LightGray" VerticalOptions="Center"/>
+                                            <Label Text="{Binding FechaCompra, StringFormat='{0:dd/MM}'}" FontSize="11" TextColor="White" VerticalOptions="Center"/>
                                         </HorizontalStackLayout>
-                                        
-                                        <HorizontalStackLayout Spacing="6">
-                                            <Frame HeightRequest="28"
-                                                   WidthRequest="28"
-                                                   CornerRadius="14"
-                                                   Padding="0"
-                                                   BackgroundColor="#22c55e"
-                                                   HasShadow="False">
-                                                <Label Text="🤝"
-                                                       FontSize="14"
-                                                       HorizontalOptions="Center"
-                                                       VerticalOptions="Center"/>
-                                            </Frame>
-                                            <VerticalStackLayout Spacing="2">
-                                                <Label Text="{Binding Empleado.Nombre}" 
-                                                       FontSize="13"
-                                                       FontAttributes="Bold"
-                                                       TextColor="White"/>
-                                                <Label Text="Vendedor"
-                                                       FontSize="10"
-                                                       TextColor="#22c55e"/>
-                                            </VerticalStackLayout>
+                                        <HorizontalStackLayout Spacing="5">
+                                            <Label Text="Rec:" FontSize="9" TextColor="#f59e0b" VerticalOptions="Center"/>
+                                            <Label Text="{Binding FechaRecordatorio, StringFormat='{0:dd/MM}'}" FontSize="11" TextColor="#f59e0b" VerticalOptions="Center"/>
                                         </HorizontalStackLayout>
                                     </VerticalStackLayout>
 
-                                    <!-- Fechas -->
-                                    <VerticalStackLayout Grid.Column="2" 
-                                                         Spacing="10"
-                                                         VerticalOptions="Center">
-                                        <Frame Padding="8,6"
-                                               CornerRadius="8"
-                                               BackgroundColor="#2a1034"
-                                               BorderColor="#7a3cff"
-                                               HasShadow="False">
-                                            <HorizontalStackLayout Spacing="6">
-                                                <Label Text="📅" FontSize="12"/>
-                                                <Label Text="{Binding FechaCompra, StringFormat='{0:dd/MM/yy}'}" 
-                                                       FontSize="12"
-                                                       FontAttributes="Bold"
-                                                       TextColor="White"
-                                                       VerticalOptions="Center"/>
-                                            </HorizontalStackLayout>
-                                        </Frame>
-                                        
-                                        <Frame Padding="8,6"
-                                               CornerRadius="8"
-                                               BackgroundColor="#2a1034"
-                                               BorderColor="#f59e0b"
-                                               HasShadow="False">
-                                            <HorizontalStackLayout Spacing="6">
-                                                <Label Text="🔔" FontSize="12"/>
-                                                <Label Text="{Binding FechaRecordatorio, StringFormat='{0:dd/MM/yy}'}" 
-                                                       FontSize="12"
-                                                       FontAttributes="Bold"
-                                                       TextColor="#f59e0b"
-                                                       VerticalOptions="Center"/>
-                                            </HorizontalStackLayout>
-                                        </Frame>
-                                    </VerticalStackLayout>
-
-                                    <!-- Estado Feedback SIN OVALADO -->
-                                    <Frame Grid.Column="3"
-                                           Padding="12,8"
-                                           CornerRadius="8"
-                                           HasShadow="False"
-                                           VerticalOptions="Center"
-                                           BorderColor="{Binding FeedbackRecibido, Converter={StaticResource FeedbackColorConverter}}"
+                                    <Frame Grid.Column="3" Padding="8,4" CornerRadius="4" HasShadow="False" VerticalOptions="Center"
                                            BackgroundColor="{Binding FeedbackRecibido, Converter={StaticResource FeedbackColorConverter}}">
                                         <Label Text="{Binding FeedbackRecibido, Converter={StaticResource FeedbackTextConverter}}"
-                                               FontSize="12"
-                                               FontAttributes="Bold"
-                                               TextColor="White"
-                                               HorizontalTextAlignment="Center"/>
+                                               FontSize="10" FontAttributes="Bold" TextColor="White" HorizontalTextAlignment="Center"/>
                                     </Frame>
 
-                                    <!-- Botón INTELIGENTE: Ver Feedback O Ver Contacto -->
-                                    <Button Grid.Column="4"
-                                            Text="{Binding FeedbackRecibido, Converter={StaticResource FeedbackTextConverter}}"
-                                            FontSize="18"
+                                    <Button Grid.Column="4" FontSize="16" WidthRequest="40" HeightRequest="40" Padding="0" CornerRadius="6"
                                             BackgroundColor="{Binding FeedbackRecibido, Converter={StaticResource FeedbackColorConverter}}"
-                                            TextColor="White"
-                                            CornerRadius="8"
-                                            WidthRequest="45"
-                                            HeightRequest="45"
-                                            Padding="0"
-                                            VerticalOptions="Center"
                                             Clicked="OnVerDetallesClicked">
                                         <Button.Triggers>
                                             <DataTrigger TargetType="Button" Binding="{Binding FeedbackRecibido}" Value="True">
-                                                <Setter Property="Text" Value="💬"/>
+                                                <Setter Property="Text" Value="✅"/>
                                             </DataTrigger>
                                             <DataTrigger TargetType="Button" Binding="{Binding FeedbackRecibido}" Value="False">
                                                 <Setter Property="Text" Value="📞"/>
@@ -356,83 +184,16 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
 
-                    <!-- Footer mejorado -->
                     <CollectionView.Footer>
-                        <Frame Padding="16,20"
-                               BackgroundColor="#2a1034"
-                               CornerRadius="0,0,12,12"
-                               BorderColor="#7a3cff"
-                               HasShadow="False"
-                               Margin="0,-1,0,0">
-                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
-                                <Frame Grid.Column="0"
-                                       HeightRequest="40"
-                                       WidthRequest="40"
-                                       CornerRadius="20"
-                                       Padding="0"
-                                       BackgroundColor="#7a3cff"
-                                       HasShadow="False">
-                                    <Label Text="📊"
-                                           FontSize="20"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"/>
-                                </Frame>
-                                
-                                <VerticalStackLayout Grid.Column="1"
-                                                     Spacing="2"
-                                                     VerticalOptions="Center">
-                                    <Label Text="{Binding Compras.Count, StringFormat='Total: {0} compras'}"
-                                           FontSize="15"
-                                           FontAttributes="Bold"
-                                           TextColor="White"/>
-                                    <Label Text="Registros en esta vista"
-                                           FontSize="11"
-                                           TextColor="LightGray"/>
-                                </VerticalStackLayout>
-                                
-                                <Button Grid.Column="2"
-                                        Text="🔄 Actualizar"
-                                        Command="{Binding RefreshCommand}"
-                                        BackgroundColor="#22c55e"
-                                        TextColor="White"
-                                        CornerRadius="10"
-                                        Padding="20,10"
-                                        FontSize="13"
-                                        FontAttributes="Bold"/>
+                        <Frame Padding="16" BackgroundColor="#2a1034" CornerRadius="6" BorderColor="#7a3cff" Margin="0,-1,0,0">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{Binding Compras.Count, StringFormat='Total: {0} registros'}" TextColor="White" VerticalOptions="Center"/>
+                                <Button Grid.Column="1" Text="🔄" Command="{Binding RefreshCommand}" BackgroundColor="#22c55e" CornerRadius="4"/>
                             </Grid>
                         </Frame>
                     </CollectionView.Footer>
                 </CollectionView>
             </ScrollView>
         </RefreshView>
-
-        <!-- Overlay de carga mejorado -->
-        <Grid Grid.RowSpan="3"
-              IsVisible="{Binding IsRefreshing}"
-              BackgroundColor="#DD000000"
-              InputTransparent="False">
-            <Frame Padding="40"
-                   BackgroundColor="#1a0824"
-                   BorderColor="#7a3cff"
-                   CornerRadius="20"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center">
-                <VerticalStackLayout HorizontalOptions="Center"
-                                     VerticalOptions="Center"
-                                     Spacing="20">
-                    <ActivityIndicator IsRunning="{Binding IsRefreshing}"
-                                       Color="#7a3cff"
-                                       WidthRequest="60"
-                                       HeightRequest="60"/>
-                    <Label Text="Cargando compras..."
-                           TextColor="White"
-                           FontSize="16"
-                           FontAttributes="Bold"/>
-                    <Label Text="Por favor espera..."
-                           TextColor="LightGray"
-                           FontSize="12"/>
-                </VerticalStackLayout>
-            </Frame>
-        </Grid>
     </Grid>
 </ContentPage>
