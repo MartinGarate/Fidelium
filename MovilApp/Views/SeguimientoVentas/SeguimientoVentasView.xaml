@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:MovilApp.ViewModels.Admin"
+             xmlns:converters="clr-namespace:MovilApp.Converters"
+             x:Class="MovilApp.Views.SeguimientoVentas.SeguimientoVentasView"
+             Title="Seguimiento de Ventas"
+             BackgroundColor="#0d0617">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:FeedbackColorConverter x:Key="FeedbackColorConverter"/>
+            <converters:FeedbackTextConverter x:Key="FeedbackTextConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          Padding="16"
+          RowSpacing="16">
+
+        <!-- Título -->
+        <Label Grid.Row="0"
+               Text="📊 Seguimiento de Ventas y Feedback"
+               FontSize="24"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               TextColor="White"
+               Margin="0,8,0,0"/>
+
+        <!-- Filtro de Modo de Vista -->
+        <Frame Grid.Row="1"
+               BorderColor="#7a3cff"
+               Padding="16"
+               CornerRadius="12"
+               BackgroundColor="#1a0824">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="🔍 Filtrar por:" 
+                       FontAttributes="Bold"
+                       FontSize="16"
+                       TextColor="White"/>
+                <Picker SelectedItem="{Binding ModoVistaSeleccionadoTexto}"
+                        TextColor="White"
+                        BackgroundColor="#2a1034"
+                        FontSize="14"
+                        ItemsSource="{Binding ModosDeVista}">
+                    <Picker.TitleColor>LightGray</Picker.TitleColor>
+                </Picker>
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Tabla de Compras -->
+        <RefreshView Grid.Row="2"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}"
+                     RefreshColor="#7a3cff">
+            <ScrollView>
+                <CollectionView ItemsSource="{Binding Compras}"
+                                SelectionMode="None">
+                    
+                    <!-- Vista vacía -->
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout HorizontalOptions="Center"
+                                             VerticalOptions="Center"
+                                             Spacing="16"
+                                             Padding="40">
+                            <Label Text="📦"
+                                   FontSize="60"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="No hay compras para mostrar"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"
+                                   TextColor="White"/>
+                            <Label Text="Cambia el filtro o actualiza la lista"
+                                   FontSize="14"
+                                   HorizontalOptions="Center"
+                                   TextColor="LightGray"/>
+                            <Button Text="🔄 Actualizar"
+                                    Command="{Binding RefreshCommand}"
+                                    BackgroundColor="#7a3cff"
+                                    TextColor="White"
+                                    CornerRadius="8"
+                                    Padding="20,10"/>
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+
+                    <!-- Encabezado de la tabla -->
+                    <CollectionView.Header>
+                        <Grid Padding="12,8"
+                              BackgroundColor="#2a1034"
+                              ColumnDefinitions="*, *, *, Auto"
+                              ColumnSpacing="8">
+                            <Label Grid.Column="0" 
+                                   Text="PRODUCTO/SERVICIO" 
+                                   FontAttributes="Bold" 
+                                   FontSize="12"
+                                   TextColor="#bf4dff"/>
+                            <Label Grid.Column="1" 
+                                   Text="CLIENTE" 
+                                   FontAttributes="Bold" 
+                                   FontSize="12"
+                                   TextColor="#bf4dff"/>
+                            <Label Grid.Column="2" 
+                                   Text="FECHA" 
+                                   FontAttributes="Bold" 
+                                   FontSize="12"
+                                   TextColor="#bf4dff"/>
+                            <Label Grid.Column="3" 
+                                   Text="ESTADO" 
+                                   FontAttributes="Bold" 
+                                   FontSize="12"
+                                   TextColor="#bf4dff"
+                                   HorizontalTextAlignment="Center"/>
+                        </Grid>
+                    </CollectionView.Header>
+
+                    <!-- Filas de la tabla -->
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="12"
+                                  BackgroundColor="#1a0824"
+                                  ColumnDefinitions="*, *, *, Auto"
+                                  ColumnSpacing="8"
+                                  RowSpacing="4">
+                                
+                                <!-- Separador -->
+                                <BoxView Grid.ColumnSpan="4"
+                                         HeightRequest="1"
+                                         Color="#7a3cff"
+                                         Opacity="0.2"
+                                         VerticalOptions="Start"/>
+
+                                <!-- Producto/Servicio -->
+                                <VerticalStackLayout Grid.Column="0" 
+                                                     Spacing="4"
+                                                     VerticalOptions="Center">
+                                    <Label Text="{Binding Nombre}" 
+                                           FontSize="15"
+                                           FontAttributes="Bold"
+                                           TextColor="White"
+                                           LineBreakMode="TailTruncation"
+                                           MaxLines="2"/>
+                                    <Label Text="{Binding Descripcion}" 
+                                           FontSize="12"
+                                           TextColor="LightGray"
+                                           LineBreakMode="TailTruncation"
+                                           MaxLines="1"/>
+                                </VerticalStackLayout>
+
+                                <!-- Cliente -->
+                                <VerticalStackLayout Grid.Column="1" 
+                                                     Spacing="2"
+                                                     VerticalOptions="Center">
+                                    <Label Text="{Binding Cliente.Usuario.Nombre}" 
+                                           FontSize="14"
+                                           TextColor="White"/>
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Label Text="👤" 
+                                               FontSize="10"/>
+                                        <Label Text="{Binding Empleado.Nombre}" 
+                                               FontSize="11"
+                                               TextColor="LightGray"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+
+                                <!-- Fecha -->
+                                <VerticalStackLayout Grid.Column="2" 
+                                                     Spacing="2"
+                                                     VerticalOptions="Center">
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Label Text="📅" FontSize="11"/>
+                                        <Label Text="{Binding FechaCompra, StringFormat='{0:dd/MM/yyyy}'}" 
+                                               FontSize="13"
+                                               TextColor="White"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Label Text="🔔" FontSize="11"/>
+                                        <Label Text="{Binding FechaRecordatorio, StringFormat='{0:dd/MM/yyyy}'}" 
+                                               FontSize="11"
+                                               TextColor="LightGray"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+
+                                <!-- Estado Feedback -->
+                                <Frame Grid.Column="3"
+                                       Padding="8,4"
+                                       CornerRadius="6"
+                                       HasShadow="False"
+                                       VerticalOptions="Center"
+                                       BackgroundColor="{Binding FeedbackRecibido, Converter={StaticResource FeedbackColorConverter}}">
+                                    <Label Text="{Binding FeedbackRecibido, Converter={StaticResource FeedbackTextConverter}}"
+                                           FontSize="11"
+                                           FontAttributes="Bold"
+                                           TextColor="White"
+                                           HorizontalTextAlignment="Center"/>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <!-- Footer con resumen -->
+                    <CollectionView.Footer>
+                        <Grid Padding="12,16"
+                              BackgroundColor="#2a1034"
+                              ColumnDefinitions="*, Auto">
+                            <Label Grid.Column="0"
+                                   Text="{Binding Compras.Count, StringFormat='Total: {0} compras'}"
+                                   FontSize="13"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   VerticalOptions="Center"/>
+                            <Button Grid.Column="1"
+                                    Text="🔄 Actualizar"
+                                    Command="{Binding RefreshCommand}"
+                                    BackgroundColor="#22c55e"
+                                    TextColor="White"
+                                    CornerRadius="8"
+                                    Padding="16,8"
+                                    FontSize="12"/>
+                        </Grid>
+                    </CollectionView.Footer>
+                </CollectionView>
+            </ScrollView>
+        </RefreshView>
+
+        <!-- Overlay de carga -->
+        <Grid Grid.RowSpan="3"
+              IsVisible="{Binding IsRefreshing}"
+              BackgroundColor="#CC000000"
+              InputTransparent="False">
+            <VerticalStackLayout HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="16">
+                <ActivityIndicator IsRunning="{Binding IsRefreshing}"
+                                   Color="#7a3cff"
+                                   WidthRequest="50"
+                                   HeightRequest="50"/>
+                <Label Text="Cargando compras..."
+                       TextColor="White"
+                       FontSize="15"
+                       FontAttributes="Bold"/>
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+    <Shell
+    x:Class="MovilApp.Views.AgoraShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:MovilApp"
+    xmlns:login="clr-namespace:MovilApp.Views.Login"
+    xmlns:contentviews="clr-namespace:MovilApp.ContentViews"
+    xmlns:admin="clr-namespace:MovilApp.Views.Admin"
+    xmlns:viewmodels="clr-namespace:MovilApp.ViewModels"
+    FlyoutBehavior="Disabled"
+    Title="FideliumApp">
+
+    <Shell.BindingContext>
+        <viewmodels:FideliumShellViewModel />
+    </Shell.BindingContext>
+
+    <Shell.FlyoutHeader>
+        <contentviews:FlyoutHeader />
+    </Shell.FlyoutHeader>
+
+    <Shell.FlyoutFooter>
+        <contentviews:FlyoutFooter />
+    </Shell.FlyoutFooter>
+        
+    <ShellContent
+        Title="Iniciar sesión"
+        ContentTemplate="{DataTemplate login:LoginView}"
+        Route="Login"
+        FlyoutItemIsVisible="False"/>
+    <ShellContent
+        Title="Crear cuenta"
+        ContentTemplate="{DataTemplate login:SignInView}"
+        Route="Registrarse"
+        FlyoutItemIsVisible="False"/>
+
+    <FlyoutItem Route="nuestra_app" 
+        FlyoutDisplayOptions="AsMultipleItems" >
+        <ShellContent
+            Title="Home"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage" />
+
+        <!-- TODO: Descomentar cuando existan las vistas de Capacitaciones
+        <Tab Title="Admin Capacitaciones"
+         Route="capacitaciones"
+         Icon="paw.png">
+            <ShellContent
+                Title="Lista"
+                Icon="cat.png"
+                ContentTemplate="{DataTemplate admin:AdminCapacitacionesView}"
+                Route="AdminCapacitaciones" />
+            <ShellContent
+                Title="Agregar carrera"
+                Icon="dog.png"
+                ContentTemplate="{DataTemplate admin:AddEditCapacitacionView}"
+                Route="AddEditCapacitacion" />
+        </Tab>
+        -->
+    </FlyoutItem>
+    
+    <FlyoutItem Title="📊 Seguimiento de Ventas" Icon="search.png" >
+        <ShellContent
+            Title="Seguimiento de Ventas"
+            ContentTemplate="{DataTemplate admin:SeguimientoVentasView}"
+            Route="SeguimientoVentas" />
+    </FlyoutItem>
+
+    <MenuItem Text="Cerrar sesión"
+      Command="{Binding LogoutCommand}"
+      IconImageSource="random.png"/>
+
+</Shell>

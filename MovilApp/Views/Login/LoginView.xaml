@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MovilApp.Views.Login.LoginView"
+             xmlns:viewModels="clr-namespace:MovilApp.ViewModels.Login"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.BindingContext>
+        <viewModels:LoginViewModel />
+    </ContentPage.BindingContext>
+    <ScrollView>
+        <VerticalStackLayout  VerticalOptions="Start" Padding="30">
+            <Grid ColumnSpacing="10" RowSpacing="10" RowDefinitions="2*,2*,2*,*,*" ColumnDefinitions="auto,*">
+                <Label Grid.Row="0" Grid.Column="0" 
+                       HorizontalOptions="End"
+                       VerticalOptions="Center">Email:</Label>
+                <Entry Grid.Row="0" Grid.Column="1" 
+                       Text="{Binding Email}"></Entry>
+
+                <Label Grid.Row="1" Grid.Column="0" 
+                       HorizontalOptions="End"
+                       VerticalOptions="Center">Contraseña:</Label>
+                <Entry Grid.Row="1" Grid.Column="1" 
+                       Text="{Binding Password}"
+                        IsPassword="True"></Entry>
+                <CheckBox IsChecked="{Binding RecordarContraseña}"
+                          Grid.Row="2" Grid.Column="0"
+                          HorizontalOptions="End"></CheckBox>
+                <Label Grid.Row="2" Grid.Column="1"
+                       VerticalOptions="Center"
+                       >Recordar contraseña</Label>
+
+                <Button Text="Iniciar sesión"
+                        x:Name="btnIniciarSesion"
+                        Grid.Row="3" Grid.Column="0"
+                        Command="{Binding IniciarSesionCommand}"
+                        Grid.ColumnSpan="2"></Button>
+
+                <Button Text="Registrarse"
+                        x:Name="btnRegistrarse"
+                        Grid.Row="4" Grid.Column="0"
+                        Command="{Binding RegistrarseCommand}"
+                        Grid.ColumnSpan="2"></Button>
+            </Grid>
+            <ActivityIndicator IsRunning="{Binding EstaDescargando}"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

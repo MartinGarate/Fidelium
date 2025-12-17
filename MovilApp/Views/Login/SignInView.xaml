@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:login="clr-namespace:MovilApp.ViewModels.Login"
+             x:Class="MovilApp.Views.Login.SignInView"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.BindingContext>
+        <login:SignInViewModel />
+    </ContentPage.BindingContext>
+    <ScrollView>
+        <VerticalStackLayout VerticalOptions="Start" Padding="10">
+            <!-- Botón volver -->
+            <Button Text="←"
+                 Command="{Binding VolverCommand}"
+                 BackgroundColor="#f0f0f0"
+                 TextColor="Black"
+                 FontSize="24"
+                 HorizontalOptions="Start"
+                 VerticalOptions="Center"
+                 WidthRequest="50"
+                 HeightRequest="50"
+                 Margin="0,0,0,20"
+                    Padding="0,0,0,10"/>
+            <Grid ColumnSpacing="10" RowSpacing="10" RowDefinitions="2*,2*,2*,2*,2*,2*,*" ColumnDefinitions="auto,*">
+                <Label Grid.Row="0" Grid.Column="0" 
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                    >Nombre:</Label>
+                <Entry Grid.Row="0" Grid.Column="1" 
+                    Text="{Binding Name}"
+                    ></Entry>
+                <Label Grid.Row="1" Grid.Column="0" 
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                   >Apellido:</Label>
+                <Entry Grid.Row="1" Grid.Column="1" 
+                    Text="{Binding Lastname}"
+                    ></Entry>
+                <Label Grid.Row="2" Grid.Column="0" 
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                    >DNI:</Label>
+                <Entry Grid.Row="2" Grid.Column="1" 
+                    Text="{Binding Dni}"
+                    ></Entry>
+                <Label Grid.Row="3" Grid.Column="0" 
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                    >Email:</Label>
+                <Entry Grid.Row="3" Grid.Column="1" 
+                    Text="{Binding Email}"
+                    ></Entry>
+
+                <Label Grid.Row="4" Grid.Column="0" 
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                    >Contraseña:</Label>
+                <Entry Grid.Row="4" Grid.Column="1" 
+                    Text="{Binding Password}"
+                     IsPassword="True"></Entry>
+
+                <Label Grid.Row="5" Grid.Column="0" 
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                    >Verificar&#10;Contraseña:</Label>
+                <Entry Grid.Row="5" Grid.Column="1" 
+                    Text="{Binding VerifyPassword}"
+                     IsPassword="True"></Entry>
+
+                <Button Text="Registrarse"
+                     Command="{Binding RegistrarseCommand}"
+                     Grid.Row="6" Grid.Column="0"
+                     Grid.ColumnSpan="2"
+                     Margin="20,15,20,0"
+                     />
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
